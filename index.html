@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -9,6 +11,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -23,14 +29,26 @@
             padding: 22px 35px;
             display: flex;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
         }
-
         .party-logo {
             font-size: 36px;
-            color: #FFFFFF;
+            color: #FFD700;
             margin-right: 12px;
+            animation: pulse-gold 2.5s ease-in-out infinite;
         }
-
+        @keyframes pulse-gold {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
         .site-title {
             font-size: 26px;
             font-weight: bold;
@@ -41,12 +59,16 @@
         /* 导航菜单 */
         .nav {
             background-color: #ffffff;
-            padding: 18px 35px;
+            padding: 16px 35px;
             display: flex;
-            gap: 35px;
+            gap: 25px;
+            flex-wrap: wrap;
             border-bottom: 2px solid #9E090F;
+            position: sticky;
+            top: 70px;
+            z-index: 999;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
         }
-
         .nav a {
             text-decoration: none;
             font-size: 17px;
@@ -56,8 +78,8 @@
             border-radius: 20px;
             transition: 0.3s;
             cursor: pointer;
+            white-space: nowrap;
         }
-
         .nav a:hover {
             color: #fff;
             background-color: #9E090F;
@@ -66,40 +88,345 @@
         /* 内容通用样式 */
         .content {
             max-width: 1100px;
-            margin: 60px auto;
-            padding: 0 20px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
             text-align: center;
             display: none;
         }
-
-        /* 默认显示主页 */
         #home {
             display: block;
+            max-width: 100%;
+            padding: 0;
         }
 
-        /* 搜索框 */
+        /* ==================== 主页 - 首屏区域 ==================== */
+        .hero-section {
+            min-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, #ffffff 0%, #fef9f5 40%, #fdf5f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(212, 168, 67, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(158, 9, 15, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #9E090F, #C4121A);
+            color: #FFD700;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
         .search-box {
             width: 70%;
-            max-width: 600px;
-            padding: 14px 25px;
+            max-width: 580px;
+            padding: 15px 28px;
             font-size: 16px;
-            border: 2px solid #9E090F;
-            border-radius: 30px;
+            border: 2px solid #d4b896;
+            border-radius: 40px;
             outline: none;
             text-align: center;
-            margin-bottom: 50px;
+            margin: 0 auto 28px;
+            display: block;
+            transition: 0.3s;
+            background: #fff;
+            letter-spacing: 1px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 1;
         }
-
-        /* 欢迎文字 */
+        .search-box:focus {
+            border-color: #9E090F;
+            box-shadow: 0 0 0 6px rgba(158, 9, 15, 0.06);
+        }
         .welcome-text {
             font-size: 20px;
-            color: #333;
-            line-height: 1.8;
+            color: #444;
+            line-height: 2;
+            position: relative;
+            z-index: 1;
         }
-
         .welcome-text strong {
             color: #9E090F;
+            font-size: 23px;
+            letter-spacing: 1px;
+        }
+
+        /* 向下滚动箭头 */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            z-index: 2;
+            animation: bounce-down 2s ease-in-out infinite;
+            transition: opacity 0.3s;
+        }
+        .scroll-indicator:hover {
+            opacity: 0.7;
+        }
+        @keyframes bounce-down {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(14px);
+            }
+        }
+        .scroll-arrow {
+            width: 36px;
+            height: 36px;
+            border-right: 3px solid #9E090F;
+            border-bottom: 3px solid #9E090F;
+            transform: rotate(45deg);
+        }
+        .scroll-text {
+            font-size: 12px;
+            color: #9E090F;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        /* ==================== 宣传图区域 ==================== */
+        .propaganda-section {
+            padding: 60px 20px 80px;
+            background: linear-gradient(180deg, #fdf5f0 0%, #fef9f6 30%, #ffffff 100%);
+            text-align: center;
+            position: relative;
+        }
+        .propaganda-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4b896, transparent);
+        }
+        .section-header {
+            margin-bottom: 40px;
+        }
+        .section-header .star-deco {
+            font-size: 28px;
+            letter-spacing: 8px;
+            display: block;
+            margin-bottom: 6px;
+            color: #FFD700;
+            filter: drop-shadow(0 2px 3px rgba(180, 130, 30, 0.3));
+        }
+        .section-header h2 {
+            font-size: 28px;
+            color: #9E090F;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+        .section-header .subtitle {
+            font-size: 14px;
+            color: #999;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+        .section-divider {
+            width: 60px;
+            height: 3px;
+            background: #d4a843;
+            margin: 14px auto 0;
+            border-radius: 2px;
+        }
+
+        /* 宣传图网格 */
+        .propaganda-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+        .propaganda-card {
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+            transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 440px;
+        }
+        .propaganda-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(158, 9, 15, 0.18);
+            border-color: #f0d0c0;
+        }
+        .propaganda-card .card-img-wrap {
+            height: 55%;
+            position: relative;
+            overflow: hidden;
+            /* 默认背景色（图片加载失败时显示） */
+            background-color: #5a3a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .propaganda-card .card-img-wrap .fallback-icon {
+            display: none;
+            font-size: 60px;
+            position: absolute;
+            z-index: 0;
+            opacity: 0.5;
+        }
+        .propaganda-card .card-img-wrap.img-failed .fallback-icon {
+            display: block;
+        }
+        .propaganda-card .card-img-wrap.img-failed .card-img-bg {
+            display: none;
+        }
+        .propaganda-card .card-img-bg {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.6s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .propaganda-card:hover .card-img-bg {
+            transform: scale(1.06);
+        }
+        .propaganda-card .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .propaganda-card .card-quote-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(158, 9, 15, 0.9);
+            color: #FFD700;
+            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            z-index: 3;
+        }
+        .propaganda-card .card-body {
+            height: 45%;
+            background: linear-gradient(180deg, #9E090F 0%, #7A080E 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 18px;
+            color: #fff;
+            gap: 6px;
+        }
+        .propaganda-card .card-body .quote-mark {
+            font-size: 32px;
+            color: #FFD700;
+            line-height: 1;
+            opacity: 0.8;
+        }
+        .propaganda-card .card-body .quote-text {
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            line-height: 1.5;
+            text-align: center;
+        }
+        .propaganda-card .card-body .quote-author {
+            font-size: 13px;
+            color: #f0d78c;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        /* 底部标语条 */
+        .slogan-strip {
+            margin-top: 50px;
+            padding: 22px 30px;
+            background: linear-gradient(135deg, #9E090F, #8B0A10);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            display: inline-block;
+            box-shadow: 0 6px 20px rgba(158, 9, 15, 0.25);
+            animation: fadeInUp 0.8s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .slogan-strip .star-icon {
+            color: #FFD700;
             font-size: 22px;
+            margin: 0 6px;
         }
 
         /* 文章栏目 3x3 网格 */
@@ -109,29 +436,39 @@
             gap: 25px;
             margin-top: 40px;
         }
-
-        /* 竖起来的圆角卡片 */
         .article-card {
             background: #fff;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
             font-size: 18px;
             color: #333;
             transition: 0.3s;
-            height: 320px; /* 竖长方形 */
+            aspect-ratio: 1 / 1;
             display: flex;
             flex-direction: column;
         }
-
-        /* 头像区：上 3/5 */
         .card-img {
             height: 60%;
             background-size: cover;
             background-position: center;
+            /* 默认背景色 */
+            background-color: #d5c4b0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        /* 文字区：下 2/5 深红底+白字 */
+        .card-img .img-fallback-text {
+            display: none;
+            font-size: 16px;
+            color: #8b6f5a;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .card-img.img-failed .img-fallback-text {
+            display: block;
+        }
         .card-text {
             height: 40%;
             background-color: #9E090F;
@@ -142,166 +479,1326 @@
             font-size: 22px;
             font-weight: bold;
         }
-
         .article-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 15px rgba(158, 9, 15, 0.15);
         }
 
-        /* 其他栏目文字 */
         .other-text {
             font-size: 24px;
             color: #9E090F;
             font-weight: bold;
             margin-top: 80px;
         }
+
+        /* ========== 交流模块样式 ========== */
+        #communicate.content {
+            max-width: 1100px;
+            padding: 0 20px 60px;
+            text-align: left;
+        }
+        .comm-container {
+            display: flex;
+            gap: 0;
+            height: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: 1px solid #e8d5c8;
+        }
+        .group-sidebar {
+            width: 240px;
+            background: #fdf8f4;
+            border-right: 1px solid #e8d5c8;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        .group-sidebar-header {
+            padding: 18px 15px;
+            background: #9E090F;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .group-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+        .group-item {
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: 0.25s;
+            border-left: 4px solid transparent;
+            font-size: 15px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+        .group-item:hover {
+            background: #fef0e8;
+            border-left-color: #d4a843;
+        }
+        .group-item.active {
+            background: #fff;
+            border-left-color: #9E090F;
+            font-weight: bold;
+            color: #9E090F;
+        }
+        .group-item .group-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .group-item .group-name-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .group-item .group-badge {
+            font-size: 11px;
+            background: #9E090F;
+            color: #fff;
+            border-radius: 12px;
+            padding: 2px 9px;
+            flex-shrink: 0;
+        }
+        .create-group-btn {
+            margin: 10px 15px 15px;
+            padding: 11px;
+            background: #fff;
+            border: 2px dashed #c5a88a;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #8b6f5a;
+            transition: 0.3s;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .create-group-btn:hover {
+            border-color: #9E090F;
+            color: #9E090F;
+            background: #fff5f5;
+        }
+        .group-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .group-main-header {
+            padding: 14px 20px;
+            background: #fdf8f4;
+            border-bottom: 1px solid #e8d5c8;
+            font-weight: bold;
+            font-size: 17px;
+            color: #9E090F;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .group-main-header .tab-btn {
+            font-size: 13px;
+            padding: 7px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: #fff;
+            transition: 0.25s;
+            letter-spacing: 1px;
+            color: #555;
+        }
+        .group-main-header .tab-btn.active-tab {
+            background: #9E090F;
+            color: #fff;
+            border-color: #9E090F;
+        }
+        .group-main-header .tab-btn:hover {
+            border-color: #9E090F;
+            color: #9E090F;
+        }
+        .message-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            background: #fafaf8;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .msg-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.6;
+            word-break: break-word;
+            position: relative;
+            animation: msgIn 0.3s ease;
+        }
+        @keyframes msgIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .msg-bubble.others {
+            background: #fff;
+            border: 1px solid #e8d5c8;
+            align-self: flex-start;
+            border-bottom-left-radius: 6px;
+        }
+        .msg-bubble.mine {
+            background: #ffe8e5;
+            border: 1px solid #f5c0b8;
+            align-self: flex-end;
+            border-bottom-right-radius: 6px;
+        }
+        .msg-sender {
+            font-size: 12px;
+            font-weight: bold;
+            color: #9E090F;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .msg-time-small {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 4px;
+            text-align: right;
+        }
+        .no-msg {
+            color: #ccc;
+            text-align: center;
+            padding: 40px;
+            font-style: italic;
+        }
+        .input-area {
+            padding: 14px 20px;
+            border-top: 1px solid #e8d5c8;
+            display: flex;
+            gap: 10px;
+            background: #fff;
+            align-items: flex-end;
+        }
+        .input-area textarea {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 2px solid #e0c8b0;
+            border-radius: 22px;
+            outline: none;
+            resize: none;
+            font-family: "Microsoft YaHei", SimHei, sans-serif;
+            transition: 0.3s;
+            min-height: 44px;
+            max-height: 100px;
+            line-height: 1.4;
+        }
+        .input-area textarea:focus {
+            border-color: #9E090F;
+            box-shadow: 0 0 0 4px rgba(158, 9, 15, 0.05);
+        }
+        .input-area .send-btn {
+            background: #9E090F;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+        .input-area .send-btn:hover {
+            background: #b80e16;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(158, 9, 15, 0.25);
+        }
+        .input-area .file-upload-btn {
+            background: #fff;
+            border: 2px solid #e0c8b0;
+            padding: 10px 14px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: 0.3s;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .input-area .file-upload-btn:hover {
+            border-color: #9E090F;
+            background: #fff8f8;
+        }
+        .file-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            background: #fafaf8;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .file-area.show {
+            display: flex;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid #eee;
+            transition: 0.25s;
+            cursor: pointer;
+        }
+        .file-item:hover {
+            box-shadow: 0 3px 10px rgba(158, 9, 15, 0.08);
+            border-color: #f0d0c0;
+        }
+        .file-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .file-meta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 2px;
+        }
+        .file-download-btn {
+            background: #9E090F;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: 0.25s;
+            flex-shrink: 0;
+        }
+        .file-download-btn:hover {
+            background: #b80e16;
+        }
+        .file-delete-btn {
+            background: none;
+            border: none;
+            color: #c0392b;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            transition: 0.25s;
+            flex-shrink: 0;
+        }
+        .file-delete-btn:hover {
+            color: #e74c3c;
+            transform: scale(1.2);
+        }
+        .no-file {
+            color: #ccc;
+            text-align: center;
+            padding: 40px;
+            font-style: italic;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px 30px;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .modal-box h3 {
+            color: #9E090F;
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 2px solid #e0c8b0;
+            border-radius: 25px;
+            outline: none;
+            margin-bottom: 12px;
+            font-family: "Microsoft YaHei", SimHei, sans-serif;
+            transition: 0.3s;
+        }
+        .modal-box input:focus {
+            border-color: #9E090F;
+        }
+        .modal-box .modal-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .modal-box .modal-btns button {
+            padding: 10px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border: none;
+        }
+        .btn-confirm {
+            background: #9E090F;
+            color: #fff;
+        }
+        .btn-confirm:hover {
+            background: #b80e16;
+        }
+        .btn-cancel {
+            background: #eee;
+            color: #555;
+        }
+        .btn-cancel:hover {
+            background: #ddd;
+        }
+        .toast-mini {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 3000;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .toast-mini.show {
+            opacity: 1;
+        }
+
+        /* 页脚 */
+        .footer-bar {
+            background: #2c1a0e;
+            color: #c5b8a8;
+            text-align: center;
+            padding: 22px 20px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            border-top: 4px solid #9E090F;
+        }
+        .footer-bar span {
+            color: #f0d78c;
+        }
+
+        /* ========== 图片加载失败提示横幅 ========== */
+        .image-warning-banner {
+            display: none;
+            background: #fff8e1;
+            color: #8b6914;
+            text-align: center;
+            padding: 12px 20px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #f0d78c;
+            position: sticky;
+            top: 70px;
+            z-index: 998;
+        }
+        .image-warning-banner.show {
+            display: block;
+        }
+        .image-warning-banner a {
+            color: #9E090F;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .propaganda-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+            .propaganda-card {
+                height: 380px;
+            }
+            .propaganda-card .card-body .quote-text {
+                font-size: 14px;
+            }
+            .article-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero-section {
+                min-height: 85vh;
+            }
+            .welcome-text {
+                font-size: 17px;
+            }
+            .welcome-text strong {
+                font-size: 19px;
+            }
+            .nav {
+                top: 64px;
+                gap: 10px;
+                padding: 12px 18px;
+            }
+            .nav a {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+            .top-bar {
+                padding: 16px 20px;
+            }
+            .site-title {
+                font-size: 20px;
+            }
+            .party-logo {
+                font-size: 28px;
+            }
+            .comm-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .group-sidebar {
+                width: 100%;
+                flex-direction: row;
+                overflow-x: auto;
+                border-right: none;
+                border-bottom: 1px solid #e8d5c8;
+                flex-shrink: 0;
+                padding: 8px;
+            }
+            .group-sidebar-header {
+                display: none;
+            }
+            .group-list {
+                display: flex;
+                flex-direction: row;
+                gap: 6px;
+                padding: 0;
+                flex: 1;
+                overflow-x: auto;
+            }
+            .group-item {
+                padding: 10px 14px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+                border-radius: 8px 8px 0 0;
+            }
+            .group-item.active {
+                border-left: none;
+                border-bottom-color: #9E090F;
+                background: #fff;
+            }
+            .create-group-btn {
+                margin: 4px 6px;
+                padding: 8px 12px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+            .group-main {
+                min-height: 450px;
+            }
+            .image-warning-banner {
+                top: 56px;
+            }
+        }
+        @media (max-width: 550px) {
+            .propaganda-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                max-width: 380px;
+                margin: 0 auto;
+            }
+            .propaganda-card {
+                height: 360px;
+            }
+            .propaganda-card .card-body .quote-text {
+                font-size: 15px;
+            }
+            .article-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .hero-section {
+                min-height: 80vh;
+                padding: 30px 14px;
+            }
+            .search-box {
+                width: 85%;
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+            .welcome-text {
+                font-size: 15px;
+            }
+            .welcome-text strong {
+                font-size: 17px;
+            }
+            .slogan-strip {
+                font-size: 14px;
+                padding: 16px 20px;
+                letter-spacing: 1px;
+            }
+            .scroll-indicator {
+                bottom: 18px;
+            }
+            .scroll-arrow {
+                width: 26px;
+                height: 26px;
+            }
+            .nav a {
+                font-size: 12px;
+                padding: 5px 9px;
+            }
+            .site-title {
+                font-size: 16px;
+            }
+            .party-logo {
+                font-size: 24px;
+            }
+            .section-header h2 {
+                font-size: 22px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<!-- 顶部导航 -->
-<div class="top-bar">
-    <div class="party-logo">☭</div>
-    <div class="site-title">中国共产主义青年交流会</div>
-</div>
-
-<!-- 导航菜单 -->
-<div class="nav">
-    <a onclick="showHome()">主页</a>
-    <a onclick="showYun()">国际共运</a>
-    <a onclick="showArticle()">文章</a>
-    <a onclick="showHistory()">历史</a>
-    <a onclick="showArt()">文艺</a>
-    <a onclick="showOther()">其他</a>
-</div>
-
-<!-- 主页内容 -->
-<div id="home" class="content">
-    <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
-    <div class="welcome-text">
-        <strong>热烈欢迎各位青年同志加入中国共产主义青年交流会！</strong><br>
-        在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
-        愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
+    <div class="toast-mini" id="toastMini"></div>
+    <!-- 图片加载问题提示横幅 -->
+    <div class="image-warning-banner" id="imageWarning">
+        ⚠️ 部分图片未能加载（可能被浏览器拦截）。页面已自动使用替代样式显示。如需查看原图，请<a onclick="retryLoadImages()">点击此处重试</a>，或调整Edge的跟踪防护设置。
     </div>
-</div>
 
-<!-- 文章栏目：3x3 全部填好 -->
-<div id="article" class="content">
-    <h2 style="color:#9E090F;margin-bottom:20px;">文章合集</h2>
-    <div class="article-grid">
-
-        <!-- 1 马克思 -->
-        <div class="article-card">
-            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995816838134719.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
-            <div class="card-text">马克思</div>
-        </div>
-
-        <!-- 2 恩格斯 -->
-        <div class="article-card">
-            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995823296552245.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
-            <div class="card-text">恩格斯</div>
-        </div>
-
-        <!-- 3 列宁 -->
-        <div class="article-card">
-            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190715%2F0a6f3f8b745e40779f59595f1b462b5.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
-            <div class="card-text">列宁</div>
-        </div>
-
-        <!-- 4 毛泽东 -->
-        <div class="article-card">
-            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170503%2F97f334080a234334904022783fa9335_th.jpeg&refer=http%3A%2F%2Fimg.mp.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
-            <div class="card-text">毛泽东</div>
-        </div>
-
-        <!-- 5 斯大林 -->
-        <div class="article-card">
-            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp.qqan.com%2Fup%2Fallimg%2F150324%2F1-150324192140-L.jpg&refer=http%3A%2F%2Fp.qqan.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
-            <div class="card-text">斯大林</div>
-        </div>
-
-        <!-- 6 个人文章（无头像，纯色） -->
-        <div class="article-card">
-            <div class="card-img" style="background-color:#eee;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px;">个人文章</div>
-            <div class="card-text">个人文章</div>
-        </div>
-
-        <!-- 7 其他 -->
-        <div class="article-card">
-            <div class="card-img" style="background-color:#eee;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px;">其他</div>
-            <div class="card-text">其他</div>
-        </div>
-
-        <!-- 8 预留 -->
-        <div class="article-card">
-            <div class="card-img" style="background-color:#f5f5f5;"></div>
-            <div class="card-text">预留</div>
-        </div>
-
-        <!-- 9 预留 -->
-        <div class="article-card">
-            <div class="card-img" style="background-color:#f5f5f5;"></div>
-            <div class="card-text">预留</div>
-        </div>
-
+    <!-- 顶部导航 -->
+    <div class="top-bar">
+        <div class="party-logo">☭</div>
+        <div class="site-title">中国共产主义青年交流会</div>
     </div>
-</div>
 
-<!-- 国际共运 -->
-<div id="yun" class="content">
-    <div class="welcome-text">国际共运板块，后续添加内容</div>
-</div>
+    <!-- 导航菜单 -->
+    <div class="nav">
+        <a onclick="showHome()">主页</a>
+        <a onclick="showYun()">国际共运</a>
+        <a onclick="showArticle()">文章</a>
+        <a onclick="showHistory()">历史</a>
+        <a onclick="showArt()">文艺</a>
+        <a onclick="showOther()">其他</a>
+        <a onclick="showCommunicate()">交流</a>
+    </div>
 
-<!-- 历史 -->
-<div id="history" class="content">
-    <div class="welcome-text">历史板块，后续添加内容</div>
-</div>
+    <!-- ==================== 主页内容 ==================== -->
+    <div id="home" class="content">
+        <!-- 首屏区域 -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">★ 学习理论 · 传承精神 · 砥砺前行 ★</div>
+                <input type="text" class="search-box" placeholder="🔍 输入关键词搜索本站内容">
+                <div class="welcome-text">
+                    <strong>热烈欢迎各位青年同志加入中国共产主义青年交流会！</strong><br>
+                    在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
+                    愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
+                </div>
+            </div>
+            <!-- 向下滚动指示器 -->
+            <div class="scroll-indicator" onclick="document.getElementById('propagandaSection').scrollIntoView({behavior:'smooth'})" title="向下滚动了解更多">
+                <span class="scroll-text">向下滚动</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </div>
 
-<!-- 文艺 -->
-<div id="art" class="content">
-    <div class="welcome-text">文艺板块，后续添加内容</div>
-</div>
+        <!-- 宣传图区域 -->
+        <div class="propaganda-section" id="propagandaSection">
+            <div class="section-header">
+                <span class="star-deco">★ ★ ★</span>
+                <h2>学习光辉思想</h2>
+                <p class="subtitle">—— 继承和发扬马列毛伟大思想 ——</p>
+                <div class="section-divider"></div>
+            </div>
 
-<!-- 其他栏目 -->
-<div id="other" class="content">
-    <div class="other-text">哈哈哈</div>
-</div>
+            <div class="propaganda-grid">
+                <!-- 马克思 -->
+                <div class="propaganda-card">
+                    <div class="card-img-wrap" id="cardWrapMarx">
+                        <span class="fallback-icon">📕</span>
+                        <div class="card-img-bg" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995816838134719.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995816838134719.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');background-color:#5a3a2a;"></div>
+                        <div class="card-overlay"></div>
+                        <span class="card-quote-badge">⭐ 马克思主义</span>
+                    </div>
+                    <div class="card-body">
+                        <span class="quote-mark">"</span>
+                        <span class="quote-text">全世界无产者，联合起来！</span>
+                        <span class="quote-author">—— 卡尔·马克思</span>
+                    </div>
+                </div>
 
-<script>
-// 切换栏目
-function showHome(){
-    hideAll();
-    document.getElementById("home").style.display = "block";
-}
-function showYun(){
-    hideAll();
-    document.getElementById("yun").style.display = "block";
-}
-function showArticle(){
-    hideAll();
-    document.getElementById("article").style.display = "block";
-}
-function showHistory(){
-    hideAll();
-    document.getElementById("history").style.display = "block";
-}
-function showArt(){
-    hideAll();
-    document.getElementById("art").style.display = "block";
-}
-function showOther(){
-    hideAll();
-    document.getElementById("other").style.display = "block";
-}
-// 隐藏所有栏目
-function hideAll(){
-    document.querySelectorAll(".content").forEach(item=>{
-        item.style.display = "none";
-    });
-}
-</script>
+                <!-- 列宁 -->
+                <div class="propaganda-card">
+                    <div class="card-img-wrap" id="cardWrapLenin">
+                        <span class="fallback-icon">📗</span>
+                        <div class="card-img-bg" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190715%2F0a6f3f8b745e40779f59595f1b462b5.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190715%2F0a6f3f8b745e40779f59595f1b462b5.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');background-color:#4a3030;"></div>
+                        <div class="card-overlay"></div>
+                        <span class="card-quote-badge">⭐ 列宁主义</span>
+                    </div>
+                    <div class="card-body">
+                        <span class="quote-mark">"</span>
+                        <span class="quote-text">学习，学习，再学习！</span>
+                        <span class="quote-author">—— 弗拉基米尔·列宁</span>
+                    </div>
+                </div>
 
+                <!-- 毛泽东 -->
+                <div class="propaganda-card">
+                    <div class="card-img-wrap" id="cardWrapMao">
+                        <span class="fallback-icon">📙</span>
+                        <div class="card-img-bg" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170503%2F97f334080a234334904022783fa9335_th.jpeg&refer=http%3A%2F%2Fimg.mp.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170503%2F97f334080a234334904022783fa9335_th.jpeg&refer=http%3A%2F%2Fimg.mp.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');background-color:#3a2a20;"></div>
+                        <div class="card-overlay"></div>
+                        <span class="card-quote-badge">⭐ 毛泽东思想</span>
+                    </div>
+                    <div class="card-body">
+                        <span class="quote-mark">"</span>
+                        <span class="quote-text">为人民服务</span>
+                        <span class="quote-author">—— 毛泽东</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部标语 -->
+            <div class="slogan-strip">
+                <span class="star-icon">★</span> 传承红色基因，担当时代重任 <span class="star-icon">★</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文章栏目 -->
+    <div id="article" class="content">
+        <h2 style="color:#9E090F;margin-bottom:20px;">文章合集</h2>
+        <div class="article-grid">
+            <div class="article-card">
+                <div class="card-img" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995816838134719.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995816838134719.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');">
+                    <span class="img-fallback-text">📕 马克思</span>
+                </div>
+                <div class="card-text">马克思</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995823296552245.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995823296552245.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');">
+                    <span class="img-fallback-text">📘 恩格斯</span>
+                </div>
+                <div class="card-text">恩格斯</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190715%2F0a6f3f8b745e40779f59595f1b462b5.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190715%2F0a6f3f8b745e40779f59595f1b462b5.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');">
+                    <span class="img-fallback-text">📗 列宁</span>
+                </div>
+                <div class="card-text">列宁</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170503%2F97f334080a234334904022783fa9335_th.jpeg&refer=http%3A%2F%2Fimg.mp.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170503%2F97f334080a234334904022783fa9335_th.jpeg&refer=http%3A%2F%2Fimg.mp.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');">
+                    <span class="img-fallback-text">📙 毛泽东</span>
+                </div>
+                <div class="card-text">毛泽东</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp.qqan.com%2Fup%2Fallimg%2F150324%2F1-150324192140-L.jpg&refer=http%3A%2F%2Fp.qqan.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp.qqan.com%2Fup%2Fallimg%2F150324%2F1-150324192140-L.jpg&refer=http%3A%2F%2Fp.qqan.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto');">
+                    <span class="img-fallback-text">📓 斯大林</span>
+                </div>
+                <div class="card-text">斯大林</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" style="background-color:#eee;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px;">个人文章</div>
+                <div class="card-text">个人文章</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" style="background-color:#eee;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px;">其他</div>
+                <div class="card-text">其他</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" style="background-color:#f5f5f5;"></div>
+                <div class="card-text">预留</div>
+            </div>
+            <div class="article-card">
+                <div class="card-img" style="background-color:#f5f5f5;"></div>
+                <div class="card-text">预留</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 国际共运 -->
+    <div id="yun" class="content"><div class="welcome-text">国际共运板块，后续添加内容</div></div>
+    <!-- 历史 -->
+    <div id="history" class="content"><div class="welcome-text">历史板块，后续添加内容</div></div>
+    <!-- 文艺 -->
+    <div id="art" class="content"><div class="welcome-text">文艺板块，后续添加内容</div></div>
+    <!-- 其他栏目 -->
+    <div id="other" class="content"><div class="other-text">哈哈哈</div></div>
+
+    <!-- 交流栏目 -->
+    <div id="communicate" class="content">
+        <h2 style="color:#9E090F;margin-bottom:8px;text-align:center;">💬 站内交流</h2>
+        <p style="color:#777;margin-bottom:18px;text-align:center;">创建小组，与同志们畅聊并共享文件</p>
+        <div class="comm-container">
+            <div class="group-sidebar">
+                <div class="group-sidebar-header">📋 我的小组</div>
+                <div class="group-list" id="groupList"></div>
+                <div class="create-group-btn" onclick="openCreateGroupModal()">＋ 创建新小组</div>
+            </div>
+            <div class="group-main" id="groupMain">
+                <div class="group-main-header">
+                    <span id="currentGroupTitle">📌 请选择或创建小组</span>
+                    <span style="flex:1;"></span>
+                    <span class="tab-btn active-tab" id="tabChat" onclick="switchTab('chat')">💬 聊天</span>
+                    <span class="tab-btn" id="tabFile" onclick="switchTab('file')">📁 文件</span>
+                </div>
+                <div class="message-area" id="messageArea"><div class="no-msg">👋 请先选择左侧小组开始交流</div></div>
+                <div class="file-area" id="fileArea"><div class="no-file">📂 暂无共享文件</div></div>
+                <div class="input-area" id="inputArea">
+                    <input type="file" id="fileInput" style="display:none;" multiple onchange="handleFileUpload(event)">
+                    <span class="file-upload-btn" onclick="document.getElementById('fileInput').click()" title="上传文件">📎</span>
+                    <textarea id="msgInput" placeholder="输入消息... (Enter发送，Shift+Enter换行)" rows="1" onkeydown="handleMsgKey(event)"></textarea>
+                    <button class="send-btn" onclick="sendMessage()">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建小组弹窗 -->
+    <div class="modal-overlay" id="createGroupModal" style="display:none;">
+        <div class="modal-box">
+            <h3>✨ 创建新小组</h3>
+            <input type="text" id="newGroupName" placeholder="请输入小组名称（如：理论学习组）" maxlength="20">
+            <input type="text" id="newGroupDesc" placeholder="小组简介（可选）" maxlength="40">
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeCreateGroupModal()">取消</button>
+                <button class="btn-confirm" onclick="createGroup()">创建小组</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer-bar">
+        <p>© 2025 <span>中国共产主义青年交流会</span> | 学习理论 · 传承精神 · 砥砺前行</p>
+        <p style="margin-top:4px;font-size:11px;">本站为非商业性学习交流平台，仅供青年同志学习参考</p>
+    </div>
+
+    <script>
+        // ============ 图片加载检测与fallback ============
+        let imageLoadFailedCount = 0;
+        const totalExternalImages = 8; // 宣传图3张 + 文章卡片5张
+
+        function checkImageLoadFailed(element, fallbackCallback) {
+            const bgImage = element.style.backgroundImage;
+            if (!bgImage || bgImage === 'none') return;
+            // 提取URL
+            const urlMatch = bgImage.match(/url\(['"]?([^'"()]+)['"]?\)/);
+            if (!urlMatch) return;
+            const imgUrl = urlMatch[1];
+            // 使用Image对象测试加载
+            const testImg = new Image();
+            testImg.onload = function() {
+                // 图片加载成功，不做处理
+            };
+            testImg.onerror = function() {
+                // 图片加载失败，执行回调
+                imageLoadFailedCount++;
+                if (fallbackCallback) fallbackCallback();
+                // 显示警告横幅
+                if (imageLoadFailedCount > 0) {
+                    document.getElementById('imageWarning').classList.add('show');
+                }
+            };
+            testImg.src = imgUrl;
+        }
+
+        function retryLoadImages() {
+            imageLoadFailedCount = 0;
+            document.getElementById('imageWarning').classList.remove('show');
+            // 重新检测所有图片
+            detectAllImages();
+        }
+
+        function detectAllImages() {
+            // 检测宣传图区域
+            const wrapIds = ['cardWrapMarx', 'cardWrapLenin', 'cardWrapMao'];
+            wrapIds.forEach(wrapId => {
+                const wrap = document.getElementById(wrapId);
+                if (!wrap) return;
+                const bgDiv = wrap.querySelector('.card-img-bg');
+                if (!bgDiv) return;
+                checkImageLoadFailed(bgDiv, function() {
+                    wrap.classList.add('img-failed');
+                });
+            });
+
+            // 检测文章栏目卡片
+            const articleCardImgs = document.querySelectorAll('#article .card-img[data-src]');
+            articleCardImgs.forEach(cardImg => {
+                checkImageLoadFailed(cardImg, function() {
+                    cardImg.classList.add('img-failed');
+                });
+            });
+        }
+
+        // 页面加载后延迟检测（给图片一些加载时间）
+        window.addEventListener('load', function() {
+            setTimeout(detectAllImages, 1500);
+        });
+
+        // 如果DOM加载完成后3秒仍未检测到任何图片，也触发检测
+        setTimeout(function() {
+            if (imageLoadFailedCount === 0) {
+                // 强制再检测一次
+                detectAllImages();
+            }
+        }, 3000);
+
+        // ============ 交流模块数据管理 ============
+        const STORAGE_GROUPS = 'comm_groups';
+        const STORAGE_MSGS = 'comm_messages';
+        const STORAGE_FILES_META = 'comm_files_meta';
+        const DB_NAME = 'CommFileDB';
+        const STORE_NAME = 'files';
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        function saveFileToDB(fileObj) {
+            return openDB().then(db => {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    store.put(fileObj);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            });
+        }
+
+        function getFileFromDB(id) {
+            return openDB().then(db => {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.get(id);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            });
+        }
+
+        function deleteFileFromDB(id) {
+            return openDB().then(db => {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    store.delete(id);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            });
+        }
+
+        function getGroups() { try { return JSON.parse(localStorage.getItem(STORAGE_GROUPS)) || []; } catch (e) { return []; } }
+        function saveGroups(groups) { localStorage.setItem(STORAGE_GROUPS, JSON.stringify(groups)); }
+        function getMessages() { try { return JSON.parse(localStorage.getItem(STORAGE_MSGS)) || []; } catch (e) { return []; } }
+        function saveMessages(msgs) { localStorage.setItem(STORAGE_MSGS, JSON.stringify(msgs)); }
+        function getFilesMeta() { try { return JSON.parse(localStorage.getItem(STORAGE_FILES_META)) || []; } catch (e) { return []; } }
+        function saveFilesMeta(meta) { localStorage.setItem(STORAGE_FILES_META, JSON.stringify(meta)); }
+
+        let currentGroupId = null;
+        let currentTab = 'chat';
+
+        function getTimeStr() {
+            const n = new Date();
+            return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastMini');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._tid);
+            t._tid = setTimeout(() => t.classList.remove('show'), 1800);
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        }
+
+        function getFileIcon(name) {
+            const ext = name.split('.').pop().toLowerCase();
+            const icons = { pdf: '📕', doc: '📘', docx: '📘', xls: '📗', xlsx: '📗', ppt: '📙', pptx: '📙', jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️', mp3: '🎵', mp4: '🎬', zip: '📦', rar: '📦', txt: '📄' };
+            return icons[ext] || '📎';
+        }
+
+        function renderGroupList() {
+            const groups = getGroups();
+            const listEl = document.getElementById('groupList');
+            if (groups.length === 0) {
+                listEl.innerHTML = '<div style="color:#bbb;text-align:center;padding:20px;font-size:13px;">暂无小组，请创建</div>';
+            } else {
+                listEl.innerHTML = groups.map(g => {
+                    const msgCount = getMessages().filter(m => m.groupId === g.id).length;
+                    return `
+                    <div class="group-item${currentGroupId===g.id?' active':''}" onclick="selectGroup('${g.id}')">
+                        <span class="group-icon">👥</span>
+                        <span class="group-name-text">${escapeHtml(g.name)}</span>
+                        ${msgCount>0?`<span class="group-badge">${msgCount}</span>`:''}
+                    </div>`;
+                }).join('');
+            }
+            updateMainUI();
+        }
+
+        function updateMainUI() {
+            const groups = getGroups();
+            const group = groups.find(g => g.id === currentGroupId);
+            document.getElementById('currentGroupTitle').textContent = group ? `👥 ${group.name}` : '📌 请选择或创建小组';
+            const inputArea = document.getElementById('inputArea');
+            const msgArea = document.getElementById('messageArea');
+            const fileArea = document.getElementById('fileArea');
+            if (!group) {
+                inputArea.style.display = 'none';
+                msgArea.innerHTML = '<div class="no-msg">👋 请先选择左侧小组开始交流</div>';
+                fileArea.innerHTML = '<div class="no-file">📂 暂无共享文件</div>';
+                fileArea.classList.remove('show');
+                msgArea.style.display = 'flex';
+                document.getElementById('tabChat').classList.add('active-tab');
+                document.getElementById('tabFile').classList.remove('active-tab');
+                currentTab = 'chat';
+            } else {
+                inputArea.style.display = 'flex';
+                renderMessages();
+                renderFiles();
+                if (currentTab === 'chat') {
+                    msgArea.style.display = 'flex';
+                    fileArea.classList.remove('show');
+                } else {
+                    msgArea.style.display = 'none';
+                    fileArea.classList.add('show');
+                }
+            }
+        }
+
+        function selectGroup(groupId) {
+            currentGroupId = groupId;
+            currentTab = 'chat';
+            document.getElementById('tabChat').classList.add('active-tab');
+            document.getElementById('tabFile').classList.remove('active-tab');
+            renderGroupList();
+        }
+
+        function switchTab(tab) {
+            if (!currentGroupId) { showToast('请先选择小组'); return; }
+            currentTab = tab;
+            document.getElementById('tabChat').classList.toggle('active-tab', tab === 'chat');
+            document.getElementById('tabFile').classList.toggle('active-tab', tab === 'file');
+            updateMainUI();
+        }
+
+        function renderMessages() {
+            const msgArea = document.getElementById('messageArea');
+            if (!currentGroupId) return;
+            const msgs = getMessages().filter(m => m.groupId === currentGroupId);
+            if (msgs.length === 0) {
+                msgArea.innerHTML = '<div class="no-msg">暂无消息，开始发言吧！</div>';
+            } else {
+                msgArea.innerHTML = msgs.map(m => {
+                    const isMine = m.name === getUserNickname();
+                    return `
+                    <div class="msg-bubble ${isMine?'mine':'others'}">
+                        <div class="msg-sender">${escapeHtml(m.name)}</div>
+                        <div>${escapeHtml(m.content)}</div>
+                        <div class="msg-time-small">${m.time}</div>
+                    </div>`;
+                }).join('');
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }
+        }
+
+        function getUserNickname() { return localStorage.getItem('comm_nickname') || '青年同志'; }
+
+        function sendMessage() {
+            if (!currentGroupId) { showToast('请先选择小组'); return; }
+            const input = document.getElementById('msgInput');
+            const content = input.value.trim();
+            if (!content) return;
+            const msgs = getMessages();
+            msgs.push({
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 6),
+                groupId: currentGroupId,
+                name: getUserNickname(),
+                content: content,
+                time: getTimeStr()
+            });
+            saveMessages(msgs);
+            input.value = '';
+            input.style.height = 'auto';
+            renderMessages();
+            renderGroupList();
+        }
+
+        function handleMsgKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
+                sendMessage(); }
+        }
+
+        function handleFileUpload(event) {
+            if (!currentGroupId) { showToast('请先选择小组');
+                event.target.value = ''; return; }
+            const files = event.target.files;
+            if (!files || files.length === 0) { event.target.value = ''; return; }
+            const nickname = getUserNickname();
+            const promises = [];
+            for (const file of files) {
+                const reader = new FileReader();
+                const p = new Promise((resolve, reject) => {
+                    reader.onload = function(e) {
+                        resolve({
+                            id: Date.now().toString() + Math.random().toString(36).substr(2, 8),
+                            groupId: currentGroupId,
+                            name: file.name,
+                            size: file.size,
+                            type: file.type,
+                            data: new Uint8Array(e.target.result),
+                            uploader: nickname,
+                            time: getTimeStr()
+                        });
+                    };
+                    reader.onerror = reject;
+                });
+                reader.readAsArrayBuffer(file);
+                promises.push(p);
+            }
+            Promise.all(promises).then(fileObjs => {
+                const meta = getFilesMeta();
+                const savePromises = fileObjs.map(fo => {
+                    meta.push({ id: fo.id, groupId: fo.groupId, name: fo.name, size: fo.size, type: fo.type, uploader: fo.uploader, time: fo.time });
+                    return saveFileToDB(fo);
+                });
+                return Promise.all(savePromises).then(() => {
+                    saveFilesMeta(meta);
+                    showToast(`成功上传 ${fileObjs.length} 个文件`);
+                    if (currentTab === 'file') renderFiles();
+                    else switchTab('file');
+                });
+            }).catch(err => { showToast('上传失败：' + err.message); });
+            event.target.value = '';
+        }
+
+        function renderFiles() {
+            const fileArea = document.getElementById('fileArea');
+            if (!currentGroupId) return;
+            const meta = getFilesMeta().filter(f => f.groupId === currentGroupId);
+            if (meta.length === 0) {
+                fileArea.innerHTML = '<div class="no-file">📂 暂无共享文件，点击📎上传</div>';
+            } else {
+                fileArea.innerHTML = meta.map(f => `
+                    <div class="file-item">
+                        <span class="file-icon">${getFileIcon(f.name)}</span>
+                        <div class="file-info">
+                            <div class="file-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</div>
+                            <div class="file-meta">${formatSize(f.size)} · ${escapeHtml(f.uploader)} · ${f.time}</div>
+                        </div>
+                        <button class="file-download-btn" onclick="downloadFile('${f.id}')">⬇ 下载</button>
+                        <button class="file-delete-btn" onclick="deleteFile('${f.id}')" title="删除">🗑️</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function downloadFile(fileId) {
+            getFileFromDB(fileId).then(fileObj => {
+                if (!fileObj) { showToast('文件不存在'); return; }
+                const blob = new Blob([fileObj.data], { type: fileObj.type || 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileObj.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('开始下载：' + fileObj.name);
+            }).catch(() => showToast('下载失败'));
+        }
+
+        function deleteFile(fileId) {
+            if (!confirm('确定删除该文件吗？')) return;
+            const meta = getFilesMeta();
+            const idx = meta.findIndex(f => f.id === fileId);
+            if (idx >= 0) { meta.splice(idx, 1);
+                saveFilesMeta(meta); }
+            deleteFileFromDB(fileId).then(() => { renderFiles();
+                showToast('文件已删除'); }).catch(() => showToast('删除失败'));
+        }
+
+        function openCreateGroupModal() {
+            document.getElementById('createGroupModal').style.display = 'flex';
+            document.getElementById('newGroupName').value = '';
+            document.getElementById('newGroupDesc').value = '';
+            setTimeout(() => document.getElementById('newGroupName').focus(), 150);
+        }
+
+        function closeCreateGroupModal() { document.getElementById('createGroupModal').style.display = 'none'; }
+
+        function createGroup() {
+            const name = document.getElementById('newGroupName').value.trim();
+            if (!name) { showToast('请输入小组名称'); return; }
+            const desc = document.getElementById('newGroupDesc').value.trim();
+            const groups = getGroups();
+            const newGroup = { id: Date.now().toString() + Math.random().toString(36).substr(2, 6), name: name, description: desc || '', createdAt: getTimeStr() };
+            groups.push(newGroup);
+            saveGroups(groups);
+            closeCreateGroupModal();
+            currentGroupId = newGroup.id;
+            currentTab = 'chat';
+            document.getElementById('tabChat').classList.add('active-tab');
+            document.getElementById('tabFile').classList.remove('active-tab');
+            renderGroupList();
+            showToast('小组「' + name + '」创建成功！');
+        }
+
+        document.addEventListener('click', function(e) { if (e.target.id === 'createGroupModal') closeCreateGroupModal(); });
+
+        // ============ 栏目切换 ============
+        function showHome() { hideAll();
+            document.getElementById("home").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // 切换回主页时重新检测图片
+            setTimeout(detectAllImages, 500);
+        }
+        function showYun() { hideAll();
+            document.getElementById("yun").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function showArticle() { hideAll();
+            document.getElementById("article").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(detectAllImages, 500);
+        }
+        function showHistory() { hideAll();
+            document.getElementById("history").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function showArt() { hideAll();
+            document.getElementById("art").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function showOther() { hideAll();
+            document.getElementById("other").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function showCommunicate() { hideAll();
+            document.getElementById("communicate").style.display = "block";
+            renderGroupList();
+            window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        function hideAll() { document.querySelectorAll(".content").forEach(item => { item.style.display = "none"; }); }
+
+        // ============ 初始化 ============
+        (function init() {
+            let groups = getGroups();
+            if (groups.length === 0) {
+                groups = [
+                    { id: 'default_group_1', name: '理论学习组', description: '学习马克思主义经典著作', createdAt: getTimeStr() },
+                    { id: 'default_group_2', name: '历史研讨组', description: '探讨国际共运历史', createdAt: getTimeStr() },
+                ];
+                saveGroups(groups);
+                const sampleMsgs = [
+                    { id: 's1', groupId: 'default_group_1', name: '青年小刘', content: '大家好！一起学习《共产党宣言》吧！', time: getTimeStr() },
+                    { id: 's2', groupId: 'default_group_1', name: '红色初心', content: '赞成！我们可以每周讨论一章。', time: getTimeStr() },
+                    { id: 's3', groupId: 'default_group_2', name: '星火', content: '巴黎公社的历史意义值得深入研究。', time: getTimeStr() },
+                ];
+                saveMessages(sampleMsgs);
+            }
+            if (!localStorage.getItem('comm_nickname')) { localStorage.setItem('comm_nickname', '青年同志'); }
+            currentGroupId = groups[0].id;
+            renderGroupList();
+            document.getElementById('home').style.display = 'block';
+
+            // 初始图片检测
+            setTimeout(detectAllImages, 2000);
+        })();
+
+        // 监听滚动，隐藏箭头
+        window.addEventListener('scroll', function() {
+            const indicator = document.querySelector('.scroll-indicator');
+            if (indicator && window.scrollY > 200) {
+                indicator.style.opacity = '0';
+                indicator.style.pointerEvents = 'none';
+            } else if (indicator) {
+                indicator.style.opacity = '1';
+                indicator.style.pointerEvents = 'auto';
+            }
+        });
+    </script>
 </body>
 </html>
-
-
