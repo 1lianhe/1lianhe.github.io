@@ -16,9 +16,9 @@
             background-color: #ffffff;
         }
 
-        /* 顶部全红条 */
+        /* 顶部背景：改为深红色 ✅ */
         .top-bar {
-            background-color: #C91F37;
+            background-color: #9E090F; /* 标准深红 */
             width: 100%;
             padding: 22px 35px;
             display: flex;
@@ -32,21 +32,21 @@
             color: #FFFFFF;
         }
 
-        /* 标题：改为深红色（更庄重） */
+        /* 标题文字：白色 ✅ */
         .site-title {
             font-size: 26px;
             font-weight: bold;
-            color: #9E090F; /* 深红 */
+            color: #FFFFFF;
             letter-spacing: 1px;
         }
 
-        /* 导航栏 */
+        /* 导航栏（圆润样式） */
         .nav {
             background-color: #ffffff;
             padding: 18px 35px;
             display: flex;
             gap: 35px;
-            border-bottom: 2px solid #C91F37;
+            border-bottom: 2px solid #9E090F;
         }
 
         .nav a {
@@ -61,7 +61,7 @@
 
         .nav a:hover {
             color: #fff;
-            background-color: #C91F37;
+            background-color: #9E090F;
         }
 
         /* 主页内容区 */
@@ -78,7 +78,7 @@
             max-width: 600px;
             padding: 14px 25px;
             font-size: 16px;
-            border: 2px solid #C91F37;
+            border: 2px solid #9E090F;
             border-radius: 30px;
             outline: none;
             text-align: center;
@@ -86,7 +86,7 @@
         }
 
         .search-box:focus {
-            box-shadow: 0 0 10px rgba(201, 31, 55, 0.2);
+            box-shadow: 0 0 10px rgba(158, 9, 15, 0.2);
         }
 
         /* 欢迎贺词 */
@@ -98,14 +98,14 @@
         }
 
         .welcome-text strong {
-            color: #C91F37;
+            color: #9E090F;
             font-size: 22px;
         }
     </style>
 </head>
 <body>
 
-<!-- 顶部全红条：党徽 + 白色标题 -->
+<!-- 顶部全深红条：党徽 + 白色标题 -->
 <div class="top-bar">
     <div class="party-logo">☭</div>
     <div class="site-title">中国共产主义青年交流会</div>
@@ -121,12 +121,12 @@
     <a href="#">其他</a>
 </div>
 
-<!-- 主页内容：搜索框 + 欢迎贺词 -->
+<!-- 主页内容 -->
 <div class="content">
     <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
     
     <div class="welcome-text">
-        <strong>热烈欢迎各位青年同志加入中国共产主义青年交流会！</strong><br>
+        <strong>热烈欢迎各位同志加入中国共产主义青年交流会！</strong><br>
         在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
         愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
     </div>
