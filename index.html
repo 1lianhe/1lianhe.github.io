@@ -90,10 +90,6 @@
             margin-bottom: 50px;
         }
 
-        .search-box:focus {
-            box-shadow: 0 0 10px rgba(158, 9, 15, 0.2);
-        }
-
         /* 欢迎文字 */
         .welcome-text {
             font-size: 20px;
@@ -124,12 +120,36 @@
             font-size: 18px;
             color: #333;
             transition: 0.3s;
+            height: 320px; /* 竖起来 */
+            display: flex;
+            flex-direction: column;
         }
 
-        /* 第一个国家与革命特殊红色样式 */
+        /* 第一个卡片：列宁专用样式 */
         .article-card.first {
-            background: #9E090F;
-            color: #fff;
+            background: #fff;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        /* 上半部分：头像区域 */
+        .lenin-top {
+            height: 60%; /* 上五分之三 */
+            background-image: url('https://pic.17qq.com/uploads/20240315/18/17qq_3158554681.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* 下半部分：深红底白字 列宁 */
+        .lenin-bottom {
+            height: 40%; /* 下五分之二 */
+            background-color: #9E090F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
             font-weight: bold;
         }
 
@@ -175,11 +195,14 @@
     </div>
 </div>
 
-<!-- 文章栏目：3x3 圆滑卡片 第一格国家与革命 -->
+<!-- 文章栏目：3x3 第一个卡片改为列宁 -->
 <div id="article" class="content">
     <h2 style="color:#9E090F;margin-bottom:20px;">文章合集</h2>
     <div class="article-grid">
-        <div class="article-card first">国家与革命</div>
+        <div class="article-card first">
+            <div class="lenin-top"></div>
+            <div class="lenin-bottom">列宁</div>
+        </div>
         <div class="article-card">待添加文章</div>
         <div class="article-card">待添加文章</div>
         <div class="article-card">待添加文章</div>
@@ -247,3 +270,4 @@ function hideAll(){
 
 </body>
 </html>
+
