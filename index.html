@@ -6,7 +6,8 @@
     <title>中国共产主义青年交流会</title>
     <!-- Leaflet 地图库 -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:"Microsoft YaHei",SimHei,sans-serif; background:#f9f8f6; color:#333; }
@@ -42,7 +43,6 @@
         .btn { background:var(--primary); color:#fff; padding:10px 24px; border:none; border-radius:25px; cursor:pointer; font-weight:bold; letter-spacing:1px; transition:0.3s; display:inline-block; }
         .btn:hover { background:#b00e16; }
 
-        /* 国际共运地图容器 */
         #yun .map-container { width:100%; height:600px; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.1); margin-top:20px; }
         .legend { display:flex; justify-content:center; gap:30px; padding:15px; background:#fff; border-radius:0 0 16px 16px; }
         .legend-item { display:flex; align-items:center; gap:8px; font-size:14px; }
@@ -100,153 +100,265 @@
     </style>
 </head>
 <body>
-    <!-- 登录界面 -->
-    <div id="authOverlay">
-        <div class="auth-card">
-            <div id="loginForm">
-                <h2>🔐 欢迎同志</h2>
-                <div class="subtitle">登录青年交流会</div>
-                <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off">
-                <input type="password" id="loginPassword" placeholder="密码">
-                <div class="auth-error" id="loginError">用户名或密码错误</div>
-                <button class="btn-auth" onclick="handleLogin()">登 录</button>
-                <div class="auth-toggle">还没有账号？<a onclick="showRegister()">立即注册</a></div>
-            </div>
-            <div id="registerForm" style="display:none;">
-                <h2>📝 注册新账号</h2>
-                <input type="text" id="regUsername" placeholder="用户名 (4-16位)" autocomplete="off">
-                <input type="text" id="regLocation" placeholder="所在地 (如: 北京)" autocomplete="off">
-                <input type="password" id="regPassword" placeholder="密码 (6-20位)">
-                <input type="password" id="regPassword2" placeholder="确认密码">
-                <div class="auth-error" id="regError">注册失败</div>
-                <button class="btn-auth" onclick="handleRegister()">注 册</button>
-                <div class="auth-toggle">已有账号？<a onclick="showLogin()">立即登录</a></div>
-            </div>
+<div id="authOverlay">
+    <div class="auth-card">
+        <div id="loginForm">
+            <h2>🔐 欢迎同志</h2>
+            <div class="subtitle">登录青年交流会</div>
+            <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off">
+            <input type="password" id="loginPassword" placeholder="密码">
+            <div class="auth-error" id="loginError">用户名或密码错误</div>
+            <button class="btn-auth" onclick="handleLogin()">登 录</button>
+            <div class="auth-toggle">还没有账号？<a onclick="showRegister()">立即注册</a></div>
+        </div>
+        <div id="registerForm" style="display:none;">
+            <h2>📝 注册新账号</h2>
+            <input type="text" id="regUsername" placeholder="用户名 (4-16位)" autocomplete="off">
+            <input type="text" id="regLocation" placeholder="所在地 (如: 北京)" autocomplete="off">
+            <input type="password" id="regPassword" placeholder="密码 (6-20位)">
+            <input type="password" id="regPassword2" placeholder="确认密码">
+            <div class="auth-error" id="regError">注册失败</div>
+            <button class="btn-auth" onclick="handleRegister()">注 册</button>
+            <div class="auth-toggle">已有账号？<a onclick="showLogin()">立即登录</a></div>
         </div>
     </div>
+</div>
 
-    <!-- 主界面 -->
-    <div class="top-bar"><div class="party-logo">☭</div><div class="site-title">中国共产主义青年交流会</div></div>
-    <div class="nav">
-        <a onclick="navigate('home')">主页</a>
-        <a onclick="navigate('yun')">国际共运</a>
-        <a onclick="navigate('article')">文章</a>
-        <a onclick="navigate('history')">历史</a>
-        <a onclick="navigate('art')">文艺</a>
-        <a onclick="navigate('communicate')">交流</a>
-        <a onclick="navigate('other')">其他</a>
-        <div class="nav-right">
-            <a onclick="navigate('profile')" style="color:var(--primary);">👤 个人主页</a>
-            <a onclick="switchAccount()" style="color:#2980b9;">🔄 切换账号</a>
-            <a onclick="logout()" style="color:#c0392b;">退出</a>
+<div class="top-bar"><div class="party-logo">☭</div><div class="site-title">中国共产主义青年交流会</div></div>
+<div class="nav">
+    <a onclick="navigate('home')">主页</a>
+    <a onclick="navigate('yun')">国际共运</a>
+    <a onclick="navigate('article')">文章</a>
+    <a onclick="navigate('history')">历史</a>
+    <a onclick="navigate('art')">文艺</a>
+    <a onclick="navigate('communicate')">交流</a>
+    <a onclick="navigate('other')">其他</a>
+    <div class="nav-right">
+        <a onclick="navigate('profile')" style="color:var(--primary);">👤 个人主页</a>
+        <a onclick="switchAccount()" style="color:#2980b9;">🔄 切换账号</a>
+        <a onclick="logout()" style="color:#c0392b;">退出</a>
+    </div>
+</div>
+
+<div id="home" class="content">
+    <div class="hero"><h2>热烈欢迎各位青年同志！</h2><p class="welcome-sub">学习理论 · 传承精神 · 砥砺前行</p>
+        <input type="text" class="search-box" id="globalSearch" placeholder="🔍 搜索文章或文艺作品">
+        <button class="btn" style="margin-top:15px;" onclick="performGlobalSearch()">搜索</button>
+    </div>
+    <div class="quotes-grid" id="quotesContainer"></div>
+    <!-- 收藏夹区域 -->
+    <div id="favoritesContainer" style="max-width:800px;margin:40px auto 0; background:#fff; border-radius:16px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.05);"></div>
+</div>
+
+<div id="yun" class="content">
+    <h2 class="section-title">🌍 国际共运 · 世界政治版图</h2>
+    <p style="text-align:center; color:#666;">点击地图上的标记查看当地政治形势与共产力量</p>
+    <div id="worldMap" class="map-container"></div>
+    <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#e74c3c;"></span> 社会主义国家</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#3498db;"></span> 资本主义国家</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#2ecc71;"></span> 封建/君主制国家</div>
+    </div>
+</div>
+
+<div id="article" class="content">
+    <div id="authorGridView"><h2 class="section-title">📚 文章合集</h2><div class="author-grid" id="authorGrid"></div></div>
+    <div id="articleDetailView" style="display:none;">
+        <button class="btn" style="margin-bottom:20px;" onclick="backToAuthors()">← 返回作者列表</button>
+        <h2 class="section-title" id="detailAuthorName"></h2>
+        <div class="article-detail-list" id="articleListContent"></div>
+    </div>
+</div>
+
+<div id="history" class="content"><h2 class="section-title">📜 革命历史长廊</h2><div class="timeline" id="historyTimeline"></div></div>
+
+<div id="art" class="content">
+    <h2 class="section-title">🎵 红色歌曲</h2><div class="song-grid" id="songList"></div>
+    <h2 class="section-title" style="margin-top:40px;">📜 毛泽东诗词</h2><div class="poem-list" id="poemList"></div>
+</div>
+
+<div id="communicate" class="content">
+    <h2 class="section-title">💬 站内交流</h2>
+    <div class="chat-container">
+        <div class="chat-sidebar"><h3>好友 / 群组</h3><div class="chat-list" id="chatList"></div><div style="padding:10px;display:flex;gap:5px;"><button class="btn" style="flex:1;" onclick="addFriend()">➕ 加好友</button><button class="btn" style="flex:1;" onclick="createGroup()">👥 建群</button></div></div>
+        <div class="chat-main"><div class="chat-header" id="chatHeader">请选择聊天对象</div><div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input"><input type="text" id="msgInput" placeholder="输入消息..."><input type="file" id="fileInput" style="display:none;" onchange="sendFile()"><button onclick="document.getElementById('fileInput').click()">📎</button><button onclick="sendMessage()">发送</button></div>
         </div>
     </div>
+</div>
 
-    <!-- 主页 -->
-    <div id="home" class="content">
-        <div class="hero"><h2>热烈欢迎各位青年同志！</h2><p class="welcome-sub">学习理论 · 传承精神 · 砥砺前行</p>
-            <input type="text" class="search-box" id="globalSearch" placeholder="🔍 搜索文章或文艺作品">
-            <button class="btn" style="margin-top:15px;" onclick="performGlobalSearch()">搜索</button>
+<div id="other" class="content"><h2 class="section-title">其他</h2><p style="text-align:center;">欢迎探索更多内容</p></div>
+
+<div id="profile" class="content">
+    <h2 class="section-title">👤 个人主页</h2>
+    <div style="max-width:600px;margin:0 auto;">
+        <div style="background:var(--primary);padding:30px;border-radius:16px;color:#fff;display:flex;gap:20px;align-items:center;">
+            <div id="avatarPreview" style="width:80px;height:80px;border-radius:50%;background:#FFD700;display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;" onclick="document.getElementById('avatarInput').click()">👤</div>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="updateAvatar()">
+            <div><h3 id="profileName">青年同志</h3><p id="profileUid">ID: 未分配</p><p id="profileLocation"></p><p id="profileBio">未设置简介</p></div>
         </div>
-        <div class="quotes-grid" id="quotesContainer"></div>
-    </div>
-
-    <!-- 国际共运 -->
-    <div id="yun" class="content">
-        <h2 class="section-title">🌍 国际共运 · 世界政治版图</h2>
-        <p style="text-align:center; color:#666;">点击地图上的标记查看当地政治形势与共产力量</p>
-        <div id="worldMap" class="map-container"></div>
-        <div class="legend">
-            <div class="legend-item"><span class="legend-dot" style="background:#e74c3c;"></span> 社会主义国家</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#3498db;"></span> 资本主义国家</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#2ecc71;"></span> 封建/君主制国家</div>
+        <div style="background:#fff;padding:20px;border-radius:14px;margin-top:20px;">
+            <input type="text" id="editNickname" placeholder="昵称" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
+            <input type="text" id="editLocation" placeholder="所在地" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
+            <textarea id="editBio" placeholder="个人简介" style="width:100%;padding:10px;margin-bottom:10px;border-radius:15px;border:1px solid #ccc;"></textarea>
+            <button class="btn" onclick="saveProfile()">💾 保存资料</button>
         </div>
-    </div>
-
-    <!-- 文章栏目 -->
-    <div id="article" class="content">
-        <div id="authorGridView"><h2 class="section-title">📚 文章合集</h2><div class="author-grid" id="authorGrid"></div></div>
-        <div id="articleDetailView" style="display:none;">
-            <button class="btn" style="margin-bottom:20px;" onclick="backToAuthors()">← 返回作者列表</button>
-            <h2 class="section-title" id="detailAuthorName"></h2>
-            <div class="article-detail-list" id="articleListContent"></div>
+        <div style="background:#fff;padding:20px;border-radius:14px;margin-top:20px;">
+            <h3>🔒 修改密码</h3>
+            <input type="password" id="oldPwd" placeholder="当前密码" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
+            <input type="password" id="newPwd" placeholder="新密码 (6-20位)" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
+            <button class="btn" onclick="changePwd()">修改密码</button>
         </div>
     </div>
+</div>
 
-    <!-- 历史 -->
-    <div id="history" class="content"><h2 class="section-title">📜 革命历史长廊</h2><div class="timeline" id="historyTimeline"></div></div>
+<div class="footer"><p>© 2026 <span>中国共产主义青年交流会</span></p></div>
 
-    <!-- 文艺 -->
-    <div id="art" class="content">
-        <h2 class="section-title">🎵 红色歌曲</h2><div class="song-grid" id="songList"></div>
-        <h2 class="section-title" style="margin-top:40px;">📜 毛泽东诗词</h2><div class="poem-list" id="poemList"></div>
-    </div>
+<div id="userInfoModal" class="user-modal" style="display:none;">
+    <div class="user-modal-content"><h3 id="modalName"></h3><p id="modalUid"></p><p id="modalLocation"></p><button class="btn" onclick="document.getElementById('userInfoModal').style.display='none'">关闭</button></div>
+</div>
 
-    <!-- 交流 -->
-    <div id="communicate" class="content">
-        <h2 class="section-title">💬 站内交流</h2>
-        <div class="chat-container">
-            <div class="chat-sidebar"><h3>好友 / 群组</h3><div class="chat-list" id="chatList"></div><div style="padding:10px;display:flex;gap:5px;"><button class="btn" style="flex:1;" onclick="addFriend()">➕ 加好友</button><button class="btn" style="flex:1;" onclick="createGroup()">👥 建群</button></div></div>
-            <div class="chat-main"><div class="chat-header" id="chatHeader">请选择聊天对象</div><div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input"><input type="text" id="msgInput" placeholder="输入消息..."><input type="file" id="fileInput" style="display:none;" onchange="sendFile()"><button onclick="document.getElementById('fileInput').click()">📎</button><button onclick="sendMessage()">发送</button></div>
-            </div>
+<div id="submitModal" class="submit-modal" style="display:none;">
+    <div class="submit-modal-content">
+        <h3 style="color:var(--primary);">✏️ 我要投稿</h3>
+        <input type="text" id="submitTitle" placeholder="文章标题">
+        <textarea id="submitContent" rows="6" placeholder="请输入文章全文..."></textarea>
+        <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="btn" onclick="submitArticle()">提交投稿</button>
+            <button class="btn" style="background:#888;" onclick="document.getElementById('submitModal').style.display='none'">取消</button>
         </div>
     </div>
+</div>
 
-    <!-- 其他 -->
-    <div id="other" class="content"><h2 class="section-title">其他</h2><p style="text-align:center;">欢迎探索更多内容</p></div>
+<script>
+    (function() {
+        // ---------- 全局变量 ----------
+        const USERS_KEY = 'site_users', CURRENT_USER = 'currentUser', PROFILE_PREFIX = 'profile_',
+            FRIENDS_KEY = 'allFriends', GROUP_KEY = 'groupData', MSG_PREFIX = 'msg_',
+            SUBMISSIONS_KEY = 'user_submissions';
+        // 新增键名
+        const LIKES_KEY = 'article_likes';       // { articleId: [username,...] }
+        const FAVORITES_KEY = 'user_favorites';   // { username: [articleId,...] }
 
-    <!-- 个人主页 -->
-    <div id="profile" class="content">
-        <h2 class="section-title">👤 个人主页</h2>
-        <div style="max-width:600px;margin:0 auto;">
-            <div style="background:var(--primary);padding:30px;border-radius:16px;color:#fff;display:flex;gap:20px;align-items:center;">
-                <div id="avatarPreview" style="width:80px;height:80px;border-radius:50%;background:#FFD700;display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;" onclick="document.getElementById('avatarInput').click()">👤</div>
-                <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="updateAvatar()">
-                <div><h3 id="profileName">青年同志</h3><p id="profileUid">ID: 未分配</p><p id="profileLocation"></p><p id="profileBio">未设置简介</p></div>
-            </div>
-            <div style="background:#fff;padding:20px;border-radius:14px;margin-top:20px;">
-                <input type="text" id="editNickname" placeholder="昵称" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
-                <input type="text" id="editLocation" placeholder="所在地" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
-                <textarea id="editBio" placeholder="个人简介" style="width:100%;padding:10px;margin-bottom:10px;border-radius:15px;border:1px solid #ccc;"></textarea>
-                <button class="btn" onclick="saveProfile()">💾 保存资料</button>
-            </div>
-            <div style="background:#fff;padding:20px;border-radius:14px;margin-top:20px;">
-                <h3>🔒 修改密码</h3>
-                <input type="password" id="oldPwd" placeholder="当前密码" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
-                <input type="password" id="newPwd" placeholder="新密码 (6-20位)" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
-                <button class="btn" onclick="changePwd()">修改密码</button>
-            </div>
-        </div>
-    </div>
+        let currentUsername = null, chatTarget = null;
+        let worldMap;
 
-    <div class="footer"><p>© 2026 <span>中国共产主义青年交流会</span></p></div>
+        // ---------- 点赞/收藏 工具函数 ----------
+        function getLikesData() { return JSON.parse(localStorage.getItem(LIKES_KEY) || '{}'); }
+        function setLikesData(data) { localStorage.setItem(LIKES_KEY, JSON.stringify(data)); }
+        function toggleLike(articleId, username) {
+            const likes = getLikesData();
+            if (!likes[articleId]) likes[articleId] = [];
+            const idx = likes[articleId].indexOf(username);
+            if (idx > -1) likes[articleId].splice(idx, 1);
+            else likes[articleId].push(username);
+            setLikesData(likes);
+        }
+        function isLiked(articleId, username) {
+            const likes = getLikesData();
+            return (likes[articleId] || []).includes(username);
+        }
+        function getLikeCount(articleId) {
+            return (getLikesData()[articleId] || []).length;
+        }
 
-    <!-- 用户信息弹窗 -->
-    <div id="userInfoModal" class="user-modal" style="display:none;">
-        <div class="user-modal-content"><h3 id="modalName"></h3><p id="modalUid"></p><p id="modalLocation"></p><button class="btn" onclick="document.getElementById('userInfoModal').style.display='none'">关闭</button></div>
-    </div>
+        function getFavoritesData() { return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '{}'); }
+        function setFavoritesData(data) { localStorage.setItem(FAVORITES_KEY, JSON.stringify(data)); }
+        function toggleFavorite(articleId, username) {
+            const favs = getFavoritesData();
+            if (!favs[username]) favs[username] = [];
+            const idx = favs[username].indexOf(articleId);
+            if (idx > -1) favs[username].splice(idx, 1);
+            else favs[username].push(articleId);
+            setFavoritesData(favs);
+        }
+        function isFavorited(articleId, username) {
+            const favs = getFavoritesData();
+            return (favs[username] || []).includes(articleId);
+        }
+        function getFavoriteCount(articleId) {
+            let count = 0;
+            const favs = getFavoritesData();
+            for (let user in favs) {
+                if (favs[user].includes(articleId)) count++;
+            }
+            return count;
+        }
 
-    <!-- 投稿模态框 -->
-    <div id="submitModal" class="submit-modal" style="display:none;">
-        <div class="submit-modal-content">
-            <h3 style="color:var(--primary);">✏️ 我要投稿</h3>
-            <input type="text" id="submitTitle" placeholder="文章标题">
-            <textarea id="submitContent" rows="6" placeholder="请输入文章全文..."></textarea>
-            <div style="display:flex;gap:10px;justify-content:center;">
-                <button class="btn" onclick="submitArticle()">提交投稿</button>
-                <button class="btn" style="background:#888;" onclick="document.getElementById('submitModal').style.display='none'">取消</button>
-            </div>
-        </div>
-    </div>
+        // 删稿
+        window.deleteSubmission = function(articleId) {
+            if (!confirm('确定删除这篇投稿吗？')) return;
+            let submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY) || '[]');
+            submissions = submissions.filter(s => s.id !== articleId);
+            localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions));
+            // 清理点赞数据
+            const likes = getLikesData();
+            if (likes[articleId]) { delete likes[articleId]; setLikesData(likes); }
+            // 清理所有用户的收藏中包含该文章
+            const favs = getFavoritesData();
+            for (let user in favs) {
+                favs[user] = favs[user].filter(id => id !== articleId);
+            }
+            setFavoritesData(favs);
+            // 重新渲染当前页面（如果正在查看个人文集）
+            if (document.getElementById('articleDetailView').style.display !== 'none') {
+                showAuthorDetail('user_submissions');
+            }
+            if (document.getElementById('home').style.display !== 'none') {
+                renderFavorites();
+            }
+        };
 
-    <script>
-        // 全局变量
-        const USERS_KEY='site_users', CURRENT_USER='currentUser', PROFILE_PREFIX='profile_', FRIENDS_KEY='allFriends', GROUP_KEY='groupData', MSG_PREFIX='msg_', SUBMISSIONS_KEY='user_submissions';
-        let currentUsername=null, chatTarget=null;
-        let worldMap; // 地图实例
+        // 点赞/收藏切换（界面局部更新）
+        window.toggleLikeArticle = function(articleId) {
+            toggleLike(articleId, currentUsername);
+            const likeCountEl = document.getElementById(`likeCount-${articleId}`);
+            if (likeCountEl) likeCountEl.textContent = getLikeCount(articleId);
+            const btn = document.querySelector(`#article-${articleId} button[onclick*="toggleLikeArticle"]`);
+            if (btn) {
+                btn.innerHTML = `${isLiked(articleId, currentUsername) ? '❤️' : '🤍'} <span id="likeCount-${articleId}">${getLikeCount(articleId)}</span>`;
+            }
+            // 同时更新meta行中的数字
+            const metaEl = document.querySelector(`#article-${articleId} .article-meta`);
+            if (metaEl) {
+                metaEl.innerHTML = metaEl.innerHTML.replace(/❤️\d+/, `❤️${getLikeCount(articleId)}`).replace(/⭐\d+/, `⭐${getFavoriteCount(articleId)}`);
+            }
+        };
+        window.toggleFavoriteArticle = function(articleId) {
+            toggleFavorite(articleId, currentUsername);
+            const favCountEl = document.getElementById(`favCount-${articleId}`);
+            if (favCountEl) favCountEl.textContent = getFavoriteCount(articleId);
+            const btn = document.querySelector(`#article-${articleId} button[onclick*="toggleFavoriteArticle"]`);
+            if (btn) {
+                btn.innerHTML = `${isFavorited(articleId, currentUsername) ? '⭐' : '☆'} <span id="favCount-${articleId}">${getFavoriteCount(articleId)}</span>`;
+            }
+            const metaEl = document.querySelector(`#article-${articleId} .article-meta`);
+            if (metaEl) {
+                metaEl.innerHTML = metaEl.innerHTML.replace(/❤️\d+/, `❤️${getLikeCount(articleId)}`).replace(/⭐\d+/, `⭐${getFavoriteCount(articleId)}`);
+            }
+            // 如果当前在主页，更新收藏夹
+            if (document.getElementById('home').style.display !== 'none') {
+                renderFavorites();
+            }
+        };
 
-        // 经典文章
+        // 搜索与排序状态
+        window._submissionSortBy = 'newest'; // 'newest' | 'popular'
+
+        window.searchSubmissions = function() {
+            showAuthorDetail('user_submissions');
+        };
+        window.showTodaySubmissions = function() {
+            window._submissionTodayMode = true;
+            showAuthorDetail('user_submissions');
+            window._submissionTodayMode = false;
+        };
+        window.changeSort = function(sortBy) {
+            window._submissionSortBy = sortBy;
+            showAuthorDetail('user_submissions');
+        };
+
+        // 经典文章库
         const classicsLibrary = {
             marx: [ { title:'共产党宣言', desc:'马克思与恩格斯', text:'一个幽灵，共产主义的幽灵，在欧洲游荡。...\n\n共产党人不屑于隐瞒自己的观点和意图。他们公开宣布：他们的目的只有用暴力推翻全部现存的社会制度才能达到。让统治阶级在共产主义革命面前发抖吧。无产者在这个革命中失去的只是锁链。他们获得的将是整个世界。\n\n全世界无产者，联合起来！' } ],
             engels: [ { title:'反杜林论', desc:'马克思主义百科全书', text:'当我们深思熟虑地考察自然界...' } ],
@@ -255,7 +367,6 @@
             stalin: [ { title:'论列宁主义基础', desc:'列宁主义概述', text:'列宁主义是帝国主义和无产阶级革命时代的马克思主义...' } ]
         };
 
-        // 世界政治数据
         const countriesData = [
             { name:'中国', lat:35.86, lng:104.19, type:'socialist', info:'社会主义国家，中国共产党领导，世界第二大经济体，共产力量强大。' },
             { name:'越南', lat:14.05, lng:108.27, type:'socialist', info:'社会主义国家，越南共产党执政，经济快速发展，共产力量稳固。' },
@@ -282,9 +393,9 @@
             const users=getUsers(); for(let i=0;i<1000;i++){ const rand=Math.floor(Math.random()*900)+100; const uid=dateStr+rand; if(!users.find(u=>u.uid===uid)) return uid; } return dateStr+'999';
         }
         function ensureUid(username){ const users=getUsers(); const idx=users.findIndex(u=>u.username===username); if(idx!==-1&&!users[idx].uid){ users[idx].uid=generateUid(); saveUsers(users); } }
-        function showRegister(){ document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; }
-        function showLogin(){ document.getElementById('registerForm').style.display='none'; document.getElementById('loginForm').style.display='block'; }
-        function handleRegister(){
+        window.showRegister = function(){ document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; };
+        window.showLogin = function(){ document.getElementById('registerForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
+        window.handleRegister = function(){
             const u=document.getElementById('regUsername').value.trim(), loc=document.getElementById('regLocation').value.trim(), p=document.getElementById('regPassword').value, p2=document.getElementById('regPassword2').value;
             const err=document.getElementById('regError'); err.style.display='none';
             if(u.length<4||u.length>16){ err.textContent='用户名4-16位'; err.style.display='block'; return; }
@@ -294,17 +405,17 @@
             const users=getUsers(); if(users.find(x=>x.username===u)){ err.textContent='用户名已存在'; err.style.display='block'; return; }
             const uid=generateUid(); users.push({username:u,password:p,location:loc,uid}); saveUsers(users);
             localStorage.setItem(CURRENT_USER,u); currentUsername=u; document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess();
-        }
-        function handleLogin(){
+        };
+        window.handleLogin = function(){
             const u=document.getElementById('loginUsername').value.trim(), p=document.getElementById('loginPassword').value;
             const err=document.getElementById('loginError'); err.style.display='none';
             if(!u||!p){ err.textContent='请输入用户名密码'; err.style.display='block'; return; }
             const users=getUsers(); const user=users.find(x=>x.username===u&&x.password===p);
             if(!user){ err.textContent='用户名或密码错误'; err.style.display='block'; return; }
             localStorage.setItem(CURRENT_USER,u); currentUsername=u; document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess();
-        }
-        function logout(){ localStorage.removeItem(CURRENT_USER); location.reload(); }
-        function switchAccount(){ localStorage.removeItem(CURRENT_USER); location.reload(); }
+        };
+        window.logout = function(){ localStorage.removeItem(CURRENT_USER); location.reload(); };
+        window.switchAccount = function(){ localStorage.removeItem(CURRENT_USER); location.reload(); };
 
         function onLoginSuccess(){
             let users=getUsers();
@@ -320,33 +431,27 @@
             if(!groups['world'].members.includes(currentUsername)) groups['world'].members.push(currentUsername);
             localStorage.setItem(GROUP_KEY,JSON.stringify(groups));
             ensureUid(currentUsername);
-            initAll(); navigate('home');
+            initAll();
+            navigate('home');
         }
 
-        function navigate(page){
+        window.navigate = function(page){
             document.querySelectorAll('.content').forEach(c=>c.style.display='none');
             const el=document.getElementById(page); if(el) el.style.display='block';
             if(page==='yun'){ setTimeout(()=>{ if(!worldMap) initWorldMap(); else worldMap.invalidateSize(); }, 100); }
             if(page==='article') showAuthors();
             if(page==='communicate') initChat();
             if(page==='profile') loadProfile();
-        }
+            if(page==='home') renderFavorites();
+        };
 
         function initWorldMap(){
             worldMap = L.map('worldMap').setView([30, 0], 2);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(worldMap);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(worldMap);
             countriesData.forEach(c => {
                 const color = c.type==='socialist' ? '#e74c3c' : (c.type==='capitalist' ? '#3498db' : '#2ecc71');
-                const marker = L.circleMarker([c.lat, c.lng], {
-                    radius: 8,
-                    fillColor: color,
-                    color: '#fff',
-                    weight: 2,
-                    fillOpacity: 0.8
-                }).addTo(worldMap);
-                marker.bindPopup(`<b>${c.name}</b><br>${c.info}`);
+                L.circleMarker([c.lat, c.lng], { radius: 8, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.8 })
+                 .addTo(worldMap).bindPopup(`<b>${c.name}</b><br>${c.info}`);
             });
         }
 
@@ -367,21 +472,68 @@
             ];
             document.getElementById('authorGrid').innerHTML=authors.map(a=>`<div class="author-card" onclick="showAuthorDetail('${a.key}')"><div class="author-img" style="background-color:${a.color};">${a.icon} ${a.name}</div><div class="author-info"><span class="author-name">${a.name}</span><span class="author-works">${a.works}</span></div></div>`).join('');
         }
-        function showAuthorDetail(key){
+        window.showAuthorDetail = function(key){
             document.getElementById('authorGridView').style.display='none'; document.getElementById('articleDetailView').style.display='block';
             if(key==='user_submissions'){
                 document.getElementById('detailAuthorName').textContent='个人文集';
                 const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]');
-                let html = '<button class="btn" style="margin-bottom:15px;" onclick="openSubmitModal()">✏️ 我要投稿</button>';
-                if(submissions.length===0) html += '<p style="color:#999;">暂无投稿文章，成为第一个投稿的同志吧！</p>';
+                const searchInput = document.getElementById('submissionSearchInput');
+                const searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
+                const sortBy = window._submissionSortBy || 'newest';
+                let filtered = submissions.filter(s => {
+                    if (!searchQuery) return true;
+                    return s.title.toLowerCase().includes(searchQuery) || s.content.toLowerCase().includes(searchQuery);
+                });
+                // 今日模式过滤
+                if (window._submissionTodayMode) {
+                    const today = new Date().toDateString();
+                    filtered = filtered.filter(s => new Date(s.time).toDateString() === today);
+                }
+                // 排序
+                if (sortBy === 'popular') {
+                    filtered.sort((a,b) => (getLikeCount(b.id)+getFavoriteCount(b.id)) - (getLikeCount(a.id)+getFavoriteCount(a.id)));
+                } else {
+                    filtered.sort((a,b) => new Date(b.time) - new Date(a.time));
+                }
+                let html = `
+                    <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center; flex-wrap:wrap;">
+                        <input type="text" id="submissionSearchInput" placeholder="搜索投稿..." value="${searchQuery}" style="flex:1; min-width:200px; padding:10px; border-radius:20px; border:1px solid #ccc;">
+                        <button class="btn" onclick="searchSubmissions()">搜索</button>
+                        <button class="btn" style="background:#888;" onclick="showTodaySubmissions()">今日</button>
+                        <select id="sortSelect" onchange="changeSort(this.value)" style="padding:10px; border-radius:20px;">
+                            <option value="newest" ${sortBy==='newest'?'selected':''}>最新</option>
+                            <option value="popular" ${sortBy==='popular'?'selected':''}>热门</option>
+                        </select>
+                        <button class="btn" onclick="openSubmitModal()">✏️ 投稿</button>
+                    </div>
+                `;
+                if(filtered.length===0) html += '<p style="color:#999;">暂无投稿文章</p>';
                 else {
-                    html += submissions.map(s=>`
-                        <div class="article-item" onclick="toggleArticleText(this, '${s.id}')">
-                            <h3>${s.title}</h3>
-                            <div class="article-meta" style="font-size:13px;color:#888;">作者：${s.authorName} (ID: ${s.authorId}) · ${s.time}</div>
-                            <div class="full-text" id="submission-${s.id}">${s.content}</div>
-                        </div>
-                    `).join('');
+                    html += filtered.map(s => {
+                        const likeCount = getLikeCount(s.id);
+                        const favCount = getFavoriteCount(s.id);
+                        const liked = isLiked(s.id, currentUsername);
+                        const favorited = isFavorited(s.id, currentUsername);
+                        const isAuthor = (s.authorName === currentUsername);
+                        return `
+                            <div class="article-item" id="article-${s.id}">
+                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                                    <h3 onclick="toggleArticleText(this, '${s.id}')" style="cursor:pointer; flex:1; min-width:150px;">${s.title}</h3>
+                                    <div style="display:flex; gap:5px; margin-top:5px;">
+                                        <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); toggleLikeArticle('${s.id}')">
+                                            ${liked ? '❤️' : '🤍'} <span id="likeCount-${s.id}">${likeCount}</span>
+                                        </button>
+                                        <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); toggleFavoriteArticle('${s.id}')">
+                                            ${favorited ? '⭐' : '☆'} <span id="favCount-${s.id}">${favCount}</span>
+                                        </button>
+                                        ${isAuthor ? `<button class="btn" style="padding:4px 10px; font-size:12px; background:#c0392b;" onclick="event.stopPropagation(); deleteSubmission('${s.id}')">🗑️</button>` : ''}
+                                    </div>
+                                </div>
+                                <div class="article-meta" style="font-size:13px;color:#888;">作者：${s.authorName} (ID: ${s.authorId}) · ${s.time} · ❤️${likeCount} ⭐${favCount}</div>
+                                <div class="full-text" id="submission-${s.id}">${s.content}</div>
+                            </div>
+                        `;
+                    }).join('');
                 }
                 document.getElementById('articleListContent').innerHTML = html;
             } else {
@@ -390,13 +542,13 @@
                 const articles=classicsLibrary[key]||[];
                 document.getElementById('articleListContent').innerHTML=articles.map((a,idx)=>`<div class="article-item" onclick="toggleArticle(this,'${key}',${idx})"><h3>${a.title}</h3><p class="desc">${a.desc}</p><div class="full-text" id="text-${key}-${idx}">${a.text}</div></div>`).join('');
             }
-        }
-        function toggleArticle(el,key,idx){ const div=document.getElementById(`text-${key}-${idx}`); if(div) div.classList.toggle('show'); }
-        function toggleArticleText(el, id){ const div=document.getElementById(`submission-${id}`); if(div) div.classList.toggle('show'); }
-        function backToAuthors(){ document.getElementById('authorGridView').style.display='block'; document.getElementById('articleDetailView').style.display='none'; }
+        };
+        window.toggleArticle = function(el,key,idx){ const div=document.getElementById(`text-${key}-${idx}`); if(div) div.classList.toggle('show'); };
+        window.toggleArticleText = function(el, id){ const div=document.getElementById(`submission-${id}`); if(div) div.classList.toggle('show'); };
+        window.backToAuthors = function(){ document.getElementById('authorGridView').style.display='block'; document.getElementById('articleDetailView').style.display='none'; };
 
-        function openSubmitModal(){ document.getElementById('submitModal').style.display='flex'; }
-        function submitArticle(){
+        window.openSubmitModal = function(){ document.getElementById('submitModal').style.display='flex'; };
+        window.submitArticle = function(){
             const title=document.getElementById('submitTitle').value.trim();
             const content=document.getElementById('submitContent').value.trim();
             if(!title||!content){ alert('请填写标题和内容'); return; }
@@ -415,7 +567,7 @@
             document.getElementById('submitTitle').value='';
             document.getElementById('submitContent').value='';
             showAuthorDetail('user_submissions');
-        }
+        };
 
         function renderHistory(){
             const e=[{y:'1848',t:'《共产党宣言》发表'},{y:'1917',t:'十月革命'},{y:'1921',t:'中国共产党成立'},{y:'1949',t:'新中国成立'},{y:'1978',t:'改革开放'}];
@@ -445,7 +597,7 @@
             msgDiv.innerHTML=msgs.map(m=>{ const cls=m.from===currentUsername?'mine':'other'; const dn=m.from==='deepseek_cs'?'DeepSeek客服':m.from; return `<div class="msg ${cls}"><div class="msg-user" onclick="showUserInfo('${m.from}')">${dn}</div>${m.text||''}${m.file?`<br><a href="${m.file}" download>📎 ${m.fileName}</a>`:''}<br><small>${m.time}</small></div>`; }).join('');
             msgDiv.scrollTop=msgDiv.scrollHeight;
         }
-        function sendMessage(){
+        window.sendMessage = function(){
             if(!chatTarget) return; const input=document.getElementById('msgInput'); const text=input.value.trim(); if(!text) return;
             const chatKey=chatTarget.type==='friend'?[currentUsername,chatTarget.id].sort().join('_'):chatTarget.id;
             const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
@@ -453,7 +605,7 @@
             localStorage.setItem(MSG_PREFIX+chatKey,JSON.stringify(msgs)); input.value='';
             openChat(chatTarget.id,chatTarget.name,chatTarget.type);
             if(chatTarget.id==='deepseek_cs') setTimeout(()=>aiReply(chatKey,text),500);
-        }
+        };
         function aiReply(chatKey,userMsg){
             let reply="我是DeepSeek客服，努力学习中！"; if(userMsg.includes('你好')) reply="你好同志！";
             const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
@@ -461,7 +613,7 @@
             localStorage.setItem(MSG_PREFIX+chatKey,JSON.stringify(msgs));
             if(chatTarget&&chatTarget.id==='deepseek_cs') openChat('deepseek_cs','DeepSeek客服','friend');
         }
-        function sendFile(){
+        window.sendFile = function(){
             const file=document.getElementById('fileInput').files[0]; if(!file||!chatTarget) return;
             const reader=new FileReader(); reader.onload=function(e){
                 const chatKey=chatTarget.type==='friend'?[currentUsername,chatTarget.id].sort().join('_'):chatTarget.id;
@@ -471,8 +623,8 @@
                 localStorage.setItem(MSG_PREFIX+chatKey,JSON.stringify(msgs));
                 openChat(chatTarget.id,chatTarget.name,chatTarget.type);
             }; reader.readAsArrayBuffer(file);
-        }
-        function addFriend(){
+        };
+        window.addFriend = function(){
             const input=prompt('输入好友用户名或ID:'); if(!input||input===currentUsername) return;
             const users=getUsers(); const target=users.find(u=>u.username===input||u.uid===input);
             if(!target){ alert('用户不存在'); return; }
@@ -483,20 +635,20 @@
             if(!friends[target.username]) friends[target.username]=[];
             if(!friends[target.username].includes(currentUsername)) friends[target.username].push(currentUsername);
             localStorage.setItem(FRIENDS_KEY,JSON.stringify(friends)); renderChatList(); alert('添加成功');
-        }
-        function createGroup(){
+        };
+        window.createGroup = function(){
             const name=prompt('群名称:'); if(!name) return;
             const gid='g_'+Date.now(); const groups=JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
             groups[gid]={name,members:[currentUsername]}; localStorage.setItem(GROUP_KEY,JSON.stringify(groups)); renderChatList();
-        }
-        function showUserInfo(username){
+        };
+        window.showUserInfo = function(username){
             const users=getUsers(); const user=users.find(u=>u.username===username); if(!user) return;
             const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+username)||'{}');
             document.getElementById('modalName').textContent=profile.nickname||username;
             document.getElementById('modalUid').textContent='ID: '+(user.uid||'');
             document.getElementById('modalLocation').textContent='📍 '+(user.location||'');
             document.getElementById('userInfoModal').style.display='flex';
-        }
+        };
 
         function loadProfile(){
             const users=getUsers(); const cu=users.find(u=>u.username===currentUsername);
@@ -511,11 +663,11 @@
             if(p.avatar){ document.getElementById('avatarPreview').innerHTML=`<img src="${p.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
             else{ document.getElementById('avatarPreview').textContent='👤'; }
         }
-        function updateAvatar(){
+        window.updateAvatar = function(){
             const file=document.getElementById('avatarInput').files[0]; if(!file) return;
             const reader=new FileReader(); reader.onload=function(e){ const p=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}'); p.avatar=e.target.result; localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(p)); document.getElementById('avatarPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }; reader.readAsDataURL(file);
-        }
-        function saveProfile(){
+        };
+        window.saveProfile = function(){
             const users=getUsers(); const idx=users.findIndex(u=>u.username===currentUsername);
             if(idx!==-1){ users[idx].location=document.getElementById('editLocation').value.trim(); saveUsers(users); }
             const p=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
@@ -523,19 +675,47 @@
             p.bio=document.getElementById('editBio').value.trim();
             localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(p));
             loadProfile(); alert('资料已更新');
-        }
-        function changePwd(){
+        };
+        window.changePwd = function(){
             const old=document.getElementById('oldPwd').value, nw=document.getElementById('newPwd').value;
             const users=getUsers(); const idx=users.findIndex(u=>u.username===currentUsername);
             if(idx===-1||users[idx].password!==old){ alert('当前密码错误'); return; }
             if(nw.length<6){ alert('新密码至少6位'); return; }
             users[idx].password=nw; saveUsers(users); alert('密码修改成功');
+        };
+
+        window.performGlobalSearch = function(){
+            const q=document.getElementById('globalSearch').value.trim().toLowerCase(); if(!q) return;
+            if(q.includes('文章')||q.includes('马克思')) navigate('article');
+            else if(q.includes('文艺')||q.includes('歌')) navigate('art');
+            else alert('请尝试更明确的关键词');
+        };
+
+        // 主页收藏夹渲染
+        window.renderFavorites = function(){
+            const container = document.getElementById('favoritesContainer');
+            if (!container || !currentUsername) return;
+            const favs = getFavoritesData()[currentUsername] || [];
+            const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]');
+            const favSubmissions = submissions.filter(s => favs.includes(s.id));
+            if (favSubmissions.length === 0) {
+                container.innerHTML = '<h3 style="color:var(--primary); margin-bottom:10px;">⭐ 我的收藏</h3><p style="text-align:center;color:#888;">暂无收藏的文章</p>';
+                return;
+            }
+            container.innerHTML = '<h3 style="color:var(--primary); margin-bottom:15px;">⭐ 我的收藏</h3>' +
+                favSubmissions.map(s => `
+                    <div class="article-item" style="cursor:pointer; margin-bottom:8px;" onclick="navigate('article'); setTimeout(()=>{ showAuthorDetail('user_submissions'); setTimeout(()=>{ const el = document.getElementById('submission-${s.id}'); if(el) el.classList.add('show'); }, 200); }, 100);">
+                        <b>${s.title}</b> <span style="color:#888; margin-left:10px;">${s.authorName} · ${s.time}</span>
+                    </div>
+                `).join('');
+        };
+
+        currentUsername = localStorage.getItem(CURRENT_USER);
+        if (currentUsername) {
+            document.getElementById('authOverlay').classList.add('hidden');
+            onLoginSuccess();
         }
-
-        function performGlobalSearch(){ const q=document.getElementById('globalSearch').value.trim().toLowerCase(); if(!q) return; if(q.includes('文章')||q.includes('马克思')) navigate('article'); else if(q.includes('文艺')||q.includes('歌')) navigate('art'); else alert('请尝试更明确的关键词'); }
-
-        currentUsername=localStorage.getItem(CURRENT_USER);
-        if(currentUsername){ document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess(); }
-    </script>
+    })();
+</script>
 </body>
 </html>
