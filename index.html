@@ -1079,3 +1079,6 @@ app.post('/api/messages/:chatKey', authenticateToken, async (req, res) => {
 initDB().then(() => {
     app.listen(PORT, () => console.log(`后端运行在 http://localhost:${PORT}`));
 });
+npm init -y
+npm install express cors jsonwebtoken lowdb uuid
+        node server.js
