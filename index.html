@@ -16,18 +16,19 @@
             background-color: #ffffff;
         }
 
+        /* 顶部深红导航栏 */
         .top-bar {
             background-color: #9E090F;
             width: 100%;
             padding: 22px 35px;
             display: flex;
             align-items: center;
-            gap: 15px;
         }
 
         .party-logo {
             font-size: 36px;
             color: #FFFFFF;
+            margin-right: 12px;
         }
 
         .site-title {
@@ -37,6 +38,7 @@
             letter-spacing: 1px;
         }
 
+        /* 导航菜单 */
         .nav {
             background-color: #ffffff;
             padding: 18px 35px;
@@ -61,13 +63,21 @@
             background-color: #9E090F;
         }
 
+        /* 内容通用样式 */
         .content {
-            max-width: 1000px;
-            margin: 80px auto;
+            max-width: 1100px;
+            margin: 60px auto;
             padding: 0 20px;
             text-align: center;
+            display: none;
         }
 
+        /* 默认显示主页 */
+        #home {
+            display: block;
+        }
+
+        /* 搜索框 */
         .search-box {
             width: 70%;
             max-width: 600px;
@@ -80,60 +90,158 @@
             margin-bottom: 50px;
         }
 
+        .search-box:focus {
+            box-shadow: 0 0 10px rgba(158, 9, 15, 0.2);
+        }
+
+        /* 欢迎文字 */
         .welcome-text {
             font-size: 20px;
             color: #333;
             line-height: 1.8;
         }
 
+        .welcome-text strong {
+            color: #9E090F;
+            font-size: 22px;
+        }
+
+        /* 文章栏目 3x3 网格 */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        /* 圆润长方形卡片 */
+        .article-card {
+            background: #f8f8f8;
+            padding: 30px 15px;
+            border-radius: 16px;
+            border: 1px solid #eee;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            font-size: 18px;
+            color: #333;
+            transition: 0.3s;
+        }
+
+        /* 第一个国家与革命特殊红色样式 */
+        .article-card.first {
+            background: #9E090F;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(158, 9, 15, 0.15);
+        }
+
+        /* 其他栏目文字 */
         .other-text {
             font-size: 24px;
             color: #9E090F;
             font-weight: bold;
-            display: none;
+            margin-top: 80px;
         }
     </style>
 </head>
 <body>
 
+<!-- 顶部导航 -->
 <div class="top-bar">
     <div class="party-logo">☭</div>
     <div class="site-title">中国共产主义青年交流会</div>
 </div>
 
+<!-- 导航菜单 -->
 <div class="nav">
     <a onclick="showHome()">主页</a>
-    <a href="#">国际共运</a>
-    <a href="#">文章</a>
-    <a href="#">历史</a>
-    <a href="#">文艺</a>
+    <a onclick="showYun()">国际共运</a>
+    <a onclick="showArticle()">文章</a>
+    <a onclick="showHistory()">历史</a>
+    <a onclick="showArt()">文艺</a>
     <a onclick="showOther()">其他</a>
 </div>
 
-<div class="content">
-    <div id="home">
-        <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
-        <div class="welcome-text">
-            <strong>热烈欢迎各位青年同志加入中国共产主义青年交流会！</strong><br>
-            在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
-            愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
-        </div>
-    </div>
-
-    <div id="other" class="other-text">
-        中国共产主义青年交流会简称中共青
+<!-- 主页内容 -->
+<div id="home" class="content">
+    <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
+    <div class="welcome-text">
+        <strong>热烈欢迎各位青年同志加入中国共产主义青年交流会！</strong><br>
+        在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
+        愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
     </div>
 </div>
 
-<script>
-function showHome() {
-    document.getElementById("home").style.display = "block";
-    document.getElementById("other").style.display = "none";
-}
+<!-- 文章栏目：3x3 圆滑卡片 第一格国家与革命 -->
+<div id="article" class="content">
+    <h2 style="color:#9E090F;margin-bottom:20px;">文章合集</h2>
+    <div class="article-grid">
+        <div class="article-card first">国家与革命</div>
+        <div class="article-card">待添加文章</div>
+        <div class="article-card">待添加文章</div>
+        <div class="article-card">待添加文章</div>
+        <div class="article-card">待添加文章</div>
+        <div class="article-card">待添加文章</div>
+        <div class="article-card">待添加文章</div>
+        <div class="article-card">待添加文章</div>
+        <div class="article-card">待添加文章</div>
+    </div>
+</div>
 
-function showOther() {
-    document.getElementById("home").style.display = "none";
+<!-- 国际共运 -->
+<div id="yun" class="content">
+    <div class="welcome-text">国际共运板块，后续添加内容</div>
+</div>
+
+<!-- 历史 -->
+<div id="history" class="content">
+    <div class="welcome-text">历史板块，后续添加内容</div>
+</div>
+
+<!-- 文艺 -->
+<div id="art" class="content">
+    <div class="welcome-text">文艺板块，后续添加内容</div>
+</div>
+
+<!-- 其他栏目 -->
+<div id="other" class="content">
+    <div class="other-text">哈哈哈</div>
+</div>
+
+<script>
+// 切换栏目
+function showHome(){
+    hideAll();
+    document.getElementById("home").style.display = "block";
+}
+function showYun(){
+    hideAll();
+    document.getElementById("yun").style.display = "block";
+}
+function showArticle(){
+    hideAll();
+    document.getElementById("article").style.display = "block";
+}
+function showHistory(){
+    hideAll();
+    document.getElementById("history").style.display = "block";
+}
+function showArt(){
+    hideAll();
+    document.getElementById("art").style.display = "block";
+}
+function showOther(){
+    hideAll();
     document.getElementById("other").style.display = "block";
+}
+// 隐藏所有栏目
+function hideAll(){
+    document.querySelectorAll(".content").forEach(item=>{
+        item.style.display = "none";
+    });
 }
 </script>
 
