@@ -6,8 +6,7 @@
     <title>中国共产主义青年交流会</title>
     <!-- Leaflet 地图库 -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:"Microsoft YaHei",SimHei,sans-serif; background:#f9f8f6; color:#333; }
@@ -42,6 +41,8 @@
         .section-title { color:var(--primary); text-align:center; margin:30px 0 20px; font-size:24px; letter-spacing:3px; }
         .btn { background:var(--primary); color:#fff; padding:10px 24px; border:none; border-radius:25px; cursor:pointer; font-weight:bold; letter-spacing:1px; transition:0.3s; display:inline-block; }
         .btn:hover { background:#b00e16; }
+        .btn-danger { background:#c0392b !important; }
+        .btn-danger:hover { background:#e74c3c !important; }
 
         #yun .map-container { width:100%; height:600px; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.1); margin-top:20px; }
         .legend { display:flex; justify-content:center; gap:30px; padding:15px; background:#fff; border-radius:0 0 16px 16px; }
@@ -214,6 +215,11 @@
             <input type="password" id="newPwd" placeholder="新密码 (6-20位)" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
             <button class="btn" onclick="changePwd()">修改密码</button>
         </div>
+        <!-- 新增注销账号按钮 -->
+        <div style="background:#fff;padding:20px;border-radius:14px;margin-top:20px; text-align:center;">
+            <button class="btn btn-danger" onclick="deleteAccount()">⚠️ 注销账号</button>
+            <p style="color:#888; font-size:12px; margin-top:8px;">此操作不可恢复，将删除您的所有数据</p>
+        </div>
     </div>
 </div>
 
@@ -237,7 +243,7 @@
 
 <script>
     (function() {
-        // ---------- 全局变量 ----------
+        // ---------- 全局常量 ----------
         const USERS_KEY = 'site_users', CURRENT_USER = 'currentUser', PROFILE_PREFIX = 'profile_',
             FRIENDS_KEY = 'allFriends', GROUP_KEY = 'groupData', MSG_PREFIX = 'msg_',
             SUBMISSIONS_KEY = 'user_submissions';
@@ -289,163 +295,90 @@
             return count;
         }
 
-        // 删稿
-        window.deleteSubmission = function(articleId) {
-            if (!confirm('确定删除这篇投稿吗？')) return;
-            let submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY) || '[]');
-            submissions = submissions.filter(s => s.id !== articleId);
-            localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions));
-            const likes = getLikesData();
-            if (likes[articleId]) { delete likes[articleId]; setLikesData(likes); }
-            const favs = getFavoritesData();
-            for (let user in favs) {
-                favs[user] = favs[user].filter(id => id !== articleId);
-            }
-            setFavoritesData(favs);
-            if (document.getElementById('articleDetailView').style.display !== 'none') {
-                showAuthorDetail('user_submissions');
-            }
-            if (document.getElementById('userwritings').style.display !== 'none') {
-                renderUserWritingsPage();
-            }
-            if (document.getElementById('home').style.display !== 'none') {
-                renderFavorites();
-            }
-        };
-
-        // 点赞/收藏切换（界面局部更新）
-        window.toggleLikeArticle = function(articleId) {
-            toggleLike(articleId, currentUsername);
-            const likeCountEl = document.getElementById(`likeCount-${articleId}`);
-            if (likeCountEl) likeCountEl.textContent = getLikeCount(articleId);
-            const btn = document.querySelector(`#article-${articleId} button[onclick*="toggleLikeArticle"]`);
-            if (btn) {
-                btn.innerHTML = `${isLiked(articleId, currentUsername) ? '❤️' : '🤍'} <span id="likeCount-${articleId}">${getLikeCount(articleId)}</span>`;
-            }
-            const metaEl = document.querySelector(`#article-${articleId} .article-meta`);
-            if (metaEl) {
-                metaEl.innerHTML = metaEl.innerHTML.replace(/❤️\d+/, `❤️${getLikeCount(articleId)}`).replace(/⭐\d+/, `⭐${getFavoriteCount(articleId)}`);
-            }
-        };
-        window.toggleFavoriteArticle = function(articleId) {
-            toggleFavorite(articleId, currentUsername);
-            const favCountEl = document.getElementById(`favCount-${articleId}`);
-            if (favCountEl) favCountEl.textContent = getFavoriteCount(articleId);
-            const btn = document.querySelector(`#article-${articleId} button[onclick*="toggleFavoriteArticle"]`);
-            if (btn) {
-                btn.innerHTML = `${isFavorited(articleId, currentUsername) ? '⭐' : '☆'} <span id="favCount-${articleId}">${getFavoriteCount(articleId)}</span>`;
-            }
-            const metaEl = document.querySelector(`#article-${articleId} .article-meta`);
-            if (metaEl) {
-                metaEl.innerHTML = metaEl.innerHTML.replace(/❤️\d+/, `❤️${getLikeCount(articleId)}`).replace(/⭐\d+/, `⭐${getFavoriteCount(articleId)}`);
-            }
-            if (document.getElementById('home').style.display !== 'none') {
-                renderFavorites();
-            }
-        };
-
-        window._submissionSortBy = 'newest';
-
-        window.searchSubmissions = function() {
-            if (document.getElementById('articleDetailView').style.display !== 'none') {
-                showAuthorDetail('user_submissions');
-            } else {
-                renderUserWritingsPage();
-            }
-        };
-        window.showTodaySubmissions = function() {
-            window._submissionTodayMode = true;
-            if (document.getElementById('articleDetailView').style.display !== 'none') {
-                showAuthorDetail('user_submissions');
-            } else {
-                renderUserWritingsPage();
-            }
-            window._submissionTodayMode = false;
-        };
-        window.changeSort = function(sortBy) {
-            window._submissionSortBy = sortBy;
-            if (document.getElementById('articleDetailView').style.display !== 'none') {
-                showAuthorDetail('user_submissions');
-            } else {
-                renderUserWritingsPage();
-            }
-        };
-
-        // 经典文章库（添加了 others）
-        const classicsLibrary = {
-            marx: [ { title:'共产党宣言', desc:'马克思与恩格斯', text:'一个幽灵，共产主义的幽灵，在欧洲游荡。...\n\n共产党人不屑于隐瞒自己的观点和意图。他们公开宣布：他们的目的只有用暴力推翻全部现存的社会制度才能达到。让统治阶级在共产主义革命面前发抖吧。无产者在这个革命中失去的只是锁链。他们获得的将是整个世界。\n\n全世界无产者，联合起来！' } ],
-            engels: [ { title:'反杜林论', desc:'马克思主义百科全书', text:'当我们深思熟虑地考察自然界...' } ],
-            lenin: [ { title:'国家与革命', desc:'马克思主义国家学说', text:'国家是阶级矛盾不可调和的产物...' } ],
-            mao: [ { title:'实践论', desc:'认识论经典', text:'马克思主义者认为人类的生产活动...' }, { title:'矛盾论', desc:'辩证法核心', text:'事物的矛盾法则...' } ],
-            stalin: [ { title:'论列宁主义基础', desc:'列宁主义概述', text:'列宁主义是帝国主义和无产阶级革命时代的马克思主义...' } ],
-            others: [
-                { title:'共产主义原理', desc:'恩格斯', text:'共产主义是关于无产阶级解放的条件的学说。...\n\n废除私有制甚至是工业发展必然引起的改造整个社会制度的最简明扼要的概括。' },
-                { title:'怎么办？（节选）', desc:'列宁', text:'没有革命的理论，就不会有革命的运动。...\n\n只有以先进理论为指南的党，才能实现先进战士的作用。' }
-            ]
-        };
-
-        const countriesData = [
-            { name:'中国', lat:35.86, lng:104.19, type:'socialist', info:'社会主义国家，中国共产党领导，世界第二大经济体，共产力量强大。' },
-            { name:'越南', lat:14.05, lng:108.27, type:'socialist', info:'社会主义国家，越南共产党执政，经济快速发展，共产力量稳固。' },
-            { name:'老挝', lat:19.85, lng:102.49, type:'socialist', info:'社会主义国家，老挝人民革命党领导，共产力量持续发展。' },
-            { name:'朝鲜', lat:40.33, lng:127.51, type:'socialist', info:'社会主义国家，朝鲜劳动党执政，坚持主体思想，共产力量集中。' },
-            { name:'古巴', lat:21.52, lng:-77.78, type:'socialist', info:'社会主义国家，古巴共产党领导，西半球唯一的社会主义国家。' },
-            { name:'美国', lat:37.09, lng:-95.71, type:'capitalist', info:'资本主义大国，两党制，共产力量较弱，存在左翼运动。' },
-            { name:'英国', lat:55.37, lng:-3.43, type:'capitalist', info:'君主立宪制资本主义国家，工党势力存在，共产力量边缘化。' },
-            { name:'法国', lat:46.60, lng:1.88, type:'capitalist', info:'资本主义共和国，法国共产党历史上活跃，现今影响力下降。' },
-            { name:'德国', lat:51.16, lng:10.45, type:'capitalist', info:'资本主义联邦制国家，左翼党有一定支持率，共产力量有限。' },
-            { name:'日本', lat:36.20, lng:138.25, type:'capitalist', info:'君主立宪制资本主义国家，日本共产党为合法政党，力量逐渐增长。' },
-            { name:'俄罗斯', lat:61.52, lng:105.31, type:'capitalist', info:'联邦半总统制资本主义国家，俄罗斯联邦共产党在议会中有席位。' },
-            { name:'沙特阿拉伯', lat:23.88, lng:45.07, type:'feudal', info:'君主专制国家，王室掌握绝对权力，共产力量受压制。' },
-            { name:'阿曼', lat:21.47, lng:55.97, type:'feudal', info:'君主专制国家，苏丹拥有最高权力，政治反对派受限。' },
-            { name:'文莱', lat:4.53, lng:114.72, type:'feudal', info:'君主专制国家，苏丹统治，实行伊斯兰教法，共产力量缺失。' },
-            { name:'斯威士兰', lat:-26.52, lng:31.46, type:'feudal', info:'非洲最后的绝对君主制国家，国王统治，民主运动受压制。' }
-        ];
+        // ---------- 生成唯一ID (修复重复问题) ----------
+        function generateUid() {
+            const users = getUsers();
+            let uid;
+            do {
+                uid = Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
+            } while (users.some(u => u.uid === uid));
+            return uid;
+        }
 
         function getUsers(){ return JSON.parse(localStorage.getItem(USERS_KEY)||'[]'); }
         function saveUsers(u){ localStorage.setItem(USERS_KEY,JSON.stringify(u)); }
-        function generateUid(){
-            const now=new Date(); const dateStr=now.getFullYear().toString()+(now.getMonth()+1).toString().padStart(2,'0')+now.getDate().toString().padStart(2,'0');
-            const users=getUsers(); for(let i=0;i<1000;i++){ const rand=Math.floor(Math.random()*900)+100; const uid=dateStr+rand; if(!users.find(u=>u.uid===uid)) return uid; } return dateStr+'999';
+
+        function ensureUid(username){
+            const users=getUsers();
+            const idx=users.findIndex(u=>u.username===username);
+            if(idx!==-1 && !users[idx].uid){
+                users[idx].uid = generateUid();
+                saveUsers(users);
+            }
         }
-        function ensureUid(username){ const users=getUsers(); const idx=users.findIndex(u=>u.username===username); if(idx!==-1&&!users[idx].uid){ users[idx].uid=generateUid(); saveUsers(users); } }
+
         window.showRegister = function(){ document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; };
         window.showLogin = function(){ document.getElementById('registerForm').style.display='none'; document.getElementById('loginForm').style.display='block'; };
+
         window.handleRegister = function(){
-            const u=document.getElementById('regUsername').value.trim(), loc=document.getElementById('regLocation').value.trim(), p=document.getElementById('regPassword').value, p2=document.getElementById('regPassword2').value;
+            const u=document.getElementById('regUsername').value.trim(),
+                  loc=document.getElementById('regLocation').value.trim(),
+                  p=document.getElementById('regPassword').value,
+                  p2=document.getElementById('regPassword2').value;
             const err=document.getElementById('regError'); err.style.display='none';
             if(u.length<4||u.length>16){ err.textContent='用户名4-16位'; err.style.display='block'; return; }
             if(!loc){ err.textContent='请填写所在地'; err.style.display='block'; return; }
             if(p.length<6||p.length>20){ err.textContent='密码6-20位'; err.style.display='block'; return; }
             if(p!==p2){ err.textContent='两次密码不一致'; err.style.display='block'; return; }
-            const users=getUsers(); if(users.find(x=>x.username===u)){ err.textContent='用户名已存在'; err.style.display='block'; return; }
-            const uid=generateUid(); users.push({username:u,password:p,location:loc,uid}); saveUsers(users);
-            localStorage.setItem(CURRENT_USER,u); currentUsername=u; document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess();
+            const users=getUsers();
+            if(users.find(x=>x.username===u)){ err.textContent='用户名已存在'; err.style.display='block'; return; }
+            const uid=generateUid();
+            users.push({username:u, password:p, location:loc, uid});
+            saveUsers(users);
+            localStorage.setItem(CURRENT_USER, u);
+            currentUsername=u;
+            document.getElementById('authOverlay').classList.add('hidden');
+            onLoginSuccess();
         };
+
         window.handleLogin = function(){
-            const u=document.getElementById('loginUsername').value.trim(), p=document.getElementById('loginPassword').value;
+            const u=document.getElementById('loginUsername').value.trim(),
+                  p=document.getElementById('loginPassword').value;
             const err=document.getElementById('loginError'); err.style.display='none';
             if(!u||!p){ err.textContent='请输入用户名密码'; err.style.display='block'; return; }
-            const users=getUsers(); const user=users.find(x=>x.username===u&&x.password===p);
+            const users=getUsers();
+            const user=users.find(x=>x.username===u && x.password===p);
             if(!user){ err.textContent='用户名或密码错误'; err.style.display='block'; return; }
-            localStorage.setItem(CURRENT_USER,u); currentUsername=u; document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess();
+            localStorage.setItem(CURRENT_USER, u);
+            currentUsername=u;
+            document.getElementById('authOverlay').classList.add('hidden');
+            onLoginSuccess();
         };
+
         window.logout = function(){ localStorage.removeItem(CURRENT_USER); location.reload(); };
         window.switchAccount = function(){ localStorage.removeItem(CURRENT_USER); location.reload(); };
 
         function onLoginSuccess(){
             let users=getUsers();
-            if(!users.find(u=>u.username==='deepseek_cs')){ users.push({username:'deepseek_cs',password:'cs123456',location:'AI云端',uid:generateUid()}); saveUsers(users); }
+            // 确保deepseek_cs客服账号存在
+            if(!users.find(u=>u.username==='deepseek_cs')){
+                users.push({username:'deepseek_cs', password:'cs123456', location:'AI云端', uid:generateUid()});
+                saveUsers(users);
+            }
+            // 自动互相添加为好友
             const friends=JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
             if(!friends[currentUsername]) friends[currentUsername]=['deepseek_cs'];
             else if(!friends[currentUsername].includes('deepseek_cs')) friends[currentUsername].push('deepseek_cs');
             if(!friends['deepseek_cs']) friends['deepseek_cs']=[currentUsername];
             else if(!friends['deepseek_cs'].includes(currentUsername)) friends['deepseek_cs'].push(currentUsername);
             localStorage.setItem(FRIENDS_KEY,JSON.stringify(friends));
+
+            // 确保世界群组存在并加入
             const groups=JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
-            if(!groups['world']) groups['world']={name:'🌍 世界交流',members:[]};
+            if(!groups['world']) groups['world']={name:'🌍 世界交流', members:[]};
             if(!groups['world'].members.includes(currentUsername)) groups['world'].members.push(currentUsername);
             localStorage.setItem(GROUP_KEY,JSON.stringify(groups));
+
             ensureUid(currentUsername);
             initAll();
             navigate('home');
@@ -453,8 +386,14 @@
 
         window.navigate = function(page){
             document.querySelectorAll('.content').forEach(c=>c.style.display='none');
-            const el=document.getElementById(page); if(el) el.style.display='block';
-            if(page==='yun'){ setTimeout(()=>{ if(!worldMap) initWorldMap(); else worldMap.invalidateSize(); }, 100); }
+            const el=document.getElementById(page);
+            if(el) el.style.display='block';
+            if(page==='yun'){
+                setTimeout(()=>{
+                    if(!worldMap) initWorldMap();
+                    else worldMap.invalidateSize();
+                }, 100);
+            }
             if(page==='article') showAuthors();
             if(page==='userwritings') renderUserWritingsPage();
             if(page==='communicate') initChat();
@@ -463,22 +402,36 @@
         };
 
         function initWorldMap(){
+            if(worldMap) return; // 防止重复初始化
             worldMap = L.map('worldMap').setView([30, 0], 2);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(worldMap);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(worldMap);
             countriesData.forEach(c => {
                 const color = c.type==='socialist' ? '#e74c3c' : (c.type==='capitalist' ? '#3498db' : '#2ecc71');
-                L.circleMarker([c.lat, c.lng], { radius: 8, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.8 })
-                 .addTo(worldMap).bindPopup(`<b>${c.name}</b><br>${c.info}`);
+                L.circleMarker([c.lat, c.lng], {
+                    radius: 8, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.8
+                }).addTo(worldMap).bindPopup(`<b>${c.name}</b><br>${c.info}`);
             });
         }
 
         function initAll(){ renderQuotes(); renderHistory(); renderArt(); showAuthors(); }
+
         function renderQuotes(){
-            const q=[{text:'全世界无产者，联合起来！',author:'卡尔·马克思'},{text:'学习，学习，再学习！',author:'列宁'},{text:'为人民服务',author:'毛泽东'},{text:'星星之火，可以燎原。',author:'毛泽东'}];
-            document.getElementById('quotesContainer').innerHTML=q.map(i=>`<div class="quote-card"><span class="quote-mark">❝</span><p class="quote-text">${i.text}</p><span class="quote-author">—— ${i.author}</span></div>`).join('');
+            const q=[
+                {text:'全世界无产者，联合起来！',author:'卡尔·马克思'},
+                {text:'学习，学习，再学习！',author:'列宁'},
+                {text:'为人民服务',author:'毛泽东'},
+                {text:'星星之火，可以燎原。',author:'毛泽东'}
+            ];
+            document.getElementById('quotesContainer').innerHTML = q.map(i=>
+                `<div class="quote-card"><span class="quote-mark">❝</span><p class="quote-text">${i.text}</p><span class="quote-author">—— ${i.author}</span></div>`
+            ).join('');
         }
+
         function showAuthors(){
-            document.getElementById('authorGridView').style.display='block'; document.getElementById('articleDetailView').style.display='none';
+            document.getElementById('authorGridView').style.display='block';
+            document.getElementById('articleDetailView').style.display='none';
             const authors=[
                 {key:'marx',name:'马克思',works:'《共产党宣言》《资本论》',color:'#5a3a2a',icon:'📕'},
                 {key:'engels',name:'恩格斯',works:'《反杜林论》《自然辩证法》',color:'#4a3a3a',icon:'📘'},
@@ -487,20 +440,33 @@
                 {key:'stalin',name:'斯大林',works:'《论列宁主义基础》',color:'#3a3030',icon:'📓'},
                 {key:'others',name:'其他文集',works:'补充经典',color:'#4a4a4a',icon:'📖'}
             ];
-            document.getElementById('authorGrid').innerHTML=authors.map(a=>`<div class="author-card" onclick="showAuthorDetail('${a.key}')"><div class="author-img" style="background-color:${a.color};">${a.icon} ${a.name}</div><div class="author-info"><span class="author-name">${a.name}</span><span class="author-works">${a.works}</span></div></div>`).join('');
+            document.getElementById('authorGrid').innerHTML = authors.map(a=>
+                `<div class="author-card" onclick="showAuthorDetail('${a.key}')">
+                    <div class="author-img" style="background-color:${a.color};">${a.icon} ${a.name}</div>
+                    <div class="author-info"><span class="author-name">${a.name}</span><span class="author-works">${a.works}</span></div>
+                </div>`
+            ).join('');
         }
+
         window.showAuthorDetail = function(key){
-            document.getElementById('authorGridView').style.display='none'; document.getElementById('articleDetailView').style.display='block';
+            document.getElementById('authorGridView').style.display='none';
+            document.getElementById('articleDetailView').style.display='block';
             if(key==='user_submissions'){
                 document.getElementById('detailAuthorName').textContent='个人文集';
                 renderSubmissionList(document.getElementById('articleListContent'), true);
             } else {
                 const names={marx:'卡尔·马克思',engels:'恩格斯',lenin:'列宁',mao:'毛泽东',stalin:'斯大林',others:'其他文集'};
-                document.getElementById('detailAuthorName').textContent=names[key]+' 著作';
-                const articles=classicsLibrary[key]||[];
-                document.getElementById('articleListContent').innerHTML=articles.map((a,idx)=>`<div class="article-item" onclick="toggleArticle(this,'${key}',${idx})"><h3>${a.title}</h3><p class="desc">${a.desc}</p><div class="full-text" id="text-${key}-${idx}">${a.text}</div></div>`).join('');
+                document.getElementById('detailAuthorName').textContent = names[key] + ' 著作';
+                const articles = classicsLibrary[key] || [];
+                document.getElementById('articleListContent').innerHTML = articles.map((a,idx)=>
+                    `<div class="article-item" onclick="toggleArticle(this,'${key}',${idx})">
+                        <h3>${a.title}</h3><p class="desc">${a.desc}</p>
+                        <div class="full-text" id="text-${key}-${idx}">${a.text}</div>
+                    </div>`
+                ).join('');
             }
         };
+
         function renderSubmissionList(container, showBackButton) {
             const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]');
             const searchInput = document.getElementById('submissionSearchInput');
@@ -546,8 +512,8 @@
                     return `
                         <div class="article-item" id="article-${s.id}">
                             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                                <h3 onclick="toggleArticleText(this, '${s.id}')" style="cursor:pointer; flex:1; min-width:150px;">${s.title}</h3>
-                                <div style="display:flex; gap:5px; margin-top:5px;">
+                                <h3 onclick="toggleArticleText(this, '${s.id}')" style="cursor:pointer; flex:1;">${s.title}</h3>
+                                <div style="display:flex; gap:5px;">
                                     <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); toggleLikeArticle('${s.id}')">
                                         ${liked ? '❤️' : '🤍'} <span id="likeCount-${s.id}">${likeCount}</span>
                                     </button>
@@ -565,6 +531,7 @@
             }
             container.innerHTML = html;
         }
+
         function renderUserWritingsPage(){
             const container = document.getElementById('userwritingsList');
             container.innerHTML = '<h2 class="section-title">📝 个人文集</h2>';
@@ -573,21 +540,32 @@
             container.appendChild(listDiv);
             renderSubmissionList(listDiv, false);
         }
-        window.toggleArticle = function(el,key,idx){ const div=document.getElementById(`text-${key}-${idx}`); if(div) div.classList.toggle('show'); };
-        window.toggleArticleText = function(el, id){ const div=document.getElementById(`submission-${id}`); if(div) div.classList.toggle('show'); };
-        window.backToAuthors = function(){ document.getElementById('authorGridView').style.display='block'; document.getElementById('articleDetailView').style.display='none'; };
+
+        window.toggleArticle = function(el,key,idx){
+            const div=document.getElementById(`text-${key}-${idx}`);
+            if(div) div.classList.toggle('show');
+        };
+        window.toggleArticleText = function(el, id){
+            const div=document.getElementById(`submission-${id}`);
+            if(div) div.classList.toggle('show');
+        };
+        window.backToAuthors = function(){
+            document.getElementById('authorGridView').style.display='block';
+            document.getElementById('articleDetailView').style.display='none';
+        };
 
         window.openSubmitModal = function(){ document.getElementById('submitModal').style.display='flex'; };
         window.submitArticle = function(){
             const title=document.getElementById('submitTitle').value.trim();
             const content=document.getElementById('submitContent').value.trim();
             if(!title||!content){ alert('请填写标题和内容'); return; }
-            const users=getUsers(); const currentUser=users.find(u=>u.username===currentUsername);
+            const users=getUsers();
+            const currentUser = users.find(u=>u.username===currentUsername);
             const submission={
                 id: Date.now().toString(),
                 title, content,
                 authorName: currentUsername,
-                authorId: currentUser.uid || '未知',
+                authorId: currentUser ? currentUser.uid : '未知',
                 time: new Date().toLocaleString()
             };
             const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]');
@@ -604,122 +582,301 @@
         };
 
         function renderHistory(){
-            const e=[{y:'1848',t:'《共产党宣言》发表'},{y:'1917',t:'十月革命'},{y:'1921',t:'中国共产党成立'},{y:'1949',t:'新中国成立'},{y:'1978',t:'改革开放'}];
-            document.getElementById('historyTimeline').innerHTML=e.map(i=>`<div class="timeline-item"><b>${i.y}</b> - ${i.t}</div>`).join('');
-        }
-        function renderArt(){
-            const songs=[{title:'东方红',url:'https://music.163.com/song/media/outer/url?id=5236640.mp3'},{title:'没有共产党就没有新中国',url:'https://music.163.com/song/media/outer/url?id=5270800.mp3'},{title:'国际歌',url:'https://music.163.com/song/media/outer/url?id=5270810.mp3'}];
-            document.getElementById('songList').innerHTML=songs.map(s=>`<div class="song-card" onclick="new Audio('${s.url}').play()">🎵 ${s.title}</div>`).join('');
-            const poems=[{title:'沁园春·雪',content:'北国风光，千里冰封，万里雪飘。'},{title:'七律·长征',content:'红军不怕远征难，万水千山只等闲。'}];
-            document.getElementById('poemList').innerHTML=poems.map(p=>`<div class="poem-item"><h3>${p.title}</h3><p>${p.content}</p></div>`).join('');
+            const e=[
+                {y:'1848',t:'《共产党宣言》发表'},
+                {y:'1917',t:'十月革命'},
+                {y:'1921',t:'中国共产党成立'},
+                {y:'1949',t:'新中国成立'},
+                {y:'1978',t:'改革开放'}
+            ];
+            document.getElementById('historyTimeline').innerHTML = e.map(i=>
+                `<div class="timeline-item"><b>${i.y}</b> - ${i.t}</div>`
+            ).join('');
         }
 
+        function renderArt(){
+            const songs=[
+                {title:'东方红',url:'https://music.163.com/song/media/outer/url?id=5236640.mp3'},
+                {title:'没有共产党就没有新中国',url:'https://music.163.com/song/media/outer/url?id=5270800.mp3'},
+                {title:'国际歌',url:'https://music.163.com/song/media/outer/url?id=5270810.mp3'}
+            ];
+            document.getElementById('songList').innerHTML = songs.map(s=>
+                `<div class="song-card" onclick="new Audio('${s.url}').play()">🎵 ${s.title}</div>`
+            ).join('');
+            const poems=[
+                {title:'沁园春·雪',content:'北国风光，千里冰封，万里雪飘。'},
+                {title:'七律·长征',content:'红军不怕远征难，万水千山只等闲。'}
+            ];
+            document.getElementById('poemList').innerHTML = poems.map(p=>
+                `<div class="poem-item"><h3>${p.title}</h3><p>${p.content}</p></div>`
+            ).join('');
+        }
+
+        // ---------- 聊天模块 ----------
         function initChat(){ renderChatList(); }
         function renderChatList(){
-            const friends=JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}'), userFriends=friends[currentUsername]||[];
-            const groups=JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
-            const list=document.getElementById('chatList'); list.innerHTML='';
-            if(groups['world']){ const d=document.createElement('div'); d.className='chat-item'; d.innerHTML='🌍 世界交流'; d.onclick=()=>openChat('world','世界交流','group'); list.appendChild(d); }
-            Object.keys(groups).forEach(gid=>{ if(gid!=='world'&&groups[gid].members.includes(currentUsername)){ const d=document.createElement('div'); d.className='chat-item'; d.innerHTML=`👥 ${groups[gid].name}`; d.onclick=()=>openChat(gid,groups[gid].name,'group'); list.appendChild(d); } });
-            userFriends.forEach(fid=>{ const name=fid==='deepseek_cs'?'DeepSeek客服':fid; const d=document.createElement('div'); d.className='chat-item'; d.innerHTML=`👤 ${name}`; d.onclick=()=>openChat(fid,name,'friend'); list.appendChild(d); });
+            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
+            const userFriends = friends[currentUsername] || [];
+            const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
+            const list = document.getElementById('chatList');
+            list.innerHTML = '';
+
+            // 世界群组
+            if(groups['world']){
+                const d = document.createElement('div');
+                d.className='chat-item';
+                d.innerHTML='🌍 世界交流';
+                d.onclick=()=>openChat('world','世界交流','group');
+                list.appendChild(d);
+            }
+            // 其他群组
+            Object.keys(groups).forEach(gid=>{
+                if(gid!=='world' && groups[gid].members.includes(currentUsername)){
+                    const d = document.createElement('div');
+                    d.className='chat-item';
+                    d.innerHTML=`👥 ${groups[gid].name}`;
+                    d.onclick=()=>openChat(gid, groups[gid].name, 'group');
+                    list.appendChild(d);
+                }
+            });
+            // 好友
+            userFriends.forEach(fid=>{
+                const name = fid==='deepseek_cs' ? 'DeepSeek客服' : fid;
+                const d = document.createElement('div');
+                d.className='chat-item';
+                d.innerHTML=`👤 ${name}`;
+                d.onclick=()=>openChat(fid, name, 'friend');
+                list.appendChild(d);
+            });
         }
-        function openChat(id,name,type){
-            chatTarget={id,name,type}; document.getElementById('chatHeader').textContent=name;
-            const chatKey=type==='friend'?[currentUsername,id].sort().join('_'):id;
-            const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
-            const msgDiv=document.getElementById('chatMessages');
-            msgDiv.innerHTML=msgs.map(m=>{ const cls=m.from===currentUsername?'mine':'other'; const dn=m.from==='deepseek_cs'?'DeepSeek客服':m.from; return `<div class="msg ${cls}"><div class="msg-user" onclick="showUserInfo('${m.from}')">${dn}</div>${m.text||''}${m.file?`<br><a href="${m.file}" download>📎 ${m.fileName}</a>`:''}<br><small>${m.time}</small></div>`; }).join('');
-            msgDiv.scrollTop=msgDiv.scrollHeight;
+
+        function openChat(id, name, type){
+            chatTarget = {id, name, type};
+            document.getElementById('chatHeader').textContent = name;
+            const chatKey = type==='friend' ? [currentUsername, id].sort().join('_') : id;
+            const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
+            const msgDiv = document.getElementById('chatMessages');
+            msgDiv.innerHTML = msgs.map(m=>{
+                const cls = m.from===currentUsername ? 'mine' : 'other';
+                const dn = m.from==='deepseek_cs' ? 'DeepSeek客服' : m.from;
+                return `<div class="msg ${cls}">
+                    <div class="msg-user" onclick="showUserInfo('${m.from}')">${dn}</div>
+                    ${m.text||''}${m.file?`<br><a href="${m.file}" download>📎 ${m.fileName}</a>`:''}
+                    <br><small>${m.time}</small>
+                </div>`;
+            }).join('');
+            msgDiv.scrollTop = msgDiv.scrollHeight;
         }
+
         window.sendMessage = function(){
-            if(!chatTarget) return; const input=document.getElementById('msgInput'); const text=input.value.trim(); if(!text) return;
-            const chatKey=chatTarget.type==='friend'?[currentUsername,chatTarget.id].sort().join('_'):chatTarget.id;
-            const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
-            msgs.push({from:currentUsername,text,time:new Date().toLocaleTimeString()});
-            localStorage.setItem(MSG_PREFIX+chatKey,JSON.stringify(msgs)); input.value='';
-            openChat(chatTarget.id,chatTarget.name,chatTarget.type);
-            if(chatTarget.id==='deepseek_cs') setTimeout(()=>aiReply(chatKey,text),500);
+            if(!chatTarget) return;
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if(!text) return;
+            const chatKey = chatTarget.type==='friend' ? [currentUsername, chatTarget.id].sort().join('_') : chatTarget.id;
+            const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
+            msgs.push({from:currentUsername, text, time: new Date().toLocaleString()});
+            localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs));
+            input.value = '';
+            openChat(chatTarget.id, chatTarget.name, chatTarget.type);
+            if(chatTarget.id==='deepseek_cs') setTimeout(()=>aiReply(chatKey, text), 500);
         };
-        function aiReply(chatKey,userMsg){
-            let reply="我是DeepSeek客服，努力学习中！"; if(userMsg.includes('你好')) reply="你好同志！";
-            const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
-            msgs.push({from:'deepseek_cs',text:reply,time:new Date().toLocaleTimeString()});
-            localStorage.setItem(MSG_PREFIX+chatKey,JSON.stringify(msgs));
-            if(chatTarget&&chatTarget.id==='deepseek_cs') openChat('deepseek_cs','DeepSeek客服','friend');
+
+        function aiReply(chatKey, userMsg){
+            let reply = "我是DeepSeek客服，努力学习中！";
+            if(userMsg.includes('你好')) reply = "你好同志！";
+            const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
+            msgs.push({from:'deepseek_cs', text:reply, time: new Date().toLocaleString()});
+            localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs));
+            if(chatTarget && chatTarget.id==='deepseek_cs') openChat('deepseek_cs', 'DeepSeek客服', 'friend');
         }
+
         window.sendFile = function(){
-            const file=document.getElementById('fileInput').files[0]; if(!file||!chatTarget) return;
-            const reader=new FileReader(); reader.onload=function(e){
-                const chatKey=chatTarget.type==='friend'?[currentUsername,chatTarget.id].sort().join('_'):chatTarget.id;
-                const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
-                const url=URL.createObjectURL(new Blob([e.target.result]));
-                msgs.push({from:currentUsername,file:url,fileName:file.name,time:new Date().toLocaleTimeString()});
-                localStorage.setItem(MSG_PREFIX+chatKey,JSON.stringify(msgs));
-                openChat(chatTarget.id,chatTarget.name,chatTarget.type);
-            }; reader.readAsArrayBuffer(file);
+            const file = document.getElementById('fileInput').files[0];
+            if(!file || !chatTarget) return;
+            const reader = new FileReader();
+            reader.onload = function(e){
+                const chatKey = chatTarget.type==='friend' ? [currentUsername, chatTarget.id].sort().join('_') : chatTarget.id;
+                const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
+                const url = URL.createObjectURL(new Blob([e.target.result]));
+                msgs.push({from:currentUsername, file:url, fileName:file.name, time: new Date().toLocaleString()});
+                localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs));
+                openChat(chatTarget.id, chatTarget.name, chatTarget.type);
+            };
+            reader.readAsArrayBuffer(file);
         };
+
         window.addFriend = function(){
-            const input=prompt('输入好友用户名或ID:'); if(!input||input===currentUsername) return;
-            const users=getUsers(); const target=users.find(u=>u.username===input||u.uid===input);
+            const input = prompt('输入好友用户名或ID:');
+            if(!input || input===currentUsername) return;
+            const users = getUsers();
+            const target = users.find(u=>u.username===input || u.uid===input);
             if(!target){ alert('用户不存在'); return; }
-            const friends=JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
-            if(!friends[currentUsername]) friends[currentUsername]=[];
+            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
+            if(!friends[currentUsername]) friends[currentUsername] = [];
             if(friends[currentUsername].includes(target.username)){ alert('已是好友'); return; }
             friends[currentUsername].push(target.username);
-            if(!friends[target.username]) friends[target.username]=[];
+            if(!friends[target.username]) friends[target.username] = [];
             if(!friends[target.username].includes(currentUsername)) friends[target.username].push(currentUsername);
-            localStorage.setItem(FRIENDS_KEY,JSON.stringify(friends)); renderChatList(); alert('添加成功');
+            localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+            renderChatList();
+            alert('添加成功！');
         };
+
         window.createGroup = function(){
-            const name=prompt('群名称:'); if(!name) return;
-            const gid='g_'+Date.now(); const groups=JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
-            groups[gid]={name,members:[currentUsername]}; localStorage.setItem(GROUP_KEY,JSON.stringify(groups)); renderChatList();
+            const name = prompt('群名称:');
+            if(!name) return;
+            const gid = 'g_'+Date.now();
+            const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
+            groups[gid] = {name, members:[currentUsername]};
+            localStorage.setItem(GROUP_KEY, JSON.stringify(groups));
+            renderChatList();
         };
+
         window.showUserInfo = function(username){
-            const users=getUsers(); const user=users.find(u=>u.username===username); if(!user) return;
-            const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+username)||'{}');
-            document.getElementById('modalName').textContent=profile.nickname||username;
-            document.getElementById('modalUid').textContent='ID: '+(user.uid||'');
-            document.getElementById('modalLocation').textContent='📍 '+(user.location||'');
+            const users = getUsers();
+            const user = users.find(u=>u.username===username);
+            if(!user) return;
+            const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX+username)||'{}');
+            document.getElementById('modalName').textContent = profile.nickname || username;
+            document.getElementById('modalUid').textContent = 'ID: ' + (user.uid||'');
+            document.getElementById('modalLocation').textContent = '📍 ' + (user.location||'');
             document.getElementById('userInfoModal').style.display='flex';
         };
 
+        // ---------- 个人主页 ----------
         function loadProfile(){
-            const users=getUsers(); const cu=users.find(u=>u.username===currentUsername);
-            const p=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
-            document.getElementById('profileName').textContent=p.nickname||currentUsername;
-            document.getElementById('profileUid').textContent=cu?.uid?'ID: '+cu.uid:'ID: 未分配';
-            document.getElementById('profileLocation').textContent='📍 '+(cu?.location||'');
-            document.getElementById('profileBio').textContent=p.bio||'未设置简介';
-            document.getElementById('editNickname').value=p.nickname||'';
-            document.getElementById('editLocation').value=cu?.location||'';
-            document.getElementById('editBio').value=p.bio||'';
-            if(p.avatar){ document.getElementById('avatarPreview').innerHTML=`<img src="${p.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
-            else{ document.getElementById('avatarPreview').textContent='👤'; }
+            const users = getUsers();
+            const cu = users.find(u=>u.username===currentUsername);
+            const p = JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
+            document.getElementById('profileName').textContent = p.nickname || currentUsername;
+            document.getElementById('profileUid').textContent = cu?.uid ? 'ID: '+cu.uid : 'ID: 未分配';
+            document.getElementById('profileLocation').textContent = '📍 ' + (cu?.location||'');
+            document.getElementById('profileBio').textContent = p.bio || '未设置简介';
+            document.getElementById('editNickname').value = p.nickname || '';
+            document.getElementById('editLocation').value = cu?.location || '';
+            document.getElementById('editBio').value = p.bio || '';
+            if(p.avatar){
+                document.getElementById('avatarPreview').innerHTML = `<img src="${p.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            } else {
+                document.getElementById('avatarPreview').textContent = '👤';
+            }
         }
+
         window.updateAvatar = function(){
-            const file=document.getElementById('avatarInput').files[0]; if(!file) return;
-            const reader=new FileReader(); reader.onload=function(e){ const p=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}'); p.avatar=e.target.result; localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(p)); document.getElementById('avatarPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }; reader.readAsDataURL(file);
+            const file = document.getElementById('avatarInput').files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e){
+                const p = JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
+                p.avatar = e.target.result;
+                localStorage.setItem(PROFILE_PREFIX+currentUsername, JSON.stringify(p));
+                document.getElementById('avatarPreview').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            };
+            reader.readAsDataURL(file);
         };
+
         window.saveProfile = function(){
-            const users=getUsers(); const idx=users.findIndex(u=>u.username===currentUsername);
-            if(idx!==-1){ users[idx].location=document.getElementById('editLocation').value.trim(); saveUsers(users); }
-            const p=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
-            p.nickname=document.getElementById('editNickname').value.trim();
-            p.bio=document.getElementById('editBio').value.trim();
-            localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(p));
-            loadProfile(); alert('资料已更新');
+            const users = getUsers();
+            const idx = users.findIndex(u=>u.username===currentUsername);
+            if(idx!==-1){
+                users[idx].location = document.getElementById('editLocation').value.trim();
+                saveUsers(users);
+            }
+            const p = JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
+            p.nickname = document.getElementById('editNickname').value.trim();
+            p.bio = document.getElementById('editBio').value.trim();
+            localStorage.setItem(PROFILE_PREFIX+currentUsername, JSON.stringify(p));
+            loadProfile();
+            alert('资料已更新');
         };
+
         window.changePwd = function(){
-            const old=document.getElementById('oldPwd').value, nw=document.getElementById('newPwd').value;
-            const users=getUsers(); const idx=users.findIndex(u=>u.username===currentUsername);
-            if(idx===-1||users[idx].password!==old){ alert('当前密码错误'); return; }
+            const old = document.getElementById('oldPwd').value,
+                  nw = document.getElementById('newPwd').value;
+            const users = getUsers();
+            const idx = users.findIndex(u=>u.username===currentUsername);
+            if(idx===-1 || users[idx].password!==old){ alert('当前密码错误'); return; }
             if(nw.length<6){ alert('新密码至少6位'); return; }
-            users[idx].password=nw; saveUsers(users); alert('密码修改成功');
+            users[idx].password = nw;
+            saveUsers(users);
+            alert('密码修改成功');
+        };
+
+        // ---------- 注销账号 ----------
+        window.deleteAccount = function(){
+            if(!confirm('⚠️ 确定要注销账号吗？\n此操作将永久删除您的所有数据：\n- 账号信息\n- 好友/群组关系\n- 聊天记录\n- 投稿文章\n- 收藏/点赞\n\n该操作无法恢复！')) return;
+            if(!confirm('再次确认：真的要注销账号吗？')) return;
+
+            const username = currentUsername;
+
+            // 1. 删除用户本身
+            let users = getUsers();
+            users = users.filter(u => u.username !== username);
+            saveUsers(users);
+
+            // 2. 删除个人资料
+            localStorage.removeItem(PROFILE_PREFIX + username);
+
+            // 3. 清理好友关系
+            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
+            if(friends[username]){
+                // 通知所有好友移除当前用户
+                friends[username].forEach(fid => {
+                    if(friends[fid]){
+                        friends[fid] = friends[fid].filter(f => f !== username);
+                        if(friends[fid].length === 0) delete friends[fid];
+                    }
+                });
+                delete friends[username];
+                localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+            }
+
+            // 4. 清理群组
+            const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
+            for(let gid in groups){
+                groups[gid].members = groups[gid].members.filter(m => m !== username);
+                if(groups[gid].members.length === 0) delete groups[gid];
+            }
+            localStorage.setItem(GROUP_KEY, JSON.stringify(groups));
+
+            // 5. 清理所有聊天消息 (遍历localStorage键，删除包含当前用户名的msg_键)
+            const keysToRemove = [];
+            for(let i=0; i<localStorage.length; i++){
+                const key = localStorage.key(i);
+                if(key && key.startsWith(MSG_PREFIX) && key.includes(username)){
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+
+            // 6. 删除该用户的投稿文章
+            let submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]');
+            submissions = submissions.filter(s => s.authorName !== username);
+            localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions));
+
+            // 7. 清理点赞数据中该用户
+            const likes = getLikesData();
+            for(let articleId in likes){
+                likes[articleId] = likes[articleId].filter(u => u !== username);
+                if(likes[articleId].length === 0) delete likes[articleId];
+            }
+            setLikesData(likes);
+
+            // 8. 清理收藏数据中该用户
+            const favs = getFavoritesData();
+            if(favs[username]) delete favs[username];
+            setFavoritesData(favs);
+
+            // 9. 清除登录状态并刷新
+            localStorage.removeItem(CURRENT_USER);
+            alert('账号已注销。');
+            location.reload();
         };
 
         window.performGlobalSearch = function(){
-            const q=document.getElementById('globalSearch').value.trim().toLowerCase(); if(!q) return;
+            const q = document.getElementById('globalSearch').value.trim().toLowerCase();
+            if(!q) return;
             if(q.includes('文章')||q.includes('马克思')) navigate('article');
             else if(q.includes('文艺')||q.includes('歌')) navigate('art');
             else alert('请尝试更明确的关键词');
@@ -743,6 +900,38 @@
                 `).join('');
         };
 
+        // 经典文章库
+        const classicsLibrary = {
+            marx: [ { title:'共产党宣言', desc:'马克思与恩格斯', text:'一个幽灵，共产主义的幽灵，在欧洲游荡。...\n\n共产党人不屑于隐瞒自己的观点和意图。他们公开宣布：他们的目的只有用暴力推翻全部现存的社会制度才能达到。让统治阶级在共产主义革命面前发抖吧。无产者在这个革命中失去的只是锁链。他们获得的将是整个世界。\n\n全世界无产者，联合起来！' } ],
+            engels: [ { title:'反杜林论', desc:'马克思主义百科全书', text:'当我们深思熟虑地考察自然界...' } ],
+            lenin: [ { title:'国家与革命', desc:'马克思主义国家学说', text:'国家是阶级矛盾不可调和的产物...' } ],
+            mao: [ { title:'实践论', desc:'认识论经典', text:'马克思主义者认为人类的生产活动...' }, { title:'矛盾论', desc:'辩证法核心', text:'事物的矛盾法则...' } ],
+            stalin: [ { title:'论列宁主义基础', desc:'列宁主义概述', text:'列宁主义是帝国主义和无产阶级革命时代的马克思主义...' } ],
+            others: [
+                { title:'共产主义原理', desc:'恩格斯', text:'共产主义是关于无产阶级解放的条件的学说。...\n\n废除私有制甚至是工业发展必然引起的改造整个社会制度的最简明扼要的概括。' },
+                { title:'怎么办？（节选）', desc:'列宁', text:'没有革命的理论，就不会有革命的运动。...\n\n只有以先进理论为指南的党，才能实现先进战士的作用。' }
+            ]
+        };
+
+        const countriesData = [
+            { name:'中国', lat:35.86, lng:104.19, type:'socialist', info:'社会主义国家，中国共产党领导，世界第二大经济体，共产力量强大。' },
+            { name:'越南', lat:14.05, lng:108.27, type:'socialist', info:'社会主义国家，越南共产党执政，经济快速发展，共产力量稳固。' },
+            { name:'老挝', lat:19.85, lng:102.49, type:'socialist', info:'社会主义国家，老挝人民革命党领导，共产力量持续发展。' },
+            { name:'朝鲜', lat:40.33, lng:127.51, type:'socialist', info:'社会主义国家，朝鲜劳动党执政，坚持主体思想，共产力量集中。' },
+            { name:'古巴', lat:21.52, lng:-77.78, type:'socialist', info:'社会主义国家，古巴共产党领导，西半球唯一的社会主义国家。' },
+            { name:'美国', lat:37.09, lng:-95.71, type:'capitalist', info:'资本主义大国，两党制，共产力量较弱，存在左翼运动。' },
+            { name:'英国', lat:55.37, lng:-3.43, type:'capitalist', info:'君主立宪制资本主义国家，工党势力存在，共产力量边缘化。' },
+            { name:'法国', lat:46.60, lng:1.88, type:'capitalist', info:'资本主义共和国，法国共产党历史上活跃，现今影响力下降。' },
+            { name:'德国', lat:51.16, lng:10.45, type:'capitalist', info:'资本主义联邦制国家，左翼党有一定支持率，共产力量有限。' },
+            { name:'日本', lat:36.20, lng:138.25, type:'capitalist', info:'君主立宪制资本主义国家，日本共产党为合法政党，力量逐渐增长。' },
+            { name:'俄罗斯', lat:61.52, lng:105.31, type:'capitalist', info:'联邦半总统制资本主义国家，俄罗斯联邦共产党在议会中有席位。' },
+            { name:'沙特阿拉伯', lat:23.88, lng:45.07, type:'feudal', info:'君主专制国家，王室掌握绝对权力，共产力量受压制。' },
+            { name:'阿曼', lat:21.47, lng:55.97, type:'feudal', info:'君主专制国家，苏丹拥有最高权力，政治反对派受限。' },
+            { name:'文莱', lat:4.53, lng:114.72, type:'feudal', info:'君主专制国家，苏丹统治，实行伊斯兰教法，共产力量缺失。' },
+            { name:'斯威士兰', lat:-26.52, lng:31.46, type:'feudal', info:'非洲最后的绝对君主制国家，国王统治，民主运动受压制。' }
+        ];
+
+        // 启动：如果已登录则直接进入
         currentUsername = localStorage.getItem(CURRENT_USER);
         if (currentUsername) {
             document.getElementById('authOverlay').classList.add('hidden');
