@@ -799,3 +799,283 @@
 </script>
 </body>
 </html>
+const express = require('express');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const { Low, JSONFile } = require('lowdb');
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+
+const app = express();
+const PORT = 3000;
+const JWT_SECRET = 'change-this-to-a-random-secret';
+
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+
+const adapter = new JSONFile(path.join(__dirname, 'db.json'));
+const db = new Low(adapter);
+
+async function initDB() {
+    await db.read();
+    db.data ||= {
+        users: [],
+        articles: [],
+        likes: [],
+        favorites: [],
+        friends: {},
+        groups: {},
+        messages: {},
+        profiles: {}
+    };
+    await db.write();
+}
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ error: '未登录' });
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ error: 'Token无效' });
+        req.user = user;
+        next();
+    });
+}
+
+// ========== 用户 ==========
+app.post('/api/register', async (req, res) => {
+    const { username, password, location } = req.body;
+    if (!username || !password || !location) return res.status(400).json({ error: '缺少字段' });
+    if (username.length < 4 || password.length < 6) return res.status(400).json({ error: '用户名≥4位，密码≥6位' });
+    await db.read();
+    if (db.data.users.find(u => u.username === username)) return res.status(400).json({ error: '用户名已存在' });
+    const uid = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    const newUser = { id: uuidv4(), username, password, location, uid };
+    db.data.users.push(newUser);
+    if (!db.data.friends[username]) db.data.friends[username] = [];
+    if (!db.data.profiles[username]) db.data.profiles[username] = { nickname: '', bio: '', avatar: '' };
+    await db.write();
+    const token = jwt.sign({ username, uid }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { username, uid } });
+});
+
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+    await db.read();
+    const user = db.data.users.find(u => u.username === username && u.password === password);
+    if (!user) return res.status(400).json({ error: '用户名或密码错误' });
+    const token = jwt.sign({ username, uid: user.uid }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { username, uid: user.uid } });
+});
+
+app.get('/api/user/:username', async (req, res) => {
+    await db.read();
+    const user = db.data.users.find(u => u.username === req.params.username);
+    if (!user) return res.status(404).json({ error: '用户不存在' });
+    const profile = db.data.profiles[user.username] || {};
+    res.json({ username: user.username, uid: user.uid, location: user.location, ...profile });
+});
+
+app.put('/api/profile', authenticateToken, async (req, res) => {
+    const { nickname, location, bio, avatar } = req.body;
+    await db.read();
+    const username = req.user.username;
+    if (!db.data.profiles[username]) db.data.profiles[username] = {};
+    db.data.profiles[username] = { nickname: nickname || '', bio: bio || '', avatar: avatar || '' };
+    if (location) {
+        const user = db.data.users.find(u => u.username === username);
+        if (user) user.location = location;
+    }
+    await db.write();
+    res.json({ success: true });
+});
+
+app.put('/api/password', authenticateToken, async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    if (newPassword.length < 6) return res.status(400).json({ error: '新密码至少6位' });
+    await db.read();
+    const user = db.data.users.find(u => u.username === req.user.username);
+    if (!user || user.password !== oldPassword) return res.status(400).json({ error: '原密码错误' });
+    user.password = newPassword;
+    await db.write();
+    res.json({ success: true });
+});
+
+app.delete('/api/account', authenticateToken, async (req, res) => {
+    const username = req.user.username;
+    await db.read();
+    db.data.users = db.data.users.filter(u => u.username !== username);
+    db.data.articles = db.data.articles.filter(a => a.authorName !== username);
+    db.data.likes = db.data.likes.filter(l => l.username !== username);
+    db.data.favorites = db.data.favorites.filter(f => f.username !== username);
+    if (db.data.friends[username]) {
+        for (const f of db.data.friends[username]) {
+            if (db.data.friends[f]) db.data.friends[f] = db.data.friends[f].filter(x => x !== username);
+        }
+        delete db.data.friends[username];
+    }
+    for (const gid in db.data.groups) {
+        const g = db.data.groups[gid];
+        g.members = g.members.filter(m => m !== username);
+        if (g.members.length === 0) delete db.data.groups[gid];
+    }
+    for (const key in db.data.messages) {
+        if (key.includes(username)) delete db.data.messages[key];
+    }
+    delete db.data.profiles[username];
+    await db.write();
+    res.json({ success: true });
+});
+
+// ========== 文章 ==========
+app.get('/api/articles', async (req, res) => {
+    const { search, sort, today, author } = req.query;
+    await db.read();
+    let articles = [...db.data.articles];
+    if (search) {
+        const q = search.toLowerCase();
+        articles = articles.filter(a => a.title.toLowerCase().includes(q) || a.content.toLowerCase().includes(q));
+    }
+    if (today === 'true') {
+        const todayStr = new Date().toDateString();
+        articles = articles.filter(a => new Date(a.time).toDateString() === todayStr);
+    }
+    if (author) {
+        articles = articles.filter(a => a.authorName === author);
+    }
+    if (sort === 'popular') {
+        articles.sort((a, b) => (b.likes + b.favorites) - (a.likes + a.favorites));
+    } else {
+        articles.sort((a, b) => new Date(b.time) - new Date(a.time));
+    }
+    const result = articles.map(a => ({
+        ...a,
+        likes: db.data.likes.filter(l => l.articleId === a.id).length,
+        favorites: db.data.favorites.filter(f => f.articleId === a.id).length
+    }));
+    res.json(result);
+});
+
+app.post('/api/articles', authenticateToken, async (req, res) => {
+    const { title, content } = req.body;
+    if (!title || !content) return res.status(400).json({ error: '标题和内容不能为空' });
+    await db.read();
+    const user = db.data.users.find(u => u.username === req.user.username);
+    const article = {
+        id: Date.now().toString(),
+        title,
+        content,
+        authorName: req.user.username,
+        authorId: user ? user.uid : '',
+        time: new Date().toLocaleString()
+    };
+    db.data.articles.unshift(article);
+    await db.write();
+    res.json(article);
+});
+
+app.delete('/api/articles/:id', authenticateToken, async (req, res) => {
+    await db.read();
+    const article = db.data.articles.find(a => a.id === req.params.id);
+    if (!article) return res.status(404).json({ error: '文章不存在' });
+    if (article.authorName !== req.user.username) return res.status(403).json({ error: '无权删除' });
+    db.data.articles = db.data.articles.filter(a => a.id !== req.params.id);
+    db.data.likes = db.data.likes.filter(l => l.articleId !== req.params.id);
+    db.data.favorites = db.data.favorites.filter(f => f.articleId !== req.params.id);
+    await db.write();
+    res.json({ success: true });
+});
+
+app.post('/api/articles/:id/like', authenticateToken, async (req, res) => {
+    await db.read();
+    const { id } = req.params;
+    const username = req.user.username;
+    const idx = db.data.likes.findIndex(l => l.articleId === id && l.username === username);
+    if (idx > -1) {
+        db.data.likes.splice(idx, 1);
+    } else {
+        db.data.likes.push({ articleId: id, username });
+    }
+    await db.write();
+    const count = db.data.likes.filter(l => l.articleId === id).length;
+    res.json({ liked: idx === -1, count });
+});
+
+app.post('/api/articles/:id/favorite', authenticateToken, async (req, res) => {
+    await db.read();
+    const { id } = req.params;
+    const username = req.user.username;
+    const idx = db.data.favorites.findIndex(f => f.articleId === id && f.username === username);
+    if (idx > -1) {
+        db.data.favorites.splice(idx, 1);
+    } else {
+        db.data.favorites.push({ articleId: id, username });
+    }
+    await db.write();
+    const count = db.data.favorites.filter(f => f.articleId === id).length;
+    res.json({ favorited: idx === -1, count });
+});
+
+app.get('/api/favorites', authenticateToken, async (req, res) => {
+    await db.read();
+    const myFavs = db.data.favorites.filter(f => f.username === req.user.username).map(f => f.articleId);
+    const articles = db.data.articles.filter(a => myFavs.includes(a.id));
+    res.json(articles);
+});
+
+// ========== 好友/群组/消息 ==========
+app.get('/api/friends', authenticateToken, async (req, res) => {
+    await db.read();
+    res.json(db.data.friends[req.user.username] || []);
+});
+
+app.post('/api/friends', authenticateToken, async (req, res) => {
+    const { friend } = req.body;
+    if (!friend) return res.status(400).json({ error: '缺少好友名' });
+    await db.read();
+    const target = db.data.users.find(u => u.username === friend);
+    if (!target) return res.status(404).json({ error: '用户不存在' });
+    const myFriends = db.data.friends[req.user.username] || [];
+    if (myFriends.includes(friend)) return res.status(400).json({ error: '已是好友' });
+    if (!db.data.friends[req.user.username]) db.data.friends[req.user.username] = [];
+    db.data.friends[req.user.username].push(friend);
+    if (!db.data.friends[friend]) db.data.friends[friend] = [];
+    if (!db.data.friends[friend].includes(req.user.username)) db.data.friends[friend].push(req.user.username);
+    await db.write();
+    res.json({ success: true });
+});
+
+app.post('/api/groups', authenticateToken, async (req, res) => {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ error: '缺少群名' });
+    const gid = 'g_' + Date.now();
+    await db.read();
+    db.data.groups[gid] = { name, members: [req.user.username] };
+    await db.write();
+    res.json({ gid, name });
+});
+
+app.get('/api/messages/:chatKey', authenticateToken, async (req, res) => {
+    await db.read();
+    res.json(db.data.messages[req.params.chatKey] || []);
+});
+
+app.post('/api/messages/:chatKey', authenticateToken, async (req, res) => {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ error: '消息不能为空' });
+    await db.read();
+    if (!db.data.messages[req.params.chatKey]) db.data.messages[req.params.chatKey] = [];
+    const msg = {
+        from: req.user.username,
+        text,
+        time: new Date().toLocaleString()
+    };
+    db.data.messages[req.params.chatKey].push(msg);
+    await db.write();
+    res.json(msg);
+});
+
+// 启动
+initDB().then(() => {
+    app.listen(PORT, () => console.log(`后端运行在 http://localhost:${PORT}`));
+});
