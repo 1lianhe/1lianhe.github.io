@@ -129,10 +129,11 @@
     <a onclick="navigate('home')">主页</a>
     <a onclick="navigate('yun')">国际共运</a>
     <a onclick="navigate('article')">文章</a>
+    <a onclick="navigate('userwritings')">个人文集</a>
     <a onclick="navigate('history')">历史</a>
     <a onclick="navigate('art')">文艺</a>
     <a onclick="navigate('communicate')">交流</a>
-    <a onclick="navigate('other')">其他</a>
+    <a onclick="navigate('other')">关于</a>
     <div class="nav-right">
         <a onclick="navigate('profile')" style="color:var(--primary);">👤 个人主页</a>
         <a onclick="switchAccount()" style="color:#2980b9;">🔄 切换账号</a>
@@ -170,6 +171,10 @@
     </div>
 </div>
 
+<div id="userwritings" class="content">
+    <div id="userwritingsList"></div>
+</div>
+
 <div id="history" class="content"><h2 class="section-title">📜 革命历史长廊</h2><div class="timeline" id="historyTimeline"></div></div>
 
 <div id="art" class="content">
@@ -187,7 +192,7 @@
     </div>
 </div>
 
-<div id="other" class="content"><h2 class="section-title">其他</h2><p style="text-align:center;">欢迎探索更多内容</p></div>
+<div id="other" class="content"><h2 class="section-title">关于</h2><p style="text-align:center;">本站为学习交流站，任何人都可以刊登自己的文章，大家也可以进行评论，如有问题在b站号“在理想的光芒下前进”</p></div>
 
 <div id="profile" class="content">
     <h2 class="section-title">👤 个人主页</h2>
@@ -236,9 +241,8 @@
         const USERS_KEY = 'site_users', CURRENT_USER = 'currentUser', PROFILE_PREFIX = 'profile_',
             FRIENDS_KEY = 'allFriends', GROUP_KEY = 'groupData', MSG_PREFIX = 'msg_',
             SUBMISSIONS_KEY = 'user_submissions';
-        // 新增键名
-        const LIKES_KEY = 'article_likes';       // { articleId: [username,...] }
-        const FAVORITES_KEY = 'user_favorites';   // { username: [articleId,...] }
+        const LIKES_KEY = 'article_likes';
+        const FAVORITES_KEY = 'user_favorites';
 
         let currentUsername = null, chatTarget = null;
         let worldMap;
@@ -291,18 +295,18 @@
             let submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY) || '[]');
             submissions = submissions.filter(s => s.id !== articleId);
             localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions));
-            // 清理点赞数据
             const likes = getLikesData();
             if (likes[articleId]) { delete likes[articleId]; setLikesData(likes); }
-            // 清理所有用户的收藏中包含该文章
             const favs = getFavoritesData();
             for (let user in favs) {
                 favs[user] = favs[user].filter(id => id !== articleId);
             }
             setFavoritesData(favs);
-            // 重新渲染当前页面（如果正在查看个人文集）
             if (document.getElementById('articleDetailView').style.display !== 'none') {
                 showAuthorDetail('user_submissions');
+            }
+            if (document.getElementById('userwritings').style.display !== 'none') {
+                renderUserWritingsPage();
             }
             if (document.getElementById('home').style.display !== 'none') {
                 renderFavorites();
@@ -318,7 +322,6 @@
             if (btn) {
                 btn.innerHTML = `${isLiked(articleId, currentUsername) ? '❤️' : '🤍'} <span id="likeCount-${articleId}">${getLikeCount(articleId)}</span>`;
             }
-            // 同时更新meta行中的数字
             const metaEl = document.querySelector(`#article-${articleId} .article-meta`);
             if (metaEl) {
                 metaEl.innerHTML = metaEl.innerHTML.replace(/❤️\d+/, `❤️${getLikeCount(articleId)}`).replace(/⭐\d+/, `⭐${getFavoriteCount(articleId)}`);
@@ -336,35 +339,49 @@
             if (metaEl) {
                 metaEl.innerHTML = metaEl.innerHTML.replace(/❤️\d+/, `❤️${getLikeCount(articleId)}`).replace(/⭐\d+/, `⭐${getFavoriteCount(articleId)}`);
             }
-            // 如果当前在主页，更新收藏夹
             if (document.getElementById('home').style.display !== 'none') {
                 renderFavorites();
             }
         };
 
-        // 搜索与排序状态
-        window._submissionSortBy = 'newest'; // 'newest' | 'popular'
+        window._submissionSortBy = 'newest';
 
         window.searchSubmissions = function() {
-            showAuthorDetail('user_submissions');
+            if (document.getElementById('articleDetailView').style.display !== 'none') {
+                showAuthorDetail('user_submissions');
+            } else {
+                renderUserWritingsPage();
+            }
         };
         window.showTodaySubmissions = function() {
             window._submissionTodayMode = true;
-            showAuthorDetail('user_submissions');
+            if (document.getElementById('articleDetailView').style.display !== 'none') {
+                showAuthorDetail('user_submissions');
+            } else {
+                renderUserWritingsPage();
+            }
             window._submissionTodayMode = false;
         };
         window.changeSort = function(sortBy) {
             window._submissionSortBy = sortBy;
-            showAuthorDetail('user_submissions');
+            if (document.getElementById('articleDetailView').style.display !== 'none') {
+                showAuthorDetail('user_submissions');
+            } else {
+                renderUserWritingsPage();
+            }
         };
 
-        // 经典文章库
+        // 经典文章库（添加了 others）
         const classicsLibrary = {
             marx: [ { title:'共产党宣言', desc:'马克思与恩格斯', text:'一个幽灵，共产主义的幽灵，在欧洲游荡。...\n\n共产党人不屑于隐瞒自己的观点和意图。他们公开宣布：他们的目的只有用暴力推翻全部现存的社会制度才能达到。让统治阶级在共产主义革命面前发抖吧。无产者在这个革命中失去的只是锁链。他们获得的将是整个世界。\n\n全世界无产者，联合起来！' } ],
             engels: [ { title:'反杜林论', desc:'马克思主义百科全书', text:'当我们深思熟虑地考察自然界...' } ],
             lenin: [ { title:'国家与革命', desc:'马克思主义国家学说', text:'国家是阶级矛盾不可调和的产物...' } ],
             mao: [ { title:'实践论', desc:'认识论经典', text:'马克思主义者认为人类的生产活动...' }, { title:'矛盾论', desc:'辩证法核心', text:'事物的矛盾法则...' } ],
-            stalin: [ { title:'论列宁主义基础', desc:'列宁主义概述', text:'列宁主义是帝国主义和无产阶级革命时代的马克思主义...' } ]
+            stalin: [ { title:'论列宁主义基础', desc:'列宁主义概述', text:'列宁主义是帝国主义和无产阶级革命时代的马克思主义...' } ],
+            others: [
+                { title:'共产主义原理', desc:'恩格斯', text:'共产主义是关于无产阶级解放的条件的学说。...\n\n废除私有制甚至是工业发展必然引起的改造整个社会制度的最简明扼要的概括。' },
+                { title:'怎么办？（节选）', desc:'列宁', text:'没有革命的理论，就不会有革命的运动。...\n\n只有以先进理论为指南的党，才能实现先进战士的作用。' }
+            ]
         };
 
         const countriesData = [
@@ -385,7 +402,6 @@
             { name:'斯威士兰', lat:-26.52, lng:31.46, type:'feudal', info:'非洲最后的绝对君主制国家，国王统治，民主运动受压制。' }
         ];
 
-        // 用户系统
         function getUsers(){ return JSON.parse(localStorage.getItem(USERS_KEY)||'[]'); }
         function saveUsers(u){ localStorage.setItem(USERS_KEY,JSON.stringify(u)); }
         function generateUid(){
@@ -440,6 +456,7 @@
             const el=document.getElementById(page); if(el) el.style.display='block';
             if(page==='yun'){ setTimeout(()=>{ if(!worldMap) initWorldMap(); else worldMap.invalidateSize(); }, 100); }
             if(page==='article') showAuthors();
+            if(page==='userwritings') renderUserWritingsPage();
             if(page==='communicate') initChat();
             if(page==='profile') loadProfile();
             if(page==='home') renderFavorites();
@@ -468,7 +485,7 @@
                 {key:'lenin',name:'列宁',works:'《国家与革命》《帝国主义论》',color:'#3a3a4a',icon:'📗'},
                 {key:'mao',name:'毛泽东',works:'《实践论》《矛盾论》',color:'#4a3020',icon:'📙'},
                 {key:'stalin',name:'斯大林',works:'《论列宁主义基础》',color:'#3a3030',icon:'📓'},
-                {key:'user_submissions',name:'个人文集',works:'同志们的投稿',color:'#5a5a5a',icon:'📝'}
+                {key:'others',name:'其他文集',works:'补充经典',color:'#4a4a4a',icon:'📖'}
             ];
             document.getElementById('authorGrid').innerHTML=authors.map(a=>`<div class="author-card" onclick="showAuthorDetail('${a.key}')"><div class="author-img" style="background-color:${a.color};">${a.icon} ${a.name}</div><div class="author-info"><span class="author-name">${a.name}</span><span class="author-works">${a.works}</span></div></div>`).join('');
         }
@@ -476,73 +493,86 @@
             document.getElementById('authorGridView').style.display='none'; document.getElementById('articleDetailView').style.display='block';
             if(key==='user_submissions'){
                 document.getElementById('detailAuthorName').textContent='个人文集';
-                const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]');
-                const searchInput = document.getElementById('submissionSearchInput');
-                const searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
-                const sortBy = window._submissionSortBy || 'newest';
-                let filtered = submissions.filter(s => {
-                    if (!searchQuery) return true;
-                    return s.title.toLowerCase().includes(searchQuery) || s.content.toLowerCase().includes(searchQuery);
-                });
-                // 今日模式过滤
-                if (window._submissionTodayMode) {
-                    const today = new Date().toDateString();
-                    filtered = filtered.filter(s => new Date(s.time).toDateString() === today);
-                }
-                // 排序
-                if (sortBy === 'popular') {
-                    filtered.sort((a,b) => (getLikeCount(b.id)+getFavoriteCount(b.id)) - (getLikeCount(a.id)+getFavoriteCount(a.id)));
-                } else {
-                    filtered.sort((a,b) => new Date(b.time) - new Date(a.time));
-                }
-                let html = `
-                    <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center; flex-wrap:wrap;">
-                        <input type="text" id="submissionSearchInput" placeholder="搜索投稿..." value="${searchQuery}" style="flex:1; min-width:200px; padding:10px; border-radius:20px; border:1px solid #ccc;">
-                        <button class="btn" onclick="searchSubmissions()">搜索</button>
-                        <button class="btn" style="background:#888;" onclick="showTodaySubmissions()">今日</button>
-                        <select id="sortSelect" onchange="changeSort(this.value)" style="padding:10px; border-radius:20px;">
-                            <option value="newest" ${sortBy==='newest'?'selected':''}>最新</option>
-                            <option value="popular" ${sortBy==='popular'?'selected':''}>热门</option>
-                        </select>
-                        <button class="btn" onclick="openSubmitModal()">✏️ 投稿</button>
-                    </div>
-                `;
-                if(filtered.length===0) html += '<p style="color:#999;">暂无投稿文章</p>';
-                else {
-                    html += filtered.map(s => {
-                        const likeCount = getLikeCount(s.id);
-                        const favCount = getFavoriteCount(s.id);
-                        const liked = isLiked(s.id, currentUsername);
-                        const favorited = isFavorited(s.id, currentUsername);
-                        const isAuthor = (s.authorName === currentUsername);
-                        return `
-                            <div class="article-item" id="article-${s.id}">
-                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                                    <h3 onclick="toggleArticleText(this, '${s.id}')" style="cursor:pointer; flex:1; min-width:150px;">${s.title}</h3>
-                                    <div style="display:flex; gap:5px; margin-top:5px;">
-                                        <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); toggleLikeArticle('${s.id}')">
-                                            ${liked ? '❤️' : '🤍'} <span id="likeCount-${s.id}">${likeCount}</span>
-                                        </button>
-                                        <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); toggleFavoriteArticle('${s.id}')">
-                                            ${favorited ? '⭐' : '☆'} <span id="favCount-${s.id}">${favCount}</span>
-                                        </button>
-                                        ${isAuthor ? `<button class="btn" style="padding:4px 10px; font-size:12px; background:#c0392b;" onclick="event.stopPropagation(); deleteSubmission('${s.id}')">🗑️</button>` : ''}
-                                    </div>
-                                </div>
-                                <div class="article-meta" style="font-size:13px;color:#888;">作者：${s.authorName} (ID: ${s.authorId}) · ${s.time} · ❤️${likeCount} ⭐${favCount}</div>
-                                <div class="full-text" id="submission-${s.id}">${s.content}</div>
-                            </div>
-                        `;
-                    }).join('');
-                }
-                document.getElementById('articleListContent').innerHTML = html;
+                renderSubmissionList(document.getElementById('articleListContent'), true);
             } else {
-                const names={marx:'卡尔·马克思',engels:'恩格斯',lenin:'列宁',mao:'毛泽东',stalin:'斯大林'};
+                const names={marx:'卡尔·马克思',engels:'恩格斯',lenin:'列宁',mao:'毛泽东',stalin:'斯大林',others:'其他文集'};
                 document.getElementById('detailAuthorName').textContent=names[key]+' 著作';
                 const articles=classicsLibrary[key]||[];
                 document.getElementById('articleListContent').innerHTML=articles.map((a,idx)=>`<div class="article-item" onclick="toggleArticle(this,'${key}',${idx})"><h3>${a.title}</h3><p class="desc">${a.desc}</p><div class="full-text" id="text-${key}-${idx}">${a.text}</div></div>`).join('');
             }
         };
+        function renderSubmissionList(container, showBackButton) {
+            const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]');
+            const searchInput = document.getElementById('submissionSearchInput');
+            const searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
+            const sortBy = window._submissionSortBy || 'newest';
+            let filtered = submissions.filter(s => {
+                if (!searchQuery) return true;
+                return s.title.toLowerCase().includes(searchQuery) || s.content.toLowerCase().includes(searchQuery);
+            });
+            if (window._submissionTodayMode) {
+                const today = new Date().toDateString();
+                filtered = filtered.filter(s => new Date(s.time).toDateString() === today);
+            }
+            if (sortBy === 'popular') {
+                filtered.sort((a,b) => (getLikeCount(b.id)+getFavoriteCount(b.id)) - (getLikeCount(a.id)+getFavoriteCount(a.id)));
+            } else {
+                filtered.sort((a,b) => new Date(b.time) - new Date(a.time));
+            }
+            let html = '';
+            if (showBackButton) {
+                html += `<button class="btn" style="margin-bottom:20px;" onclick="backToAuthors()">← 返回作者列表</button>`;
+            }
+            html += `
+                <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center; flex-wrap:wrap;">
+                    <input type="text" id="submissionSearchInput" placeholder="搜索投稿..." value="${searchQuery}" style="flex:1; min-width:200px; padding:10px; border-radius:20px; border:1px solid #ccc;">
+                    <button class="btn" onclick="searchSubmissions()">搜索</button>
+                    <button class="btn" style="background:#888;" onclick="showTodaySubmissions()">今日</button>
+                    <select id="sortSelect" onchange="changeSort(this.value)" style="padding:10px; border-radius:20px;">
+                        <option value="newest" ${sortBy==='newest'?'selected':''}>最新</option>
+                        <option value="popular" ${sortBy==='popular'?'selected':''}>热门</option>
+                    </select>
+                    <button class="btn" onclick="openSubmitModal()">✏️ 投稿</button>
+                </div>
+            `;
+            if(filtered.length===0) html += '<p style="color:#999;">暂无投稿文章</p>';
+            else {
+                html += filtered.map(s => {
+                    const likeCount = getLikeCount(s.id);
+                    const favCount = getFavoriteCount(s.id);
+                    const liked = isLiked(s.id, currentUsername);
+                    const favorited = isFavorited(s.id, currentUsername);
+                    const isAuthor = (s.authorName === currentUsername);
+                    return `
+                        <div class="article-item" id="article-${s.id}">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                                <h3 onclick="toggleArticleText(this, '${s.id}')" style="cursor:pointer; flex:1; min-width:150px;">${s.title}</h3>
+                                <div style="display:flex; gap:5px; margin-top:5px;">
+                                    <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); toggleLikeArticle('${s.id}')">
+                                        ${liked ? '❤️' : '🤍'} <span id="likeCount-${s.id}">${likeCount}</span>
+                                    </button>
+                                    <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); toggleFavoriteArticle('${s.id}')">
+                                        ${favorited ? '⭐' : '☆'} <span id="favCount-${s.id}">${favCount}</span>
+                                    </button>
+                                    ${isAuthor ? `<button class="btn" style="padding:4px 10px; font-size:12px; background:#c0392b;" onclick="event.stopPropagation(); deleteSubmission('${s.id}')">🗑️</button>` : ''}
+                                </div>
+                            </div>
+                            <div class="article-meta" style="font-size:13px;color:#888;">作者：${s.authorName} (ID: ${s.authorId}) · ${s.time} · ❤️${likeCount} ⭐${favCount}</div>
+                            <div class="full-text" id="submission-${s.id}">${s.content}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            container.innerHTML = html;
+        }
+        function renderUserWritingsPage(){
+            const container = document.getElementById('userwritingsList');
+            container.innerHTML = '<h2 class="section-title">📝 个人文集</h2>';
+            const listDiv = document.createElement('div');
+            listDiv.className = 'article-detail-list';
+            container.appendChild(listDiv);
+            renderSubmissionList(listDiv, false);
+        }
         window.toggleArticle = function(el,key,idx){ const div=document.getElementById(`text-${key}-${idx}`); if(div) div.classList.toggle('show'); };
         window.toggleArticleText = function(el, id){ const div=document.getElementById(`submission-${id}`); if(div) div.classList.toggle('show'); };
         window.backToAuthors = function(){ document.getElementById('authorGridView').style.display='block'; document.getElementById('articleDetailView').style.display='none'; };
@@ -566,7 +596,11 @@
             document.getElementById('submitModal').style.display='none';
             document.getElementById('submitTitle').value='';
             document.getElementById('submitContent').value='';
-            showAuthorDetail('user_submissions');
+            if (document.getElementById('articleDetailView').style.display !== 'none') {
+                showAuthorDetail('user_submissions');
+            } else {
+                renderUserWritingsPage();
+            }
         };
 
         function renderHistory(){
@@ -691,7 +725,6 @@
             else alert('请尝试更明确的关键词');
         };
 
-        // 主页收藏夹渲染
         window.renderFavorites = function(){
             const container = document.getElementById('favoritesContainer');
             if (!container || !currentUsername) return;
@@ -704,7 +737,7 @@
             }
             container.innerHTML = '<h3 style="color:var(--primary); margin-bottom:15px;">⭐ 我的收藏</h3>' +
                 favSubmissions.map(s => `
-                    <div class="article-item" style="cursor:pointer; margin-bottom:8px;" onclick="navigate('article'); setTimeout(()=>{ showAuthorDetail('user_submissions'); setTimeout(()=>{ const el = document.getElementById('submission-${s.id}'); if(el) el.classList.add('show'); }, 200); }, 100);">
+                    <div class="article-item" style="cursor:pointer; margin-bottom:8px;" onclick="navigate('userwritings'); setTimeout(()=>{ const el = document.getElementById('submission-${s.id}'); if(el) el.classList.add('show'); }, 200);">
                         <b>${s.title}</b> <span style="color:#888; margin-left:10px;">${s.authorName} · ${s.time}</span>
                     </div>
                 `).join('');
