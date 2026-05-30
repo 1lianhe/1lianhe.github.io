@@ -117,9 +117,20 @@
     </div>
 </div>
 
+ <div id="other" class="other-text">
+        中国共产主义青年交流会简称中共青
+    </div>
+</div>
+
 <script>
+function showHome() {
+    document.getElementById("home").style.display = "block";
+    document.getElementById("other").style.display = "none";
+}
+
 function showOther() {
-  alert("中国共产主义青年交流会简称中共青");
+    document.getElementById("home").style.display = "none";
+    document.getElementById("other").style.display = "block";
 }
 </script>
 
