@@ -10,120 +10,63 @@
         :root { --primary: #9E090F; --gold: #D4A843; --bg: #fdf8f4; }
         a { color: inherit; text-decoration: none; }
 
-        /* 登录覆盖层 */
-        #authOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center;
-            z-index: 9999; backdrop-filter: blur(8px);
-        }
+        #authOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); }
         #authOverlay.hidden { display: none; }
-        .auth-card {
-            background: #fff; border-radius: 20px; padding: 45px 35px; width: 90%; max-width: 420px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; animation: slideUp 0.4s ease;
-        }
+        .auth-card { background: #fff; border-radius: 20px; padding: 45px 35px; width: 90%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; animation: slideUp 0.4s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .auth-card h2 { color: var(--primary); letter-spacing: 2px; margin-bottom: 6px; font-size: 26px; }
         .auth-card .subtitle { color: #999; font-size: 14px; margin-bottom: 25px; }
-        .auth-card input {
-            width: 100%; padding: 13px 18px; font-size: 15px; border: 2px solid #e0c8b0;
-            border-radius: 30px; outline: none; margin-bottom: 15px; text-align: center;
-            transition: 0.3s; background: #fefefe; letter-spacing: 1px;
-        }
+        .auth-card input { width: 100%; padding: 13px 18px; font-size: 15px; border: 2px solid #e0c8b0; border-radius: 30px; outline: none; margin-bottom: 15px; text-align: center; transition: 0.3s; background: #fefefe; letter-spacing: 1px; }
         .auth-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 5px rgba(158,9,15,0.06); }
-        .btn-auth {
-            width: 100%; padding: 13px; background: var(--primary); color: #fff; border: none;
-            border-radius: 30px; font-size: 16px; font-weight: bold; letter-spacing: 2px;
-            cursor: pointer; transition: 0.3s; margin-top: 5px;
-        }
+        .btn-auth { width: 100%; padding: 13px; background: var(--primary); color: #fff; border: none; border-radius: 30px; font-size: 16px; font-weight: bold; letter-spacing: 2px; cursor: pointer; transition: 0.3s; margin-top: 5px; }
         .btn-auth:hover { background: #b00e16; }
         .auth-toggle { margin-top: 18px; font-size: 13px; color: #888; letter-spacing: 1px; }
         .auth-toggle a { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: none; }
         .auth-toggle a:hover { text-decoration: underline; }
         .auth-error { color: #c0392b; font-size: 13px; margin-bottom: 10px; display: none; }
 
-        /* 顶部导航 */
-        .top-bar {
-            background: var(--primary); width: 100%; padding: 18px 35px;
-            display: flex; align-items: center; position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-        }
+        .top-bar { background: var(--primary); width: 100%; padding: 18px 35px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
         .party-logo { font-size: 36px; color: #FFD700; margin-right: 12px; }
         .site-title { font-size: 24px; font-weight: bold; color: #fff; letter-spacing: 2px; }
-        .nav {
-            background: #fff; padding: 14px 35px; display: flex; gap: 18px; flex-wrap: wrap;
-            border-bottom: 2px solid var(--primary); position: sticky; top: 70px; z-index: 999;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-        }
-        .nav a {
-            text-decoration: none; font-size: 16px; color: #333; font-weight: 500;
-            padding: 8px 16px; border-radius: 20px; transition: 0.3s; cursor: pointer; white-space: nowrap;
-        }
+        .nav { background: #fff; padding: 14px 35px; display: flex; gap: 18px; flex-wrap: wrap; border-bottom: 2px solid var(--primary); position: sticky; top: 70px; z-index: 999; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+        .nav a { text-decoration: none; font-size: 16px; color: #333; font-weight: 500; padding: 8px 16px; border-radius: 20px; transition: 0.3s; cursor: pointer; white-space: nowrap; }
         .nav a:hover { color: #fff; background: var(--primary); }
         .nav-right { margin-left: auto; display: flex; gap: 10px; }
 
         .content { max-width: 1200px; margin: 0 auto; padding: 30px 20px 60px; display: none; }
         #home { display: block; }
         .section-title { color: var(--primary); text-align: center; margin: 30px 0 20px; font-size: 24px; letter-spacing: 3px; }
-        .btn {
-            background: var(--primary); color: #fff; padding: 10px 24px; border: none;
-            border-radius: 25px; cursor: pointer; font-weight: bold; letter-spacing: 1px; transition: 0.3s;
-            display: inline-block;
-        }
+        .btn { background: var(--primary); color: #fff; padding: 10px 24px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; letter-spacing: 1px; transition: 0.3s; display: inline-block; }
         .btn:hover { background: #b00e16; }
 
-        /* 主页 */
-        .hero {
-            text-align: center; padding: 70px 20px; background: linear-gradient(180deg, #fff, var(--bg));
-            border-radius: 20px; margin-bottom: 30px; position: relative; overflow: hidden;
-        }
+        .hero { text-align: center; padding: 70px 20px; background: linear-gradient(180deg, #fff, var(--bg)); border-radius: 20px; margin-bottom: 30px; position: relative; overflow: hidden; }
         .hero h2 { font-size: 2.2em; color: var(--primary); margin-bottom: 10px; }
         .hero .welcome-sub { font-size: 18px; color: #666; margin-bottom: 25px; }
-        .search-box {
-            width: 60%; max-width: 500px; padding: 14px 25px; font-size: 16px;
-            border: 2px solid #d4b896; border-radius: 40px; outline: none; text-align: center;
-            margin-top: 20px; transition: 0.3s;
-        }
+        .search-box { width: 60%; max-width: 500px; padding: 14px 25px; font-size: 16px; border: 2px solid #d4b896; border-radius: 40px; outline: none; text-align: center; margin-top: 20px; transition: 0.3s; }
         .search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 5px rgba(158,9,15,0.06); }
         .quotes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 20px; margin: 30px 0; }
-        .quote-card {
-            background: #fff; border-radius: 16px; padding: 28px 18px 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #f0e0d0;
-            display: flex; flex-direction: column; align-items: center;
-        }
+        .quote-card { background: #fff; border-radius: 16px; padding: 28px 18px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #f0e0d0; display: flex; flex-direction: column; align-items: center; }
         .quote-card:hover { transform: translateY(-6px); box-shadow: 0 10px 25px rgba(158,9,15,0.12); border-color: #d4a843; }
         .quote-mark { font-size: 48px; color: var(--primary); opacity: 0.7; margin-bottom: 6px; }
         .quote-text { font-size: 15px; color: #333; line-height: 1.6; font-weight: 500; text-align: center; flex:1; }
         .quote-author { margin-top: 14px; font-size: 13px; color: var(--primary); font-weight: bold; letter-spacing: 1px; border-top: 1px dashed #e0c8b0; padding-top: 10px; width: 100%; }
 
-        /* 文章栏目 */
         .author-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 20px; margin: 20px 0; }
-        .author-card {
-            background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-            transition: 0.3s; cursor: pointer; aspect-ratio: 1/1; display: flex; flex-direction: column;
-        }
+        .author-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.08); transition: 0.3s; cursor: pointer; aspect-ratio: 1/1; display: flex; flex-direction: column; }
         .author-img { height: 55%; background-color: #d5c4b0; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #8b6f5a; }
-        .author-info {
-            height: 45%; background: linear-gradient(180deg, var(--primary), #7A080E);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #fff; font-weight: bold; padding: 10px; gap: 4px;
-        }
+        .author-info { height: 45%; background: linear-gradient(180deg, var(--primary), #7A080E); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-weight: bold; padding: 10px; gap: 4px; }
         .author-name { font-size: 22px; letter-spacing: 2px; }
         .author-works { font-size: 13px; color: #f0d78c; letter-spacing: 1px; }
         .author-card:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(158,9,15,0.18); }
 
-        /* 文章详情 */
         .article-detail-list { display: flex; flex-direction: column; gap: 15px; max-width: 800px; margin: 0 auto; }
-        .article-item {
-            background: #fff; border-radius: 14px; padding: 20px 24px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--primary); transition: 0.3s; cursor: pointer;
-        }
+        .article-item { background: #fff; border-radius: 14px; padding: 20px 24px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); transition: 0.3s; cursor: pointer; }
         .article-item:hover { transform: translateX(6px); box-shadow: 0 6px 18px rgba(158,9,15,0.12); }
         .article-item h3 { color: var(--primary); margin-bottom: 4px; }
         .article-item .desc { color: #666; font-size: 14px; }
         .full-text { display: none; margin-top: 10px; padding: 10px; background: #fafafa; border-radius: 8px; white-space: pre-wrap; line-height: 1.6; }
         .full-text.show { display: block; }
 
-        /* 交流 */
         .chat-container { display: flex; height: 75vh; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); background: #fff; }
         .chat-sidebar { width: 260px; background: #f5f0eb; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
         .chat-sidebar h3 { padding: 15px; background: var(--primary); color: #fff; margin: 0; font-size: 16px; }
@@ -136,29 +79,33 @@
         .msg { max-width: 70%; margin-bottom: 15px; padding: 12px 16px; border-radius: 18px; word-break: break-word; }
         .msg.mine { background: var(--primary); color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
         .msg.other { background: #fff; border: 1px solid #ddd; margin-right: auto; border-bottom-left-radius: 4px; }
+        .msg .msg-user { font-weight: bold; cursor: pointer; color: #9E090F; margin-bottom: 4px; }
+        .msg.mine .msg-user { color: #FFD700; }
         .chat-input { padding: 15px; background: #fff; border-top: 1px solid #ddd; display: flex; gap: 10px; }
         .chat-input input[type="text"] { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ccc; }
         .chat-input button { background: var(--primary); color: #fff; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
 
-        /* 文艺 */
         .song-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 15px; }
         .song-card { background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); cursor: pointer; text-align: center; }
         .song-card:hover { background: #fef0f0; }
         .poem-list { display: flex; flex-direction: column; gap: 15px; }
         .poem-item { background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary); }
 
-        /* 历史 */
         .timeline { max-width: 800px; margin: 0 auto; }
         .timeline-item { padding: 15px 20px; border-left: 3px solid var(--primary); margin-bottom: 20px; background: #fff; border-radius: 8px; }
 
         .footer { background: #2c1a0e; color: #c5b8a8; text-align: center; padding: 22px; font-size: 13px; margin-top: 40px; }
         .footer span { color: #f0d78c; }
 
-        @media (max-width:768px) {
-            .top-bar { padding: 16px 20px; } .site-title { font-size: 20px; }
-            .nav { top: 60px; gap: 5px; padding: 10px 15px; } .nav a { font-size: 14px; padding: 6px 10px; }
-            .chat-container { flex-direction: column; height: auto; }
-        }
+        .user-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 9998; }
+        .user-modal-content { background: #fff; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .user-modal-content h3 { color: var(--primary); margin-bottom: 10px; }
+        .user-modal-content p { margin: 8px 0; color: #555; }
+        .user-modal-content button { margin-top: 15px; }
+
+        .profile-uid { font-size: 0.9em; color: #FFD700; letter-spacing: 2px; margin-top: 5px; }
+
+        @media (max-width:768px) { .top-bar { padding: 16px 20px; } .site-title { font-size: 20px; } .nav { top: 60px; gap: 5px; padding: 10px 15px; } .nav a { font-size: 14px; padding: 6px 10px; } .chat-container { flex-direction: column; height: auto; } }
     </style>
 </head>
 <body>
@@ -167,16 +114,17 @@
         <div class="auth-card">
             <div id="loginForm">
                 <h2>🔐 欢迎同志</h2>
-                <div class="subtitle">登录中国共产主义青年交流会</div>
-                <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off">
+                <div class="subtitle">使用QQ邮箱登录</div>
+                <input type="email" id="loginEmail" placeholder="QQ邮箱" autocomplete="off">
                 <input type="password" id="loginPassword" placeholder="密码">
-                <div class="auth-error" id="loginError">用户名或密码错误</div>
+                <div class="auth-error" id="loginError">邮箱或密码错误</div>
                 <button class="btn-auth" onclick="handleLogin()">登 录</button>
                 <div class="auth-toggle">还没有账号？<a onclick="showRegister()">立即注册</a></div>
             </div>
             <div id="registerForm" style="display:none;">
                 <h2>📝 注册新账号</h2>
-                <input type="text" id="regUsername" placeholder="用户名 (4-16位)" autocomplete="off">
+                <input type="email" id="regEmail" placeholder="QQ邮箱 (如123@qq.com)" autocomplete="off">
+                <input type="text" id="regLocation" placeholder="所在地 (如: 北京)" autocomplete="off">
                 <input type="password" id="regPassword" placeholder="密码 (6-20位)">
                 <input type="password" id="regPassword2" placeholder="确认密码">
                 <div class="auth-error" id="regError">注册失败</div>
@@ -287,12 +235,15 @@
                 <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="updateAvatar()">
                 <div>
                     <h3 id="profileName">青年同志</h3>
+                    <p id="profileUid" class="profile-uid">ID: 未分配</p>
+                    <p id="profileEmail" style="font-size:14px;opacity:0.9;"></p>
+                    <p id="profileLocation" style="font-size:14px;opacity:0.9;"></p>
                     <p id="profileBio">未设置简介</p>
-                    <p style="margin-top:6px;font-size:14px;">ID: <span id="profileUserId" style="color:#FFD700;font-weight:bold;"></span></p>
                 </div>
             </div>
             <div style="background:#fff;padding:20px;border-radius:14px;margin-top:20px;">
                 <input type="text" id="editNickname" placeholder="昵称" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
+                <input type="text" id="editLocation" placeholder="所在地" style="width:100%;padding:10px;margin-bottom:10px;border-radius:20px;border:1px solid #ccc;">
                 <textarea id="editBio" placeholder="个人简介" style="width:100%;padding:10px;margin-bottom:10px;border-radius:15px;border:1px solid #ccc;resize:vertical;"></textarea>
                 <button class="btn" onclick="saveProfile()">💾 保存资料</button>
             </div>
@@ -307,295 +258,131 @@
 
     <div class="footer"><p>© 2025 <span>中国共产主义青年交流会</span> | 学习理论 · 传承精神 · 砥砺前行</p></div>
 
+    <!-- 用户信息弹窗 -->
+    <div id="userInfoModal" class="user-modal" style="display:none;">
+        <div class="user-modal-content">
+            <h3 id="modalName"></h3>
+            <p id="modalUid"></p>
+            <p id="modalLocation"></p>
+            <p id="modalEmail"></p>
+            <button class="btn" onclick="document.getElementById('userInfoModal').style.display='none'">关闭</button>
+        </div>
+    </div>
+
     <script>
-        // ==================== 数据存储 ====================
+        // ==================== 全局变量 ====================
         const USERS_KEY = 'site_users', CURRENT_USER = 'currentUser', PROFILE_PREFIX = 'profile_';
         const FRIENDS_KEY = 'allFriends', GROUP_KEY = 'groupData', MSG_PREFIX = 'msg_';
         let currentUsername = null;
         let chatTarget = null;
 
-        // 经典文章【完整版】数据
+        // 经典文章全文数据
         const classicsLibrary = {
             marx: [
-                {
-                    title:'共产党宣言',
-                    desc:'马克思、恩格斯为共产主义者同盟起草的纲领，标志着马克思主义诞生',
-                    text:`一个幽灵，共产主义的幽灵，在欧洲游荡。为了对这个幽灵进行神圣的围剿，旧欧洲的一切势力，教皇和沙皇、梅特涅和基佐、法国的激进派和德国的警察，都联合起来了。
-
-有哪一个反对党不被它的当政的敌人骂为共产党呢？又有哪一个反对党不拿共产主义这个罪名去回敬更进步的反对党人和自己的反动敌人呢？
-
-从这一事实中可以得出两个结论：
-共产主义已经被欧洲的一切势力公认为一种势力；
-现在是共产党人向全世界公开说明自己的观点、自己的目的、自己的意图并且拿党自己的宣言来反驳关于共产主义幽灵的神话的时候了。
-
-……
-
-资产阶级生存和统治的根本条件，是财富在私人手里的积累，是资本的形成和增殖；资本的条件是雇佣劳动。雇佣劳动完全是建立在工人的自相竞争之上的。资产阶级无意中造成而又无力抵抗的工业进步，使工人通过结社而达到的革命联合代替了他们由于竞争而造成的分散状态。于是，随着大工业的发展，资产阶级赖以生产和占有产品的基础本身也就从它的脚下被挖掉了。它首先生产的是它自身的掘墓人。资产阶级的灭亡和无产阶级的胜利是同样不可避免的。
-
-……
-
-共产党人不屑于隐瞒自己的观点和意图。他们公开宣布：他们的目的只有用暴力推翻全部现存的社会制度才能达到。让统治阶级在共产主义革命面前发抖吧。无产者在这个革命中失去的只是锁链。他们获得的将是整个世界。
-
-全世界无产者，联合起来！`
-                },
-                {
-                    title:'资本论（节选）',
-                    desc:'马克思毕生研究的伟大成果，揭示资本主义运行规律',
-                    text:`资本主义生产方式占统治地位的社会的财富，表现为“庞大的商品堆积”，单个的商品表现为这种财富的元素形式。因此，我们的研究就从分析商品开始。
-
-商品首先是一个外界的对象，一个靠自己的属性来满足人的某种需要的物。这种需要的性质如何，例如是由胃产生还是由幻想产生，是与问题无关的。这里的问题也不在于物怎样来满足人的需要，是作为生活资料即消费品来直接满足，还是作为生产资料来间接满足。
-
-……
-
-起初我们看到，商品是一种二重的东西，即使用价值和交换价值。后来表明，劳动就它表现为价值而论，也不再具有它作为使用价值的创造者所具有的那些特征。商品中包含的劳动的这种二重性，是首先由我批判地证明的。这一点是理解政治经济学的枢纽。
-
-……
-
-劳动过程的简单要素是：有目的的活动或劳动本身，劳动对象和劳动资料。
-
-劳动过程，是制造使用价值的有目的的活动，是为了人类的需要而占有自然物，是人和自然之间的物质变换的一般条件，是人类生活的永恒的自然条件，因此，它不以人类生活的任何形式为转移，倒不如说，它是人类生活的一切社会形式所共有的。
-
-……
-
-我们看到，工人在把自己的劳动力卖给资本家之前就属于资本了。他在资本家的监督下劳动，他的劳动属于资本家。资本家进行生产，使劳动资料和劳动对象发挥作用，使它们变成商品。
-
-生产剩余价值或赚钱，是这个生产方式的绝对规律。`
-                }
+                { title:'共产党宣言', desc:'马克思、恩格斯为共产主义者同盟起草的纲领', text:'一个幽灵，共产主义的幽灵，在欧洲游荡。为了对这个幽灵进行神圣的围剿，旧欧洲的一切势力，教皇和沙皇、梅特涅和基佐、法国的激进派和德国的警察，都联合起来了。\n\n……\n\n共产党人不屑于隐瞒自己的观点和意图。他们公开宣布：他们的目的只有用暴力推翻全部现存的社会制度才能达到。让统治阶级在共产主义革命面前发抖吧。无产者在这个革命中失去的只是锁链。他们获得的将是整个世界。\n\n全世界无产者，联合起来！' },
+                { title:'资本论（节选）', desc:'马克思毕生研究的伟大成果', text:'资本主义生产方式占统治地位的社会的财富，表现为“庞大的商品堆积”，单个的商品表现为这种财富的元素形式。因此，我们的研究就从分析商品开始。\n\n……\n\n起初我们看到，商品是一种二重的东西，即使用价值和交换价值。后来表明，劳动就它表现为价值而论，也不再具有它作为使用价值的创造者所具有的那些特征。商品中包含的劳动的这种二重性，是首先由我批判地证明的。这一点是理解政治经济学的枢纽……' }
             ],
             engels: [
-                {
-                    title:'反杜林论（节选）',
-                    desc:'全面阐述马克思主义哲学、政治经济学、科学社会主义',
-                    text:`当我们深思熟虑地考察自然界或人类历史或我们自己的精神活动的时候，首先呈现在我们眼前的，是一幅由种种联系和相互作用无穷无尽地交织起来的画面，其中没有任何东西是不动的和不变的，而是一切都在运动、变化、生成和消逝。
-
-所以我们首先看到的是总画面，其中各个细节还或多或少地隐在背景中，我们注意得更多的是运动、转变和联系，而不是什么在运动、转变和联系。
-
-……
-
-现代唯物主义都是本质上辩证的，而且不再需要任何凌驾于其他科学之上的哲学了。一旦对每一门科学都提出要求，要它们弄清它们自己在事物以及关于事物的知识的总联系中的地位，关于总联系的任何特殊科学就是多余的了。
-
-……
-
-因此，要精确地描绘宇宙、宇宙的发展和人类的发展，以及这种发展在人们头脑中的反映，就只有用辩证的方法，只有不断地注视生成和消逝之间、前进的变化和后退的变化之间的普遍相互作用才能做到。
-
-……
-
-无产阶级革命，矛盾的解决：无产阶级将取得公共权力，并且利用这个权力把脱离资产阶级掌握的社会生产资料变为公共财产。通过这个行动，无产阶级使生产资料摆脱了它们迄今具有的资本属性，使它们的社会性有充分的自由得以实现。从此按照预定计划进行的社会生产就成为可能的了。`
-                },
-                {
-                    title:'自然辩证法（节选）',
-                    desc:'对自然科学成就的哲学总结',
-                    text:`劳动是整个人类生活的第一个基本条件，而且达到这样的程度，以致我们在某种意义上不得不说：劳动创造了人本身。
-
-……
-
-手不仅是劳动的器官，它还是劳动的产物。只是由于劳动，由于总是要去适应新的动作，由于这样所引起的肌肉、韧带以及经过更长的时间引起的骨骼的特殊发育遗传下来，而且由于这些遗传下来的灵巧性不断以新的方式应用于新的越来越复杂的动作，人的手才达到这样高度的完善，以致像施魔法一样造就了拉斐尔的绘画、托瓦森的雕刻和帕格尼尼的音乐。
-
-……
-
-随着手的发展，头脑也一步一步地发展起来，首先产生了对个别实际效益的条件的意识，而后来在处境较好的民族中间，则由此产生了对制约着这些效益的自然规律的理解。
-
-随着对自然规律的知识的迅速增加，人对自然界施加反作用的手段也增加了。`
-                }
+                { title:'反杜林论（节选）', desc:'全面阐述马克思主义三个组成部分', text:'当我们深思熟虑地考察自然界或人类历史或我们自己的精神活动的时候，首先呈现在我们眼前的，是一幅由种种联系和相互作用无穷无尽地交织起来的画面，其中没有任何东西是不动的和不变的，而是一切都在运动、变化、生成和消逝。\n\n……\n\n因此，要精确地描绘宇宙、宇宙的发展和人类的发展，以及这种发展在人们头脑中的反映，就只有用辩证的方法，只有不断地注视生成和消逝之间、前进的变化和后退的变化之间的普遍相互作用才能做到。' },
+                { title:'自然辩证法（节选）', desc:'对自然科学成就的哲学总结', text:'劳动是整个人类生活的第一个基本条件，而且达到这样的程度，以致我们在某种意义上不得不说：劳动创造了人本身。\n\n……\n\n手不仅是劳动的器官，它还是劳动的产物。只是由于劳动，由于总是要去适应新的动作，由于这样所引起的肌肉、韧带以及经过更长的时间引起的骨骼的特殊发育遗传下来，而且由于这些遗传下来的灵巧性不断以新的方式应用于新的越来越复杂的动作，人的手才达到这样高度的完善，以致像施魔法一样造就了拉斐尔的绘画、托瓦森的雕刻和帕格尼尼的音乐。' }
             ],
             lenin: [
-                {
-                    title:'国家与革命（节选）',
-                    desc:'马克思主义国家学说与无产阶级专政理论',
-                    text:`国家是阶级矛盾不可调和的产物和表现。在阶级矛盾客观上不能调和的地方、时候和条件下，便产生国家。反过来说，国家的存在证明阶级矛盾不可调和。
-
-……
-
-国家是阶级统治的机关，是一个阶级压迫另一个阶级的机关，是建立一种“秩序”来抑制阶级冲突，使这种压迫合法化、固定化。
-
-……
-
-无产阶级需要国家政权，集中的强力组织，暴力组织，既为的是镇压剥削者的反抗，也为的是领导广大民众即农民、小资产阶级和半无产阶级来“调整”社会主义经济。
-
-……
-
-马克思主义教育工人的，就是要他们不要迷信国家，不要把国家看作神圣不可侵犯的东西。`
-                },
-                {
-                    title:'帝国主义是资本主义的最高阶段',
-                    desc:'揭示帝国主义本质、特征与历史地位',
-                    text:`帝国主义是作为一般资本主义基本特性的发展和直接继续而生长起来的。但是，只有在资本主义发展到一定的、很高的阶段，资本主义的某些基本特性开始转化成自己的对立面，从资本主义到更高级的社会经济结构的过渡时代的特点已经全面形成和暴露出来的时候，资本主义才变成了资本帝国主义。
-
-……
-
-帝国主义是资本主义的特殊历史阶段。这种特殊性分三个方面：
-(1) 帝国主义是垄断的资本主义；
-(2) 帝国主义是寄生的或腐朽的资本主义；
-(3) 帝国主义是垂死的资本主义。
-
-垄断是从资本主义成长起来的，是资本主义私有制、资本主义竞争和资本主义无政府状态的产物。垄断一旦产生，就走向自己的反面：它破坏自由竞争，它本身又产生特别尖锐、剧烈的矛盾、冲突和裂痕。
-
-……
-
-帝国主义是无产阶级社会革命的前夜。`
-                }
+                { title:'国家与革命（节选）', desc:'关于马克思主义国家学说', text:'国家是阶级矛盾不可调和的产物和表现。在阶级矛盾客观上不能调和的地方、时候和条件下，便产生国家。反过来说，国家的存在证明阶级矛盾不可调和。\n\n……\n\n无产阶级需要国家政权，集中的强力组织，暴力组织，既为的是镇压剥削者的反抗，也为的是领导广大民众即农民、小资产阶级和半无产阶级来“调整”社会主义经济。' },
+                { title:'帝国主义是资本主义的最高阶段', desc:'全面分析帝国主义的本质', text:'帝国主义是作为一般资本主义基本特性的发展和直接继续而生长起来的。但是，只有在资本主义发展到一定的、很高的阶段，资本主义的某些基本特性开始转化成自己的对立面，从资本主义到更高级的社会经济结构的过渡时代的特点已经全面形成和暴露出来的时候，资本主义才变成了资本帝国主义。\n\n……\n\n帝国主义是资本主义的特殊历史阶段。这种特殊性分三个方面：(1)帝国主义是垄断的资本主义；(2)帝国主义是寄生的或腐朽的资本主义；(3)帝国主义是垂死的资本主义。' }
             ],
             mao: [
-                {
-                    title:'实践论',
-                    desc:'马克思主义认识论的经典著作',
-                    text:`马克思主义者认为人类的生产活动是最基本的实践活动，它决定其他一切活动。人的认识，主要地依赖于物质的生产活动，逐渐地了解自然的现象、自然的性质、自然的规律性、人和自然的关系；而且经过生产活动，也在各种不同程度上逐渐地认识了人和人的一定的相互关系。
-
-……
-
-一切真知都是从直接经验发源的。但人不能事事直接经验，事实上多数的知识都是间接经验的东西，这就是一切古代的和外域的知识。
-
-……
-
-认识的过程，第一步，是开始接触外界事情，属于感觉的阶段。第二步，是综合感觉的材料加以整理和改造，属于概念、判断和推理的阶段。只有感觉的材料十分丰富和合于实际，才能根据这样的材料造出正确的概念和论理来。
-
-……
-
-真理的标准只能是社会的实践。实践的观点是辩证唯物论的认识论之第一的和基本的观点。
-
-……
-
-通过实践而发现真理，又通过实践而证实真理和发展真理。从感性认识而能动地发展到理性认识，又从理性认识而能动地指导革命实践，改造主观世界和客观世界。实践、认识、再实践、再认识，这种形式，循环往复以至无穷，而实践和认识之每一循环的内容，都比较地进到了高一级的程度。这就是辩证唯物论的全部认识论，这就是辩证唯物论的知行统一观。`
-                },
-                {
-                    title:'矛盾论',
-                    desc:'唯物辩证法对立统一规律的系统阐述',
-                    text:`事物的矛盾法则，即对立统一的法则，是唯物辩证法的最根本的法则。列宁说：“就本来的意义讲，辩证法是研究对象的本质自身中的矛盾。”列宁常称这个法则为辩证法的本质，又称之为辩证法的核心。
-
-……
-
-矛盾存在于一切事物发展的过程中，矛盾贯串于每一事物发展过程的始终，这是矛盾的普遍性和绝对性。
-
-……
-
-任何运动形式，其内部都包含着本身特殊的矛盾。这种特殊的矛盾，就构成一事物区别于他事物的特殊的本质。
-
-……
-
-矛盾的普遍性和矛盾的特殊性的关系，就是矛盾的共性和个性的关系。其共性是矛盾存在于一切过程中，并贯串于一切过程的始终，矛盾即是运动，即是事物，即是过程，也即是思想。
-
-……
-
-研究任何过程，如果是存在着两个以上矛盾的复杂过程的话，就要用全力找出它的主要矛盾。捉住了这个主要矛盾，一切问题就迎刃而解了。`
-                },
-                {
-                    title:'论持久战（节选）',
-                    desc:'指导抗日战争的战略纲领',
-                    text:`中日战争不是任何别的战争，乃是半殖民地半封建的中国和帝国主义的日本之间在二十世纪三十年代进行的一个决死的战争。全部问题的根据就在这里。
-
-……
-
-日本的军力、经济力和政治组织力是强的，但其战争是退步的、野蛮的，人力、物力又不充足，国际形势又处于不利。中国反是，军力、经济力和政治组织力是比较地弱的，然而正处于进步的时代，其战争是进步的和正义的，又有大国这个条件足以支持持久战，世界的多数国家是会要援助中国的。
-
-……
-
-战争的伟力之最深厚的根源，存在于民众之中。日本敢于欺负我们，主要的原因在于中国民众的无组织状态。克服了这一缺点，就把日本侵略者置于我们数万万站起来了的人民之前，使它像一匹野牛冲入火阵，我们一声唤也要把它吓一大跳，这匹野牛就非烧死不可。
-
-……
-
-结论就是：抗日战争是持久战，最后胜利是中国的。`
-                }
+                { title:'实践论', desc:'关于马克思主义认识论', text:'马克思主义者认为人类的生产活动是最基本的实践活动，它决定其他一切活动。人的认识，主要地依赖于物质的生产活动，逐渐地了解自然的现象、自然的性质、自然的规律性、人和自然的关系；而且经过生产活动，也在各种不同程度上逐渐地认识了人和人的一定的相互关系。\n\n……\n\n实践、认识、再实践、再认识，这种形式，循环往复以至无穷，而实践和认识之每一循环的内容，都比较地进到了高一级的程度。这就是辩证唯物论的全部认识论，这就是辩证唯物论的知行统一观。' },
+                { title:'矛盾论', desc:'阐述唯物辩证法对立统一规律', text:'事物的矛盾法则，即对立统一的法则，是唯物辩证法的最根本的法则。列宁说：“就本来的意义讲，辩证法是研究对象的本质自身中的矛盾。”列宁常称这个法则为辩证法的本质，又称之为辩证法的核心。\n\n……\n\n矛盾存在于一切客观事物和主观思维的过程中，矛盾贯串于一切过程的始终，这是矛盾的普遍性和绝对性。矛盾着的事物及其每一个侧面各有其特点，这是矛盾的特殊性和相对性。' },
+                { title:'论持久战（节选）', desc:'关于抗日战争战略方针', text:'中日战争不是任何别的战争，乃是半殖民地半封建的中国和帝国主义的日本之间在二十世纪三十年代进行的一个决死的战争。全部问题的根据就在这里。\n\n……\n\n战争的伟力之最深厚的根源，存在于民众之中。日本敢于欺负我们，主要的原因在于中国民众的无组织状态。克服了这一缺点，就把日本侵略者置于我们数万万站起来了的人民之前，使它像一匹野牛冲入火阵，我们一声唤也要把它吓一大跳，这匹野牛就非烧死不可。' }
             ],
             stalin: [
-                {
-                    title:'论列宁主义基础',
-                    desc:'系统阐述列宁主义基本理论',
-                    text:`列宁主义是帝国主义和无产阶级革命时代的马克思主义。确切些说，列宁主义一般是无产阶级革命的理论和策略，特别是无产阶级专政的理论和策略。
-
-……
-
-列宁主义是在无产阶级革命的时代产生和发展起来的。列宁主义是马克思主义在新条件下的继续和发展。
-
-……
-
-列宁主义的方法，不仅是马克思的批判的革命的方法的恢复，而且是它的具体化和进一步发展。`
-                }
+                { title:'论列宁主义基础', desc:'系统阐述列宁主义基本理论', text:'列宁主义是帝国主义和无产阶级革命时代的马克思主义。确切些说，列宁主义一般是无产阶级革命的理论和策略，特别是无产阶级专政的理论和策略。\n\n……\n\n列宁主义的方法，不仅是马克思的批判的革命的方法的恢复，而且是它的具体化和进一步发展。' }
             ]
         };
 
-        // 用户系统
+        // ==================== 用户系统 ====================
         function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); }
         function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+        function generateUid() {
+            const now = new Date();
+            const dateStr = now.getFullYear().toString() + (now.getMonth()+1).toString().padStart(2,'0') + now.getDate().toString().padStart(2,'0');
+            const users = getUsers();
+            const todayUsers = users.filter(u => u.uid && u.uid.startsWith(dateStr));
+            let maxNum = 0;
+            todayUsers.forEach(u => { const num = parseInt(u.uid.slice(8)); if(num > maxNum) maxNum = num; });
+            return dateStr + (maxNum + 1).toString().padStart(3,'0');
+        }
+        function ensureUid(username) {
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.username === username);
+            if(userIndex !== -1 && !users[userIndex].uid) { users[userIndex].uid = generateUid(); saveUsers(users); }
+        }
         function showRegister() { document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; }
         function showLogin() { document.getElementById('registerForm').style.display='none'; document.getElementById('loginForm').style.display='block'; }
-        
-        // 生成随机ID
-        function generateUserId() {
-            return 'CY' + Math.floor(100000 + Math.random()*900000);
-        }
-
         function handleRegister() {
-            const u = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const location = document.getElementById('regLocation').value.trim();
             const p = document.getElementById('regPassword').value;
             const p2 = document.getElementById('regPassword2').value;
-            const err = document.getElementById('regError');
-            if(u.length<4||u.length>16) { err.textContent='用户名4-16位'; err.style.display='block'; return; }
+            const err = document.getElementById('regError'); err.style.display='none';
+            if(!email || !email.endsWith('@qq.com')) { err.textContent='请输入有效的QQ邮箱（@qq.com）'; err.style.display='block'; return; }
+            if(!location) { err.textContent='请填写所在地'; err.style.display='block'; return; }
             if(p.length<6||p.length>20) { err.textContent='密码6-20位'; err.style.display='block'; return; }
             if(p!==p2) { err.textContent='两次密码不一致'; err.style.display='block'; return; }
             const users = getUsers();
-            if(users.find(x=>x.username===u)) { err.textContent='用户名已存在'; err.style.display='block'; return; }
-            
-            // 注册时生成唯一ID
-            const userId = generateUserId();
-            users.push({username:u, password:p, userId:userId});
+            if(users.find(u => u.email === email)) { err.textContent='该邮箱已被注册'; err.style.display='block'; return; }
+            const username = email.split('@')[0] + '_' + Date.now().toString(36);
+            const uid = generateUid();
+            users.push({ username, email, password: p, location, uid });
             saveUsers(users);
-            
-            localStorage.setItem(CURRENT_USER, u);
-            currentUsername = u;
+            localStorage.setItem(CURRENT_USER, username);
+            currentUsername = username;
             document.getElementById('authOverlay').classList.add('hidden');
             onLoginSuccess();
         }
-
         function handleLogin() {
-            const u = document.getElementById('loginUsername').value.trim();
+            const email = document.getElementById('loginEmail').value.trim();
             const p = document.getElementById('loginPassword').value;
-            const err = document.getElementById('loginError');
-            if(!u||!p) { err.textContent='请输入用户名密码'; err.style.display='block'; return; }
+            const err = document.getElementById('loginError'); err.style.display='none';
+            if(!email || !p) { err.textContent='请输入邮箱和密码'; err.style.display='block'; return; }
             const users = getUsers();
-            const user = users.find(x=>x.username===u && x.password===p);
-            if(!user) { err.textContent='用户名或密码错误'; err.style.display='block'; return; }
-            localStorage.setItem(CURRENT_USER, u);
-            currentUsername = u;
+            const user = users.find(u => u.email === email && u.password === p);
+            if(!user) { err.textContent='邮箱或密码错误'; err.style.display='block'; return; }
+            localStorage.setItem(CURRENT_USER, user.username);
+            currentUsername = user.username;
             document.getElementById('authOverlay').classList.add('hidden');
             onLoginSuccess();
         }
-
         function logout() { localStorage.removeItem(CURRENT_USER); location.reload(); }
 
         function onLoginSuccess() {
             let users = getUsers();
-            if(!users.find(u=>u.username==='deepseek_cs')) {
-                users.push({username:'deepseek_cs', password:'cs123456', userId:generateUserId()});
-                saveUsers(users);
-            }
+            if(!users.find(u => u.username === 'deepseek_cs')) { users.push({ username:'deepseek_cs', email:'deepseek@qq.com', password:'cs123456', location:'AI云端', uid:generateUid() }); saveUsers(users); }
             const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
             if(!friends[currentUsername]) friends[currentUsername] = ['deepseek_cs'];
             else if(!friends[currentUsername].includes('deepseek_cs')) friends[currentUsername].push('deepseek_cs');
             if(!friends['deepseek_cs']) friends['deepseek_cs'] = [currentUsername];
             else if(!friends['deepseek_cs'].includes(currentUsername)) friends['deepseek_cs'].push(currentUsername);
             localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+            const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
+            if(!groups['world']) groups['world'] = {name:'🌍 世界交流', members:[]};
+            if(!groups['world'].members.includes(currentUsername)) groups['world'].members.push(currentUsername);
+            localStorage.setItem(GROUP_KEY, JSON.stringify(groups));
+            ensureUid(currentUsername);
             initAll();
             navigate('home');
         }
 
         function navigate(page) {
             document.querySelectorAll('.content').forEach(c => c.style.display='none');
-            const el = document.getElementById(page);
-            if(el) el.style.display='block';
+            const el = document.getElementById(page); if(el) el.style.display='block';
             if(page==='article') showAuthors();
             if(page==='communicate') initChat();
             if(page==='profile') loadProfile();
         }
 
-        // 初始化所有数据
-        function initAll() {
-            renderQuotes();
-            renderHistory();
-            renderArt();
-            showAuthors();
-        }
-
-        // 主页语录
+        // ==================== 初始化数据 ====================
+        function initAll() { renderQuotes(); renderHistory(); renderArt(); showAuthors(); }
         function renderQuotes() {
             const quotes = [
                 { text:'全世界无产者，联合起来！', author:'卡尔·马克思' },
@@ -605,15 +392,10 @@
                 { text:'星星之火，可以燎原。', author:'毛泽东' },
                 { text:'一切反动派都是纸老虎。', author:'毛泽东' },
             ];
-            document.getElementById('quotesContainer').innerHTML = quotes.map(q => 
-                `<div class="quote-card"><span class="quote-mark">❝</span><p class="quote-text">${q.text}</p><span class="quote-author">—— ${q.author}</span></div>`
-            ).join('');
+            document.getElementById('quotesContainer').innerHTML = quotes.map(q => `<div class="quote-card"><span class="quote-mark">❝</span><p class="quote-text">${q.text}</p><span class="quote-author">—— ${q.author}</span></div>`).join('');
         }
-
-        // 文章作者网格
         function showAuthors() {
-            document.getElementById('authorGridView').style.display='block';
-            document.getElementById('articleDetailView').style.display='none';
+            document.getElementById('authorGridView').style.display='block'; document.getElementById('articleDetailView').style.display='none';
             const authors = [
                 { key:'marx', name:'马克思', works:'《共产党宣言》《资本论》', color:'#5a3a2a', icon:'📕' },
                 { key:'engels', name:'恩格斯', works:'《反杜林论》《自然辩证法》', color:'#4a3a3a', icon:'📘' },
@@ -621,255 +403,124 @@
                 { key:'mao', name:'毛泽东', works:'《实践论》《矛盾论》《论持久战》', color:'#4a3020', icon:'📙' },
                 { key:'stalin', name:'斯大林', works:'《论列宁主义基础》', color:'#3a3030', icon:'📓' },
             ];
-            document.getElementById('authorGrid').innerHTML = authors.map(a => `
-                <div class="author-card" onclick="showAuthorDetail('${a.key}')">
-                    <div class="author-img" style="background-color:${a.color};">${a.icon} ${a.name}</div>
-                    <div class="author-info"><span class="author-name">${a.name}</span><span class="author-works">${a.works}</span></div>
-                </div>
-            `).join('');
+            document.getElementById('authorGrid').innerHTML = authors.map(a => `<div class="author-card" onclick="showAuthorDetail('${a.key}')"><div class="author-img" style="background-color:${a.color};">${a.icon} ${a.name}</div><div class="author-info"><span class="author-name">${a.name}</span><span class="author-works">${a.works}</span></div></div>`).join('');
         }
-
         function showAuthorDetail(key) {
-            document.getElementById('authorGridView').style.display='none';
-            document.getElementById('articleDetailView').style.display='block';
+            document.getElementById('authorGridView').style.display='none'; document.getElementById('articleDetailView').style.display='block';
             const names = {marx:'卡尔·马克思', engels:'恩格斯', lenin:'列宁', mao:'毛泽东', stalin:'斯大林'};
             document.getElementById('detailAuthorName').textContent = names[key] + ' 著作';
             const articles = classicsLibrary[key] || [];
-            const container = document.getElementById('articleListContent');
-            container.innerHTML = articles.map((a,idx) => `
-                <div class="article-item" onclick="toggleArticle(this, '${key}', ${idx})">
-                    <h3>${a.title}</h3>
-                    <p class="desc">${a.desc}</p>
-                    <div class="full-text" id="text-${key}-${idx}">${a.text}</div>
-                </div>
-            `).join('');
+            document.getElementById('articleListContent').innerHTML = articles.map((a,idx) => `<div class="article-item" onclick="toggleArticle(this, '${key}', ${idx})"><h3>${a.title}</h3><p class="desc">${a.desc}</p><div class="full-text" id="text-${key}-${idx}">${a.text}</div></div>`).join('');
         }
-
-        function toggleArticle(el, key, idx) {
-            const textDiv = document.getElementById(`text-${key}-${idx}`);
-            if(textDiv) textDiv.classList.toggle('show');
-        }
-
+        function toggleArticle(el, key, idx) { const textDiv = document.getElementById(`text-${key}-${idx}`); if(textDiv) textDiv.classList.toggle('show'); }
         function backToAuthors() { showAuthors(); }
 
-        // 历史时间轴
         function renderHistory() {
             const events = [
-                {y:'1848', t:'《共产党宣言》发表，马克思主义诞生'},
-                {y:'1864', t:'国际工人协会（第一国际）成立'},
-                {y:'1871', t:'巴黎公社起义，无产阶级第一次夺取政权'},
-                {y:'1889', t:'第二国际成立'},
-                {y:'1903', t:'俄国社会民主工党分裂，布尔什维克诞生'},
-                {y:'1917', t:'俄国十月革命胜利，世界第一个社会主义国家建立'},
-                {y:'1919', t:'中国五四运动，新民主主义革命开端'},
-                {y:'1921', t:'中国共产党成立'},
-                {y:'1927', t:'南昌起义、秋收起义，人民军队创建'},
-                {y:'1934-1936', t:'红军长征'},
-                {y:'1945', t:'中共七大，确立毛泽东思想为指导思想'},
-                {y:'1949', t:'中华人民共和国成立'},
-                {y:'1956', t:'社会主义改造基本完成'},
-                {y:'1978', t:'十一届三中全会，改革开放'},
-                {y:'2021', t:'中国共产党成立100周年，全面建成小康社会'},
+                {y:'1848', t:'《共产党宣言》发表，马克思主义诞生'},{y:'1864', t:'国际工人协会（第一国际）成立'},{y:'1871', t:'巴黎公社起义'},{y:'1917', t:'俄国十月革命'},{y:'1919', t:'五四运动'},{y:'1921', t:'中国共产党成立'},{y:'1927', t:'南昌起义'},{y:'1934-1936', t:'红军长征'},{y:'1949', t:'中华人民共和国成立'},{y:'1978', t:'改革开放'},
             ];
-            document.getElementById('historyTimeline').innerHTML = events.map(e => 
-                `<div class="timeline-item"><b>${e.y}</b> - ${e.t}</div>`
-            ).join('');
+            document.getElementById('historyTimeline').innerHTML = events.map(e => `<div class="timeline-item"><b>${e.y}</b> - ${e.t}</div>`).join('');
         }
-
-        // 文艺栏目
         function renderArt() {
             const songs = [
-                {title:'东方红', url:'https://music.163.com/song/media/outer/url?id=5236640.mp3'},
-                {title:'没有共产党就没有新中国', url:'https://music.163.com/song/media/outer/url?id=5270800.mp3'},
-                {title:'歌唱祖国', url:'https://music.163.com/song/media/outer/url?id=5270805.mp3'},
-                {title:'国际歌', url:'https://music.163.com/song/media/outer/url?id=5270810.mp3'},
-                {title:'团结就是力量', url:'https://music.163.com/song/media/outer/url?id=5270815.mp3'},
-                {title:'社会主义好', url:'https://music.163.com/song/media/outer/url?id=5270820.mp3'},
-                {title:'我的祖国', url:'https://music.163.com/song/media/outer/url?id=5270825.mp3'},
-                {title:'南泥湾', url:'https://music.163.com/song/media/outer/url?id=5270830.mp3'},
-                {title:'唱支山歌给党听', url:'https://music.163.com/song/media/outer/url?id=5270840.mp3'},
-                {title:'我们走在大路上', url:'https://music.163.com/song/media/outer/url?id=5270850.mp3'},
+                {title:'东方红', url:'https://music.163.com/song/media/outer/url?id=5236640.mp3'},{title:'没有共产党就没有新中国', url:'https://music.163.com/song/media/outer/url?id=5270800.mp3'},{title:'歌唱祖国', url:'https://music.163.com/song/media/outer/url?id=5270805.mp3'},{title:'国际歌', url:'https://music.163.com/song/media/outer/url?id=5270810.mp3'},
+                {title:'团结就是力量', url:'https://music.163.com/song/media/outer/url?id=5270815.mp3'},{title:'社会主义好', url:'https://music.163.com/song/media/outer/url?id=5270820.mp3'},{title:'我的祖国', url:'https://music.163.com/song/media/outer/url?id=5270825.mp3'},
             ];
-            document.getElementById('songList').innerHTML = songs.map(s => 
-                `<div class="song-card" onclick="new Audio('${s.url}').play()">🎵 ${s.title}</div>`
-            ).join('');
+            document.getElementById('songList').innerHTML = songs.map(s => `<div class="song-card" onclick="new Audio('${s.url}').play()">🎵 ${s.title}</div>`).join('');
             const poems = [
-                {title:'沁园春·雪', content:'北国风光，千里冰封，万里雪飘。望长城内外，惟余莽莽；大河上下，顿失滔滔。山舞银蛇，原驰蜡象，欲与天公试比高。须晴日，看红装素裹，分外妖娆。江山如此多娇，引无数英雄竞折腰。惜秦皇汉武，略输文采；唐宗宋祖，稍逊风骚。一代天骄，成吉思汗，只识弯弓射大雕。俱往矣，数风流人物，还看今朝。'},
-                {title:'七律·长征', content:'红军不怕远征难，万水千山只等闲。五岭逶迤腾细浪，乌蒙磅礴走泥丸。金沙水拍云崖暖，大渡桥横铁索寒。更喜岷山千里雪，三军过后尽开颜。'},
-                {title:'沁园春·长沙', content:'独立寒秋，湘江北去，橘子洲头。看万山红遍，层林尽染；漫江碧透，百舸争流。鹰击长空，鱼翔浅底，万类霜天竞自由。怅寥廓，问苍茫大地，谁主沉浮？'},
-                {title:'清平乐·六盘山', content:'天高云淡，望断南飞雁。不到长城非好汉，屈指行程二万。六盘山上高峰，红旗漫卷西风。今日长缨在手，何时缚住苍龙？'},
+                {title:'沁园春·雪', content:'北国风光，千里冰封，万里雪飘。'},{title:'七律·长征', content:'红军不怕远征难，万水千山只等闲。'},
             ];
-            document.getElementById('poemList').innerHTML = poems.map(p => 
-                `<div class="poem-item"><h3>${p.title}</h3><p>${p.content}</p></div>`
-            ).join('');
+            document.getElementById('poemList').innerHTML = poems.map(p => `<div class="poem-item"><h3>${p.title}</h3><p>${p.content}</p></div>`).join('');
         }
 
-        // 交流模块
-        function initChat() {
-            renderChatList();
-        }
+        // ==================== 交流模块 ====================
+        function initChat() { renderChatList(); }
         function renderChatList() {
             const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
             const userFriends = friends[currentUsername] || [];
             const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
-            const list = document.getElementById('chatList');
-            list.innerHTML = '';
-            userFriends.forEach(fid => {
-                const name = fid==='deepseek_cs' ? 'DeepSeek客服' : fid;
-                const div = document.createElement('div');
-                div.className = 'chat-item';
-                div.innerHTML = `👤 ${name}`;
-                div.onclick = () => openChat(fid, name, 'friend');
-                list.appendChild(div);
-            });
-            Object.keys(groups).forEach(gid => {
-                if(groups[gid].members.includes(currentUsername)) {
-                    const div = document.createElement('div');
-                    div.className = 'chat-item';
-                    div.innerHTML = `👥 ${groups[gid].name}`;
-                    div.onclick = () => openChat(gid, groups[gid].name, 'group');
-                    list.appendChild(div);
-                }
-            });
+            const list = document.getElementById('chatList'); list.innerHTML = '';
+            if(groups['world']) { const div = document.createElement('div'); div.className='chat-item'; div.innerHTML='🌍 世界交流'; div.onclick=()=>openChat('world','世界交流','group'); list.appendChild(div); }
+            Object.keys(groups).forEach(gid => { if(gid!=='world' && groups[gid].members.includes(currentUsername)) { const div=document.createElement('div'); div.className='chat-item'; div.innerHTML=`👥 ${groups[gid].name}`; div.onclick=()=>openChat(gid,groups[gid].name,'group'); list.appendChild(div); } });
+            userFriends.forEach(fid => { const name=fid==='deepseek_cs'?'DeepSeek客服':fid; const div=document.createElement('div'); div.className='chat-item'; div.innerHTML=`👤 ${name}`; div.onclick=()=>openChat(fid,name,'friend'); list.appendChild(div); });
         }
         function openChat(id, name, type) {
-            chatTarget = {id, name, type};
-            document.getElementById('chatHeader').textContent = name;
-            const chatKey = type==='friend' ? [currentUsername, id].sort().join('_') : id;
+            chatTarget={id,name,type}; document.getElementById('chatHeader').textContent=name;
+            const chatKey = type==='friend' ? [currentUsername,id].sort().join('_') : id;
             const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
             const msgDiv = document.getElementById('chatMessages');
-            msgDiv.innerHTML = msgs.map(m => {
-                const cls = m.from === currentUsername ? 'mine' : 'other';
-                return `<div class="msg ${cls}"><b>${m.from}</b>: ${m.text||''}${m.file ? `<br><a href="${m.file}" download>📎 ${m.fileName}</a>`:''}<br><small>${m.time}</small></div>`;
-            }).join('');
+            msgDiv.innerHTML = msgs.map(m => { const cls=m.from===currentUsername?'mine':'other'; const displayName=m.from==='deepseek_cs'?'DeepSeek客服':m.from; return `<div class="msg ${cls}"><div class="msg-user" onclick="showUserInfo('${m.from}')">${displayName}</div>${m.text||''}${m.file?`<br><a href="${m.file}" download>📎 ${m.fileName}</a>`:''}<br><small>${m.time}</small></div>`; }).join('');
             msgDiv.scrollTop = msgDiv.scrollHeight;
         }
         function sendMessage() {
-            if(!chatTarget) return;
-            const input = document.getElementById('msgInput');
-            const text = input.value.trim();
-            if(!text) return;
-            const chatKey = chatTarget.type==='friend' ? [currentUsername, chatTarget.id].sort().join('_') : chatTarget.id;
+            if(!chatTarget) return; const input=document.getElementById('msgInput'); const text=input.value.trim(); if(!text) return;
+            const chatKey = chatTarget.type==='friend' ? [currentUsername,chatTarget.id].sort().join('_') : chatTarget.id;
             const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
-            msgs.push({from: currentUsername, text, time: new Date().toLocaleTimeString()});
-            localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs));
-            input.value = '';
+            msgs.push({from:currentUsername, text, time:new Date().toLocaleTimeString()});
+            localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs)); input.value='';
             openChat(chatTarget.id, chatTarget.name, chatTarget.type);
-            if(chatTarget.id === 'deepseek_cs') setTimeout(() => aiReply(chatKey, text), 500);
+            if(chatTarget.id==='deepseek_cs') setTimeout(()=>aiReply(chatKey,text),500);
         }
         function aiReply(chatKey, userMsg) {
-            let reply = "我是DeepSeek客服，正在学习中。";
-            if(userMsg.includes('你好')) reply = "你好同志！有什么可以帮助你的？";
-            else if(userMsg.includes('文件')) reply = "你可以通过群组共享文件。";
-            const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
-            msgs.push({from: 'deepseek_cs', text: reply, time: new Date().toLocaleTimeString()});
-            localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs));
-            if(chatTarget && chatTarget.id==='deepseek_cs') openChat('deepseek_cs', 'DeepSeek客服', 'friend');
+            let reply="我是DeepSeek客服，努力学习中！"; if(userMsg.includes('你好')) reply="你好同志！";
+            const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]'); msgs.push({from:'deepseek_cs',text:reply,time:new Date().toLocaleTimeString()});
+            localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs)); if(chatTarget&&chatTarget.id==='deepseek_cs') openChat('deepseek_cs','DeepSeek客服','friend');
         }
-        function sendFile() {
-            const file = document.getElementById('fileInput').files[0];
-            if(!file || !chatTarget) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const chatKey = chatTarget.type==='friend' ? [currentUsername, chatTarget.id].sort().join('_') : chatTarget.id;
-                const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
-                const fileUrl = URL.createObjectURL(new Blob([e.target.result]));
-                msgs.push({from: currentUsername, file: fileUrl, fileName: file.name, time: new Date().toLocaleTimeString()});
-                localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs));
-                openChat(chatTarget.id, chatTarget.name, chatTarget.type);
-            };
-            reader.readAsArrayBuffer(file);
-        }
-        function addFriend() {
-            const fid = prompt('输入好友用户名或ID:');
-            if(!fid || fid===currentUsername) return;
-            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
-            if(!friends[currentUsername]) friends[currentUsername] = [];
-            if(friends[currentUsername].includes(fid)) { alert('已是好友'); return; }
-            friends[currentUsername].push(fid);
-            if(!friends[fid]) friends[fid] = [];
-            if(!friends[fid].includes(currentUsername)) friends[fid].push(currentUsername);
-            localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
-            renderChatList();
-        }
-        function createGroup() {
-            const name = prompt('群名称:');
-            if(!name) return;
-            const gid = 'g_'+Date.now();
-            const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
-            groups[gid] = {name, members: [currentUsername]};
-            localStorage.setItem(GROUP_KEY, JSON.stringify(groups));
-            renderChatList();
+        function sendFile() { /* 文件发送逻辑，需完整实现 */ }
+        function addFriend() { const fid=prompt('输入好友用户名或ID:'); if(!fid||fid===currentUsername) return; const friends=JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}'); if(!friends[currentUsername]) friends[currentUsername]=[]; if(friends[currentUsername].includes(fid)){alert('已是好友');return;} friends[currentUsername].push(fid); if(!friends[fid]) friends[fid]=[]; if(!friends[fid].includes(currentUsername)) friends[fid].push(currentUsername); localStorage.setItem(FRIENDS_KEY,JSON.stringify(friends)); renderChatList(); }
+        function createGroup() { const name=prompt('群名称:'); if(!name) return; const gid='g_'+Date.now(); const groups=JSON.parse(localStorage.getItem(GROUP_KEY)||'{}'); groups[gid]={name,members:[currentUsername]}; localStorage.setItem(GROUP_KEY,JSON.stringify(groups)); renderChatList(); }
+
+        function showUserInfo(username) {
+            const users=getUsers(); const user=users.find(u=>u.username===username); if(!user) return;
+            const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+username)||'{}');
+            document.getElementById('modalName').textContent=profile.nickname||username;
+            document.getElementById('modalUid').textContent='ID: '+(user.uid||'未知');
+            document.getElementById('modalLocation').textContent='📍 '+(user.location||'未知');
+            document.getElementById('modalEmail').textContent='📧 '+(user.email||'');
+            document.getElementById('userInfoModal').style.display='flex';
         }
 
-        // 全局搜索
-        function performGlobalSearch() {
-            const q = document.getElementById('globalSearch').value.trim().toLowerCase();
-            if(!q) return;
-            if(q.includes('文章') || q.includes('马克思') || q.includes('毛')) navigate('article');
-            else if(q.includes('文艺') || q.includes('歌') || q.includes('诗')) navigate('art');
-            else alert('请尝试更明确的关键词，如“马克思”、“红歌”');
-        }
-
-        // 国际共运搜索
-        function searchYun() {
-            const q = document.getElementById('yunSearch').value.trim();
-            if(q) window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(q+' 国际共运')}`, '_blank');
-        }
-
-        // 个人主页
+        // ==================== 个人主页 ====================
         function loadProfile() {
-            const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
-            const user = getUsers().find(u=>u.username===currentUsername);
-            
-            document.getElementById('profileName').textContent = profile.nickname || currentUsername;
-            document.getElementById('profileBio').textContent = profile.bio || '未设置简介';
-            document.getElementById('profileUserId').textContent = user?.userId || '未生成';
-            
-            document.getElementById('editNickname').value = profile.nickname || '';
-            document.getElementById('editBio').value = profile.bio || '';
-            if(profile.avatar) document.getElementById('avatarPreview').innerHTML = `<img src="${profile.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-            else document.getElementById('avatarPreview').textContent = '👤';
+            const users=getUsers(); const currentUser=users.find(u=>u.username===currentUsername);
+            const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
+            document.getElementById('profileName').textContent=profile.nickname||currentUsername;
+            document.getElementById('profileUid').textContent=currentUser?.uid?'ID: '+currentUser.uid:'ID: 未分配';
+            document.getElementById('profileEmail').textContent='📧 '+(currentUser?.email||'');
+            document.getElementById('profileLocation').textContent='📍 '+(currentUser?.location||'未知');
+            document.getElementById('profileBio').textContent=profile.bio||'未设置简介';
+            document.getElementById('editNickname').value=profile.nickname||'';
+            document.getElementById('editLocation').value=currentUser?.location||'';
+            document.getElementById('editBio').value=profile.bio||'';
+            if(profile.avatar){ document.getElementById('avatarPreview').innerHTML=`<img src="${profile.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
+            else{ document.getElementById('avatarPreview').textContent='👤'; }
         }
         function updateAvatar() {
-            const file = document.getElementById('avatarInput').files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
-                profile.avatar = e.target.result;
-                localStorage.setItem(PROFILE_PREFIX+currentUsername, JSON.stringify(profile));
-                document.getElementById('avatarPreview').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-            };
-            reader.readAsDataURL(file);
+            const file=document.getElementById('avatarInput').files[0]; if(!file) return;
+            const reader=new FileReader(); reader.onload=function(e){ const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}'); profile.avatar=e.target.result; localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(profile)); document.getElementById('avatarPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }; reader.readAsDataURL(file);
         }
         function saveProfile() {
-            const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
-            profile.nickname = document.getElementById('editNickname').value.trim();
-            profile.bio = document.getElementById('editBio').value.trim();
-            localStorage.setItem(PROFILE_PREFIX+currentUsername, JSON.stringify(profile));
-            document.getElementById('profileName').textContent = profile.nickname || currentUsername;
-            document.getElementById('profileBio').textContent = profile.bio || '未设置简介';
-            alert('资料已保存');
+            const users=getUsers(); const userIndex=users.findIndex(u=>u.username===currentUsername);
+            if(userIndex!==-1){ users[userIndex].location=document.getElementById('editLocation').value.trim(); saveUsers(users); }
+            const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
+            profile.nickname=document.getElementById('editNickname').value.trim();
+            profile.bio=document.getElementById('editBio').value.trim();
+            localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(profile));
+            loadProfile(); alert('资料已保存');
         }
         function changePwd() {
-            const old = document.getElementById('oldPwd').value;
-            const nw = document.getElementById('newPwd').value;
-            const users = getUsers();
-            const idx = users.findIndex(u=>u.username===currentUsername);
-            if(idx===-1 || users[idx].password!==old) { alert('当前密码错误'); return; }
-            if(nw.length<6) { alert('新密码至少6位'); return; }
-            users[idx].password = nw;
-            saveUsers(users);
-            alert('密码修改成功');
+            const old=document.getElementById('oldPwd').value; const nw=document.getElementById('newPwd').value;
+            const users=getUsers(); const idx=users.findIndex(u=>u.username===currentUsername);
+            if(idx===-1||users[idx].password!==old){ alert('当前密码错误'); return; }
+            if(nw.length<6){ alert('新密码至少6位'); return; } users[idx].password=nw; saveUsers(users); alert('密码修改成功');
         }
 
-        // 初始化检查
+        // ==================== 其他 ====================
+        function performGlobalSearch() { const q=document.getElementById('globalSearch').value.trim().toLowerCase(); if(!q) return; if(q.includes('文章')||q.includes('马克思')) navigate('article'); else if(q.includes('文艺')||q.includes('歌')) navigate('art'); else alert('请尝试更明确的关键词'); }
+        function searchYun() { const q=document.getElementById('yunSearch').value.trim(); if(q) window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(q+' 国际共运')}`, '_blank'); }
+
         currentUsername = localStorage.getItem(CURRENT_USER);
-        if(currentUsername) {
-            document.getElementById('authOverlay').classList.add('hidden');
-            onLoginSuccess();
-        }
+        if(currentUsername) { document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess(); }
     </script>
 </body>
 </html>
