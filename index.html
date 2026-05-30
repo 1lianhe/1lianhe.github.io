@@ -53,6 +53,7 @@
             padding: 8px 16px;
             border-radius: 20px;
             transition: 0.3s;
+            cursor: pointer;
         }
 
         .nav a:hover {
@@ -85,9 +86,11 @@
             line-height: 1.8;
         }
 
-        .welcome-text strong {
+        .other-text {
+            font-size: 24px;
             color: #9E090F;
-            font-size: 22px;
+            font-weight: bold;
+            display: none;
         }
     </style>
 </head>
@@ -99,25 +102,25 @@
 </div>
 
 <div class="nav">
-    <a href="#">主页</a>
+    <a onclick="showHome()">主页</a>
     <a href="#">国际共运</a>
     <a href="#">文章</a>
     <a href="#">历史</a>
     <a href="#">文艺</a>
-    <a href="javascript:showOther()">其他</a>
+    <a onclick="showOther()">其他</a>
 </div>
 
 <div class="content">
-    <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
-    
-    <div class="welcome-text">
-        <strong>热烈欢迎各位同志加入中国共产主义青年交流会！</strong><br>
-        在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
-        愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
+    <div id="home">
+        <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
+        <div class="welcome-text">
+            <strong>热烈欢迎各位青年同志加入中国共产主义青年交流会！</strong><br>
+            在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
+            愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
+        </div>
     </div>
-</div>
 
- <div id="other" class="other-text">
+    <div id="other" class="other-text">
         中国共产主义青年交流会简称中共青
     </div>
 </div>
