@@ -16,7 +16,7 @@
             background-color: #ffffff;
         }
 
-        /* 顶部整条全红背景 */
+        /* 顶部全红条 */
         .top-bar {
             background-color: #C91F37;
             width: 100%;
@@ -26,21 +26,21 @@
             gap: 15px;
         }
 
-        /* 党徽（镰刀锤子） */
+        /* 党徽 */
         .party-logo {
             font-size: 36px;
             color: #FFFFFF;
         }
 
-        /* 标题：白色 */
+        /* 标题：改为深红色（更庄重） */
         .site-title {
             font-size: 26px;
             font-weight: bold;
-            color: #FFFFFF;
+            color: #9E090F; /* 深红 */
             letter-spacing: 1px;
         }
 
-        /* 导航栏 — 圆润优化版 */
+        /* 导航栏 */
         .nav {
             background-color: #ffffff;
             padding: 18px 35px;
@@ -49,26 +49,57 @@
             border-bottom: 2px solid #C91F37;
         }
 
-        /* 导航文字：圆润、柔和、好看 */
         .nav a {
             text-decoration: none;
             font-size: 17px;
             color: #333;
             font-weight: 500;
             padding: 8px 16px;
-            border-radius: 20px; /* 核心：圆角圆润 */
+            border-radius: 20px;
             transition: 0.3s;
         }
 
-        /* 鼠标悬浮效果 */
         .nav a:hover {
             color: #fff;
             background-color: #C91F37;
         }
 
-        /* 内容区 */
+        /* 主页内容区 */
         .content {
-            padding: 30px;
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        /* 搜索框 */
+        .search-box {
+            width: 70%;
+            max-width: 600px;
+            padding: 14px 25px;
+            font-size: 16px;
+            border: 2px solid #C91F37;
+            border-radius: 30px;
+            outline: none;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .search-box:focus {
+            box-shadow: 0 0 10px rgba(201, 31, 55, 0.2);
+        }
+
+        /* 欢迎贺词 */
+        .welcome-text {
+            font-size: 20px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .welcome-text strong {
+            color: #C91F37;
+            font-size: 22px;
         }
     </style>
 </head>
@@ -80,7 +111,7 @@
     <div class="site-title">中国共产主义青年交流会</div>
 </div>
 
-<!-- 导航菜单（已圆润） -->
+<!-- 导航菜单 -->
 <div class="nav">
     <a href="#">主页</a>
     <a href="#">国际共运</a>
@@ -90,9 +121,15 @@
     <a href="#">其他</a>
 </div>
 
-<!-- 内容区 -->
+<!-- 主页内容：搜索框 + 欢迎贺词 -->
 <div class="content">
-    这里以后放页面内容
+    <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
+    
+    <div class="welcome-text">
+        <strong>热烈欢迎各位青年同志加入中国共产主义青年交流会！</strong><br>
+        在这里，我们共同学习理论、传承红色精神、交流思想、增进友谊。<br>
+        愿我们以青春之名，担时代之责，不忘初心，砥砺前行！
+    </div>
 </div>
 
 </body>
