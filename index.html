@@ -16,9 +16,8 @@
             background-color: #ffffff;
         }
 
-        /* 顶部背景：改为深红色 ✅ */
         .top-bar {
-            background-color: #9E090F; /* 标准深红 */
+            background-color: #9E090F;
             width: 100%;
             padding: 22px 35px;
             display: flex;
@@ -26,13 +25,11 @@
             gap: 15px;
         }
 
-        /* 党徽 */
         .party-logo {
             font-size: 36px;
             color: #FFFFFF;
         }
 
-        /* 标题文字：白色 ✅ */
         .site-title {
             font-size: 26px;
             font-weight: bold;
@@ -40,7 +37,6 @@
             letter-spacing: 1px;
         }
 
-        /* 导航栏（圆润样式） */
         .nav {
             background-color: #ffffff;
             padding: 18px 35px;
@@ -64,7 +60,6 @@
             background-color: #9E090F;
         }
 
-        /* 主页内容区 */
         .content {
             max-width: 1000px;
             margin: 80px auto;
@@ -72,7 +67,6 @@
             text-align: center;
         }
 
-        /* 搜索框 */
         .search-box {
             width: 70%;
             max-width: 600px;
@@ -85,16 +79,10 @@
             margin-bottom: 50px;
         }
 
-        .search-box:focus {
-            box-shadow: 0 0 10px rgba(158, 9, 15, 0.2);
-        }
-
-        /* 欢迎贺词 */
         .welcome-text {
             font-size: 20px;
             color: #333;
             line-height: 1.8;
-            margin-bottom: 30px;
         }
 
         .welcome-text strong {
@@ -105,23 +93,20 @@
 </head>
 <body>
 
-<!-- 顶部全深红条：党徽 + 白色标题 -->
 <div class="top-bar">
     <div class="party-logo">☭</div>
     <div class="site-title">中国共产主义青年交流会</div>
 </div>
 
-<!-- 导航菜单 -->
 <div class="nav">
     <a href="#">主页</a>
     <a href="#">国际共运</a>
     <a href="#">文章</a>
     <a href="#">历史</a>
     <a href="#">文艺</a>
-    <a href="#">其他</a>
+    <a href="javascript:showOther()">其他</a>
 </div>
 
-<!-- 主页内容 -->
 <div class="content">
     <input type="text" class="search-box" placeholder="输入关键词搜索本站内容">
     
@@ -132,11 +117,11 @@
     </div>
 </div>
 
-</body>
-</html>
-
 <script>
 function showOther() {
-  alert("中国共产主义青年交流会简称中共青，坚持马列毛主义");
+  alert("中国共产主义青年交流会简称中共青");
 }
 </script>
+
+</body>
+</html>
