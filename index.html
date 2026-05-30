@@ -40,24 +40,30 @@
             letter-spacing: 1px;
         }
 
-        /* 导航栏 */
+        /* 导航栏 — 圆润优化版 */
         .nav {
             background-color: #ffffff;
             padding: 18px 35px;
             display: flex;
-            gap: 45px;
+            gap: 35px;
             border-bottom: 2px solid #C91F37;
         }
 
+        /* 导航文字：圆润、柔和、好看 */
         .nav a {
             text-decoration: none;
             font-size: 17px;
             color: #333;
             font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px; /* 核心：圆角圆润 */
+            transition: 0.3s;
         }
 
+        /* 鼠标悬浮效果 */
         .nav a:hover {
-            color: #C91F37;
+            color: #fff;
+            background-color: #C91F37;
         }
 
         /* 内容区 */
@@ -74,7 +80,7 @@
     <div class="site-title">中国共产主义青年交流会</div>
 </div>
 
-<!-- 导航菜单 -->
+<!-- 导航菜单（已圆润） -->
 <div class="nav">
     <a href="#">主页</a>
     <a href="#">国际共运</a>
