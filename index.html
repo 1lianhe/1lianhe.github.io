@@ -105,7 +105,11 @@
 
         .profile-uid { font-size: 0.9em; color: #FFD700; letter-spacing: 2px; margin-top: 5px; }
 
-        @media (max-width:768px) { .top-bar { padding: 16px 20px; } .site-title { font-size: 20px; } .nav { top: 60px; gap: 5px; padding: 10px 15px; } .nav a { font-size: 14px; padding: 6px 10px; } .chat-container { flex-direction: column; height: auto; } }
+        @media (max-width:768px) {
+            .top-bar { padding: 16px 20px; } .site-title { font-size: 20px; }
+            .nav { top: 60px; gap: 5px; padding: 10px 15px; } .nav a { font-size: 14px; padding: 6px 10px; }
+            .chat-container { flex-direction: column; height: auto; }
+        }
     </style>
 </head>
 <body>
@@ -114,16 +118,16 @@
         <div class="auth-card">
             <div id="loginForm">
                 <h2>🔐 欢迎同志</h2>
-                <div class="subtitle">使用QQ邮箱登录</div>
-                <input type="email" id="loginEmail" placeholder="QQ邮箱" autocomplete="off">
+                <div class="subtitle">登录青年交流会</div>
+                <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off">
                 <input type="password" id="loginPassword" placeholder="密码">
-                <div class="auth-error" id="loginError">邮箱或密码错误</div>
+                <div class="auth-error" id="loginError">用户名或密码错误</div>
                 <button class="btn-auth" onclick="handleLogin()">登 录</button>
                 <div class="auth-toggle">还没有账号？<a onclick="showRegister()">立即注册</a></div>
             </div>
             <div id="registerForm" style="display:none;">
                 <h2>📝 注册新账号</h2>
-                <input type="email" id="regEmail" placeholder="QQ邮箱 (如123@qq.com)" autocomplete="off">
+                <input type="text" id="regUsername" placeholder="用户名 (4-16位)" autocomplete="off">
                 <input type="text" id="regLocation" placeholder="所在地 (如: 北京)" autocomplete="off">
                 <input type="password" id="regPassword" placeholder="密码 (6-20位)">
                 <input type="password" id="regPassword2" placeholder="确认密码">
@@ -236,7 +240,6 @@
                 <div>
                     <h3 id="profileName">青年同志</h3>
                     <p id="profileUid" class="profile-uid">ID: 未分配</p>
-                    <p id="profileEmail" style="font-size:14px;opacity:0.9;"></p>
                     <p id="profileLocation" style="font-size:14px;opacity:0.9;"></p>
                     <p id="profileBio">未设置简介</p>
                 </div>
@@ -264,7 +267,6 @@
             <h3 id="modalName"></h3>
             <p id="modalUid"></p>
             <p id="modalLocation"></p>
-            <p id="modalEmail"></p>
             <button class="btn" onclick="document.getElementById('userInfoModal').style.display='none'">关闭</button>
         </div>
     </div>
@@ -303,70 +305,85 @@
         // ==================== 用户系统 ====================
         function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); }
         function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+
         function generateUid() {
             const now = new Date();
-            const dateStr = now.getFullYear().toString() + (now.getMonth()+1).toString().padStart(2,'0') + now.getDate().toString().padStart(2,'0');
+            const dateStr = now.getFullYear().toString() +
+                (now.getMonth() + 1).toString().padStart(2, '0') +
+                now.getDate().toString().padStart(2, '0');
             const users = getUsers();
-            const todayUsers = users.filter(u => u.uid && u.uid.startsWith(dateStr));
-            let maxNum = 0;
-            todayUsers.forEach(u => { const num = parseInt(u.uid.slice(8)); if(num > maxNum) maxNum = num; });
-            return dateStr + (maxNum + 1).toString().padStart(3,'0');
+            for (let attempt = 0; attempt < 1000; attempt++) {
+                const rand = Math.floor(Math.random() * 900) + 100;
+                const uid = dateStr + rand;
+                if (!users.find(u => u.uid === uid)) return uid;
+            }
+            return dateStr + '999';
         }
+
         function ensureUid(username) {
             const users = getUsers();
             const userIndex = users.findIndex(u => u.username === username);
-            if(userIndex !== -1 && !users[userIndex].uid) { users[userIndex].uid = generateUid(); saveUsers(users); }
+            if (userIndex !== -1 && !users[userIndex].uid) {
+                users[userIndex].uid = generateUid();
+                saveUsers(users);
+            }
         }
+
         function showRegister() { document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; }
         function showLogin() { document.getElementById('registerForm').style.display='none'; document.getElementById('loginForm').style.display='block'; }
+
         function handleRegister() {
-            const email = document.getElementById('regEmail').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
             const location = document.getElementById('regLocation').value.trim();
             const p = document.getElementById('regPassword').value;
             const p2 = document.getElementById('regPassword2').value;
             const err = document.getElementById('regError'); err.style.display='none';
-            if(!email || !email.endsWith('@qq.com')) { err.textContent='请输入有效的QQ邮箱（@qq.com）'; err.style.display='block'; return; }
-            if(!location) { err.textContent='请填写所在地'; err.style.display='block'; return; }
-            if(p.length<6||p.length>20) { err.textContent='密码6-20位'; err.style.display='block'; return; }
-            if(p!==p2) { err.textContent='两次密码不一致'; err.style.display='block'; return; }
+            if (username.length < 4 || username.length > 16) { err.textContent='用户名4-16位'; err.style.display='block'; return; }
+            if (!location) { err.textContent='请填写所在地'; err.style.display='block'; return; }
+            if (p.length < 6 || p.length > 20) { err.textContent='密码6-20位'; err.style.display='block'; return; }
+            if (p !== p2) { err.textContent='两次密码不一致'; err.style.display='block'; return; }
             const users = getUsers();
-            if(users.find(u => u.email === email)) { err.textContent='该邮箱已被注册'; err.style.display='block'; return; }
-            const username = email.split('@')[0] + '_' + Date.now().toString(36);
+            if (users.find(u => u.username === username)) { err.textContent='用户名已存在'; err.style.display='block'; return; }
             const uid = generateUid();
-            users.push({ username, email, password: p, location, uid });
+            users.push({ username, password: p, location, uid });
             saveUsers(users);
             localStorage.setItem(CURRENT_USER, username);
             currentUsername = username;
             document.getElementById('authOverlay').classList.add('hidden');
             onLoginSuccess();
         }
+
         function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
             const p = document.getElementById('loginPassword').value;
             const err = document.getElementById('loginError'); err.style.display='none';
-            if(!email || !p) { err.textContent='请输入邮箱和密码'; err.style.display='block'; return; }
+            if (!username || !p) { err.textContent='请输入用户名和密码'; err.style.display='block'; return; }
             const users = getUsers();
-            const user = users.find(u => u.email === email && u.password === p);
-            if(!user) { err.textContent='邮箱或密码错误'; err.style.display='block'; return; }
-            localStorage.setItem(CURRENT_USER, user.username);
-            currentUsername = user.username;
+            const user = users.find(u => u.username === username && u.password === p);
+            if (!user) { err.textContent='用户名或密码错误'; err.style.display='block'; return; }
+            localStorage.setItem(CURRENT_USER, username);
+            currentUsername = username;
             document.getElementById('authOverlay').classList.add('hidden');
             onLoginSuccess();
         }
+
         function logout() { localStorage.removeItem(CURRENT_USER); location.reload(); }
 
         function onLoginSuccess() {
             let users = getUsers();
-            if(!users.find(u => u.username === 'deepseek_cs')) { users.push({ username:'deepseek_cs', email:'deepseek@qq.com', password:'cs123456', location:'AI云端', uid:generateUid() }); saveUsers(users); }
-            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
-            if(!friends[currentUsername]) friends[currentUsername] = ['deepseek_cs'];
-            else if(!friends[currentUsername].includes('deepseek_cs')) friends[currentUsername].push('deepseek_cs');
-            if(!friends['deepseek_cs']) friends['deepseek_cs'] = [currentUsername];
-            else if(!friends['deepseek_cs'].includes(currentUsername)) friends['deepseek_cs'].push(currentUsername);
+            if (!users.find(u => u.username === 'deepseek_cs')) {
+                users.push({ username:'deepseek_cs', password:'cs123456', location:'AI云端', uid: generateUid() });
+                saveUsers(users);
+            }
+            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY) || '{}');
+            if (!friends[currentUsername]) friends[currentUsername] = ['deepseek_cs'];
+            else if (!friends[currentUsername].includes('deepseek_cs')) friends[currentUsername].push('deepseek_cs');
+            if (!friends['deepseek_cs']) friends['deepseek_cs'] = [currentUsername];
+            else if (!friends['deepseek_cs'].includes(currentUsername)) friends['deepseek_cs'].push(currentUsername);
             localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
-            const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
-            if(!groups['world']) groups['world'] = {name:'🌍 世界交流', members:[]};
-            if(!groups['world'].members.includes(currentUsername)) groups['world'].members.push(currentUsername);
+            const groups = JSON.parse(localStorage.getItem(GROUP_KEY) || '{}');
+            if (!groups['world']) groups['world'] = { name:'🌍 世界交流', members: [] };
+            if (!groups['world'].members.includes(currentUsername)) groups['world'].members.push(currentUsername);
             localStorage.setItem(GROUP_KEY, JSON.stringify(groups));
             ensureUid(currentUsername);
             initAll();
@@ -375,10 +392,11 @@
 
         function navigate(page) {
             document.querySelectorAll('.content').forEach(c => c.style.display='none');
-            const el = document.getElementById(page); if(el) el.style.display='block';
-            if(page==='article') showAuthors();
-            if(page==='communicate') initChat();
-            if(page==='profile') loadProfile();
+            const el = document.getElementById(page);
+            if (el) el.style.display='block';
+            if (page === 'article') showAuthors();
+            if (page === 'communicate') initChat();
+            if (page === 'profile') loadProfile();
         }
 
         // ==================== 初始化数据 ====================
@@ -412,7 +430,7 @@
             const articles = classicsLibrary[key] || [];
             document.getElementById('articleListContent').innerHTML = articles.map((a,idx) => `<div class="article-item" onclick="toggleArticle(this, '${key}', ${idx})"><h3>${a.title}</h3><p class="desc">${a.desc}</p><div class="full-text" id="text-${key}-${idx}">${a.text}</div></div>`).join('');
         }
-        function toggleArticle(el, key, idx) { const textDiv = document.getElementById(`text-${key}-${idx}`); if(textDiv) textDiv.classList.toggle('show'); }
+        function toggleArticle(el, key, idx) { const textDiv = document.getElementById(`text-${key}-${idx}`); if (textDiv) textDiv.classList.toggle('show'); }
         function backToAuthors() { showAuthors(); }
 
         function renderHistory() {
@@ -436,12 +454,12 @@
         // ==================== 交流模块 ====================
         function initChat() { renderChatList(); }
         function renderChatList() {
-            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}');
+            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY) || '{}');
             const userFriends = friends[currentUsername] || [];
-            const groups = JSON.parse(localStorage.getItem(GROUP_KEY)||'{}');
+            const groups = JSON.parse(localStorage.getItem(GROUP_KEY) || '{}');
             const list = document.getElementById('chatList'); list.innerHTML = '';
-            if(groups['world']) { const div = document.createElement('div'); div.className='chat-item'; div.innerHTML='🌍 世界交流'; div.onclick=()=>openChat('world','世界交流','group'); list.appendChild(div); }
-            Object.keys(groups).forEach(gid => { if(gid!=='world' && groups[gid].members.includes(currentUsername)) { const div=document.createElement('div'); div.className='chat-item'; div.innerHTML=`👥 ${groups[gid].name}`; div.onclick=()=>openChat(gid,groups[gid].name,'group'); list.appendChild(div); } });
+            if (groups['world']) { const div = document.createElement('div'); div.className='chat-item'; div.innerHTML='🌍 世界交流'; div.onclick=()=>openChat('world','世界交流','group'); list.appendChild(div); }
+            Object.keys(groups).forEach(gid => { if (gid!=='world' && groups[gid].members.includes(currentUsername)) { const div=document.createElement('div'); div.className='chat-item'; div.innerHTML=`👥 ${groups[gid].name}`; div.onclick=()=>openChat(gid,groups[gid].name,'group'); list.appendChild(div); } });
             userFriends.forEach(fid => { const name=fid==='deepseek_cs'?'DeepSeek客服':fid; const div=document.createElement('div'); div.className='chat-item'; div.innerHTML=`👤 ${name}`; div.onclick=()=>openChat(fid,name,'friend'); list.appendChild(div); });
         }
         function openChat(id, name, type) {
@@ -466,61 +484,91 @@
             const msgs=JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]'); msgs.push({from:'deepseek_cs',text:reply,time:new Date().toLocaleTimeString()});
             localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs)); if(chatTarget&&chatTarget.id==='deepseek_cs') openChat('deepseek_cs','DeepSeek客服','friend');
         }
-        function sendFile() { /* 文件发送逻辑，需完整实现 */ }
-        function addFriend() { const fid=prompt('输入好友用户名或ID:'); if(!fid||fid===currentUsername) return; const friends=JSON.parse(localStorage.getItem(FRIENDS_KEY)||'{}'); if(!friends[currentUsername]) friends[currentUsername]=[]; if(friends[currentUsername].includes(fid)){alert('已是好友');return;} friends[currentUsername].push(fid); if(!friends[fid]) friends[fid]=[]; if(!friends[fid].includes(currentUsername)) friends[fid].push(currentUsername); localStorage.setItem(FRIENDS_KEY,JSON.stringify(friends)); renderChatList(); }
-        function createGroup() { const name=prompt('群名称:'); if(!name) return; const gid='g_'+Date.now(); const groups=JSON.parse(localStorage.getItem(GROUP_KEY)||'{}'); groups[gid]={name,members:[currentUsername]}; localStorage.setItem(GROUP_KEY,JSON.stringify(groups)); renderChatList(); }
-
+        function sendFile() {
+            const file = document.getElementById('fileInput').files[0]; if(!file || !chatTarget) return;
+            const reader = new FileReader(); reader.onload = function(e) {
+                const chatKey = chatTarget.type==='friend' ? [currentUsername,chatTarget.id].sort().join('_') : chatTarget.id;
+                const msgs = JSON.parse(localStorage.getItem(MSG_PREFIX+chatKey)||'[]');
+                const fileUrl = URL.createObjectURL(new Blob([e.target.result]));
+                msgs.push({from:currentUsername, file:fileUrl, fileName:file.name, time:new Date().toLocaleTimeString()});
+                localStorage.setItem(MSG_PREFIX+chatKey, JSON.stringify(msgs));
+                openChat(chatTarget.id, chatTarget.name, chatTarget.type);
+            }; reader.readAsArrayBuffer(file);
+        }
+        function addFriend() {
+            const input = prompt('请输入好友的用户名或ID:');
+            if (!input || input === currentUsername) return;
+            const users = getUsers();
+            const targetUser = users.find(u => u.username === input || u.uid === input);
+            if (!targetUser) { alert('未找到该用户，请检查用户名或ID是否正确。'); return; }
+            const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY) || '{}');
+            if (!friends[currentUsername]) friends[currentUsername] = [];
+            if (friends[currentUsername].includes(targetUser.username)) { alert('你们已经是好友了！'); return; }
+            friends[currentUsername].push(targetUser.username);
+            if (!friends[targetUser.username]) friends[targetUser.username] = [];
+            if (!friends[targetUser.username].includes(currentUsername)) friends[targetUser.username].push(currentUsername);
+            localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+            renderChatList();
+            alert(`成功添加好友：${targetUser.username}`);
+        }
+        function createGroup() {
+            const name = prompt('请输入群名称:'); if (!name) return;
+            const gid = 'g_' + Date.now();
+            const groups = JSON.parse(localStorage.getItem(GROUP_KEY) || '{}');
+            groups[gid] = { name, members: [currentUsername] };
+            localStorage.setItem(GROUP_KEY, JSON.stringify(groups));
+            renderChatList();
+        }
         function showUserInfo(username) {
-            const users=getUsers(); const user=users.find(u=>u.username===username); if(!user) return;
-            const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+username)||'{}');
-            document.getElementById('modalName').textContent=profile.nickname||username;
-            document.getElementById('modalUid').textContent='ID: '+(user.uid||'未知');
-            document.getElementById('modalLocation').textContent='📍 '+(user.location||'未知');
-            document.getElementById('modalEmail').textContent='📧 '+(user.email||'');
-            document.getElementById('userInfoModal').style.display='flex';
+            const users = getUsers(); const user = users.find(u => u.username === username); if (!user) return;
+            const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX + username) || '{}');
+            document.getElementById('modalName').textContent = profile.nickname || username;
+            document.getElementById('modalUid').textContent = 'ID: ' + (user.uid || '未知');
+            document.getElementById('modalLocation').textContent = '📍 ' + (user.location || '未知');
+            document.getElementById('userInfoModal').style.display = 'flex';
         }
 
         // ==================== 个人主页 ====================
         function loadProfile() {
-            const users=getUsers(); const currentUser=users.find(u=>u.username===currentUsername);
-            const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
-            document.getElementById('profileName').textContent=profile.nickname||currentUsername;
-            document.getElementById('profileUid').textContent=currentUser?.uid?'ID: '+currentUser.uid:'ID: 未分配';
-            document.getElementById('profileEmail').textContent='📧 '+(currentUser?.email||'');
-            document.getElementById('profileLocation').textContent='📍 '+(currentUser?.location||'未知');
-            document.getElementById('profileBio').textContent=profile.bio||'未设置简介';
-            document.getElementById('editNickname').value=profile.nickname||'';
-            document.getElementById('editLocation').value=currentUser?.location||'';
-            document.getElementById('editBio').value=profile.bio||'';
-            if(profile.avatar){ document.getElementById('avatarPreview').innerHTML=`<img src="${profile.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
-            else{ document.getElementById('avatarPreview').textContent='👤'; }
+            const users = getUsers(); const currentUser = users.find(u => u.username === currentUsername);
+            const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX + currentUsername) || '{}');
+            document.getElementById('profileName').textContent = profile.nickname || currentUsername;
+            document.getElementById('profileUid').textContent = currentUser?.uid ? 'ID: ' + currentUser.uid : 'ID: 未分配';
+            document.getElementById('profileLocation').textContent = '📍 ' + (currentUser?.location || '未知');
+            document.getElementById('profileBio').textContent = profile.bio || '未设置简介';
+            document.getElementById('editNickname').value = profile.nickname || '';
+            document.getElementById('editLocation').value = currentUser?.location || '';
+            document.getElementById('editBio').value = profile.bio || '';
+            if (profile.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${profile.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
+            else { document.getElementById('avatarPreview').textContent = '👤'; }
         }
         function updateAvatar() {
-            const file=document.getElementById('avatarInput').files[0]; if(!file) return;
-            const reader=new FileReader(); reader.onload=function(e){ const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}'); profile.avatar=e.target.result; localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(profile)); document.getElementById('avatarPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }; reader.readAsDataURL(file);
+            const file = document.getElementById('avatarInput').files[0]; if (!file) return;
+            const reader = new FileReader(); reader.onload = function(e) { const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX + currentUsername) || '{}'); profile.avatar = e.target.result; localStorage.setItem(PROFILE_PREFIX + currentUsername, JSON.stringify(profile)); document.getElementById('avatarPreview').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }; reader.readAsDataURL(file);
         }
         function saveProfile() {
-            const users=getUsers(); const userIndex=users.findIndex(u=>u.username===currentUsername);
-            if(userIndex!==-1){ users[userIndex].location=document.getElementById('editLocation').value.trim(); saveUsers(users); }
-            const profile=JSON.parse(localStorage.getItem(PROFILE_PREFIX+currentUsername)||'{}');
-            profile.nickname=document.getElementById('editNickname').value.trim();
-            profile.bio=document.getElementById('editBio').value.trim();
-            localStorage.setItem(PROFILE_PREFIX+currentUsername,JSON.stringify(profile));
-            loadProfile(); alert('资料已保存');
+            const users = getUsers(); const userIndex = users.findIndex(u => u.username === currentUsername);
+            if (userIndex !== -1) { users[userIndex].location = document.getElementById('editLocation').value.trim(); saveUsers(users); }
+            const profile = JSON.parse(localStorage.getItem(PROFILE_PREFIX + currentUsername) || '{}');
+            profile.nickname = document.getElementById('editNickname').value.trim();
+            profile.bio = document.getElementById('editBio').value.trim();
+            localStorage.setItem(PROFILE_PREFIX + currentUsername, JSON.stringify(profile));
+            loadProfile(); alert('个人资料已更新！');
         }
         function changePwd() {
-            const old=document.getElementById('oldPwd').value; const nw=document.getElementById('newPwd').value;
-            const users=getUsers(); const idx=users.findIndex(u=>u.username===currentUsername);
-            if(idx===-1||users[idx].password!==old){ alert('当前密码错误'); return; }
-            if(nw.length<6){ alert('新密码至少6位'); return; } users[idx].password=nw; saveUsers(users); alert('密码修改成功');
+            const old = document.getElementById('oldPwd').value; const nw = document.getElementById('newPwd').value;
+            const users = getUsers(); const idx = users.findIndex(u => u.username === currentUsername);
+            if (idx === -1 || users[idx].password !== old) { alert('当前密码错误'); return; }
+            if (nw.length < 6) { alert('新密码至少6位'); return; }
+            users[idx].password = nw; saveUsers(users); alert('密码修改成功');
         }
 
         // ==================== 其他 ====================
-        function performGlobalSearch() { const q=document.getElementById('globalSearch').value.trim().toLowerCase(); if(!q) return; if(q.includes('文章')||q.includes('马克思')) navigate('article'); else if(q.includes('文艺')||q.includes('歌')) navigate('art'); else alert('请尝试更明确的关键词'); }
-        function searchYun() { const q=document.getElementById('yunSearch').value.trim(); if(q) window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(q+' 国际共运')}`, '_blank'); }
+        function performGlobalSearch() { const q = document.getElementById('globalSearch').value.trim().toLowerCase(); if (!q) return; if (q.includes('文章')||q.includes('马克思')) navigate('article'); else if (q.includes('文艺')||q.includes('歌')) navigate('art'); else alert('请尝试更明确的关键词'); }
+        function searchYun() { const q = document.getElementById('yunSearch').value.trim(); if (q) window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(q+' 国际共运')}`, '_blank'); }
 
         currentUsername = localStorage.getItem(CURRENT_USER);
-        if(currentUsername) { document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess(); }
+        if (currentUsername) { document.getElementById('authOverlay').classList.add('hidden'); onLoginSuccess(); }
     </script>
 </body>
 </html>
