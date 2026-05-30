@@ -110,39 +110,29 @@
             margin-top: 40px;
         }
 
-        /* 圆润长方形卡片 */
+        /* 竖起来的圆角卡片 */
         .article-card {
-            background: #f8f8f8;
-            padding: 30px 15px;
+            background: #fff;
             border-radius: 16px;
-            border: 1px solid #eee;
+            overflow: hidden;
             box-shadow: 0 3px 8px rgba(0,0,0,0.08);
             font-size: 18px;
             color: #333;
             transition: 0.3s;
-            height: 320px; /* 竖起来 */
+            height: 320px; /* 竖长方形 */
             display: flex;
             flex-direction: column;
         }
 
-        /* 第一个卡片：列宁专用样式 */
-        .article-card.first {
-            background: #fff;
-            padding: 0;
-            overflow: hidden;
-            border: 1px solid #ddd;
-        }
-
-        /* 上五分之三：头像区域 */
-        .lenin-top {
+        /* 头像区：上 3/5 */
+        .card-img {
             height: 60%;
-            background-image: url('"D:\迅雷下载\eaf81a4c510fd9f9d72a67770b76c32a2834349b0e20.webp"');
             background-size: cover;
             background-position: center;
         }
 
-        /* 下五分之二：深红底白字 列宁 */
-        .lenin-bottom {
+        /* 文字区：下 2/5 深红底+白字 */
+        .card-text {
             height: 40%;
             background-color: #9E090F;
             display: flex;
@@ -195,22 +185,65 @@
     </div>
 </div>
 
-<!-- 文章栏目：3x3 第一个卡片改为列宁 -->
+<!-- 文章栏目：3x3 全部填好 -->
 <div id="article" class="content">
     <h2 style="color:#9E090F;margin-bottom:20px;">文章合集</h2>
     <div class="article-grid">
-        <div class="article-card first">
-            <div class="lenin-top"></div>
-            <div class="lenin-bottom">列宁</div>
+
+        <!-- 1 马克思 -->
+        <div class="article-card">
+            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995816838134719.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
+            <div class="card-text">马克思</div>
         </div>
-        <div class="article-card">待添加文章</div>
-        <div class="article-card">待添加文章</div>
-        <div class="article-card">待添加文章</div>
-        <div class="article-card">待添加文章</div>
-        <div class="article-card">待添加文章</div>
-        <div class="article-card">待添加文章</div>
-        <div class="article-card">待添加文章</div>
-        <div class="article-card">待添加文章</div>
+
+        <!-- 2 恩格斯 -->
+        <div class="article-card">
+            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jianke.com%2Fupload%2Fimage%2F20200520%2F20200520158995823296552245.jpg&refer=http%3A%2F%2Fpic.jianke.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
+            <div class="card-text">恩格斯</div>
+        </div>
+
+        <!-- 3 列宁 -->
+        <div class="article-card">
+            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190715%2F0a6f3f8b745e40779f59595f1b462b5.jpeg&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
+            <div class="card-text">列宁</div>
+        </div>
+
+        <!-- 4 毛泽东 -->
+        <div class="article-card">
+            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170503%2F97f334080a234334904022783fa9335_th.jpeg&refer=http%3A%2F%2Fimg.mp.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
+            <div class="card-text">毛泽东</div>
+        </div>
+
+        <!-- 5 斯大林 -->
+        <div class="article-card">
+            <div class="card-img" style="background-image:url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp.qqan.com%2Fup%2Fallimg%2F150324%2F1-150324192140-L.jpg&refer=http%3A%2F%2Fp.qqan.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto')"></div>
+            <div class="card-text">斯大林</div>
+        </div>
+
+        <!-- 6 个人文章（无头像，纯色） -->
+        <div class="article-card">
+            <div class="card-img" style="background-color:#eee;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px;">个人文章</div>
+            <div class="card-text">个人文章</div>
+        </div>
+
+        <!-- 7 其他 -->
+        <div class="article-card">
+            <div class="card-img" style="background-color:#eee;display:flex;align-items:center;justify-content:center;color:#666;font-size:18px;">其他</div>
+            <div class="card-text">其他</div>
+        </div>
+
+        <!-- 8 预留 -->
+        <div class="article-card">
+            <div class="card-img" style="background-color:#f5f5f5;"></div>
+            <div class="card-text">预留</div>
+        </div>
+
+        <!-- 9 预留 -->
+        <div class="article-card">
+            <div class="card-img" style="background-color:#f5f5f5;"></div>
+            <div class="card-text">预留</div>
+        </div>
+
     </div>
 </div>
 
@@ -270,4 +303,5 @@ function hideAll(){
 
 </body>
 </html>
-  
+
+
